@@ -1,14 +1,27 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-    <title>Ghastly Games</title>
-    <link rel="icon" type="image/jpeg" href="Pixel Ghosts, Rayna Vidrios.jpg">
-    <!-- Move the CSS link here -->
-    <link rel="stylesheet" href="script.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Game Launcher</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-    <!-- Always use a closing </canvas> tag -->
-    <canvas id="canvas"></canvas>
-    <script src="script.js"></script>
+  <header>
+    <h1>Game Launcher</h1>
+    <input id="search" placeholder="Search games..." />
+  </header>
+
+  <main>
+    <aside id="game-list"></aside>
+    <section id="play-area">
+      <div id="placeholder">
+        <h2>Select a game to play</h2>
+        <p>Use the search box to find a game, then click Play.</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
 </body>
 </html>
