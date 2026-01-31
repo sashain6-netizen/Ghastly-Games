@@ -1,8 +1,8 @@
 :root {
   --bg: #0b1020;
   --panel: #0f1724;
-  --accent: #6ee7b7;
-  --text: #e6eef8;
+  --accent: #1f11e2;
+  --text: #117f1c;
 }
 
 body {
@@ -25,6 +25,7 @@ header {
 header h1 {
   margin: 0;
   font-size: 18px;
+  color: var(--text);
 }
 
 #search {
@@ -63,6 +64,7 @@ aside#game-list {
 .game-item h3 {
   margin: 0 0 6px 0;
   font-size: 14px;
+  color: var(--text);
 }
 
 .game-item p {
