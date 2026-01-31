@@ -1,27 +1,33 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Shain's Domain</title>
-  <link rel="stylesheet" href="script.css" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Game List</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header>
-    <h1>Game Launcher</h1>
-    <input id="search" placeholder="Search games..." />
-  </header>
-
-  <main>
-    <aside id="game-list"></aside>
-    <section id="play-area">
-      <div id="placeholder">
-        <h2>Select a game to play</h2>
-        <p>Use the search box to find a game, then click Play.</p>
+  <h1>Game List</h1>
+  <aside id="game-list">
+    <div id="game-list-container">
+      <!-- Game list items -->
+      <div class="game-item" data-game-id="game1">
+        <div class="game-meta">
+          <h3>The Button</h3>
+          <p>Click the button to win!</p>
+        </div>
+        <button class="play-btn">Play</button>
       </div>
-    </section>
-  </main>
-
+      <div class="game-item" data-game-id="game2">
+        <div class="game-meta">
+          <h3>Soulweaver</h3>
+          <p>Weave the souls together to create a masterpiece.</p>
+        </div>
+        <button class="play-btn">Play</button>
+      </div>
+      <!-- ... other game list items -->
+    </div>
+  </aside>
   <script src="script.js"></script>
 </body>
 </html>
