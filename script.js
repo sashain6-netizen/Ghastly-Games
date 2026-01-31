@@ -1,27 +1,26 @@
-// ...existing code...
 document.addEventListener('DOMContentLoaded', () => {
   // Minimal launcher scaffold — no built-in games.
   // Use GameLauncher.registerGame({ id, name, desc, init(container) { ... } }) to add games.
 
   const games = [
-  {
-    id: "game1",
-    title: "The Button",
-    thumbnail: "https://example.com/game1_thumbnail.jpg",
-    description: "Click the button to win!",
-    instructions: "Click the button as fast as you can.",
-    playLink: "https://example.com/game1",
-  },
-  {
-    id: "game2",
-    title: "Soulweaver",
-    thumbnail: "https://example.com/game2_thumbnail.jpg",
-    description: "Weave the souls together to create a masterpiece.",
-    instructions: "Use the arrow keys to weave the souls.",
-    playLink: "https://example.com/game2",
-  },
-  // ... other games
-];
+    {
+      id: "game1",
+      title: "The Button",
+      thumbnail: "https://example.com/game1_thumbnail.jpg",
+      description: "Click the button to win!",
+      instructions: "Click the button as fast as you can.",
+      playLink: "https://example.com/game1",
+    },
+    {
+      id: "game2",
+      title: "Soulweaver",
+      thumbnail: "https://example.com/game2_thumbnail.jpg",
+      description: "Weave the souls together to create a masterpiece.",
+      instructions: "Use the arrow keys to weave the souls.",
+      playLink: "https://example.com/game2",
+    },
+    // ... other games
+  ];
   let activeInstance = null;
 
   function registerGame(game) {
@@ -98,8 +97,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
   search.addEventListener('input', (e) => renderList(e.target.value));
   renderList();
-  if (!playArea.querySelector('.footer-note')) {
-    playArea.insertAdjacentHTML('beforeend', `<div class="footer-note">No built-in games — register via GameLauncher.registerGame()</div>`);
-  }
 });
-// ...existing code...
