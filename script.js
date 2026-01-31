@@ -45,9 +45,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const listEl = document.getElementById('game-list');
   const playArea = document.getElementById('play-area');
   const search = document.getElementById('search');
+  const searchButton = document.getElementById('search-button');
 
-  if (!listEl || !playArea || !search) {
-    console.error('Missing DOM elements: ensure index.html contains #game-list, #play-area and #search');
+  if (!listEl || !playArea || !search || !searchButton) {
+    console.error('Missing DOM elements: ensure index.html contains #game-list, #play-area, #search and #search-button');
     return;
   }
 
@@ -61,17 +62,25 @@ document.addEventListener('DOMContentLoaded', () => {
     activeInstance = null;
   }
 
+  function handleSearchKeyDown(event) {
+    if (event.key === 'Enter') {
+      const filter = document.getElementById('search').value;
+      renderList(filter);
+    }
+  }
+
   function renderList(filter = '') {
-    listEl.innerHTML = '';
+    const gameListEl = document.getElementById('game-list');
+    gameListEl.innerHTML = '';
     const filtered = games.filter(g => g.name.toLowerCase().includes(filter.toLowerCase()));
     if (filtered.length === 0) {
-      listEl.innerHTML = "<p style='opacity:.7'>No games found.</p>";
+      gameListEl.innerHTML = "<p style='opacity:.7'>No games found.</p>";
       return;
     }
     filtered.forEach(g => {
-      const el = document.createElement('div');
-      el.className = 'game-item';
-      el.innerHTML = `
+      const gameItemEl = document.createElement('div');
+      gameItemEl.className = 'game-item';
+      gameItemEl.innerHTML = `
         <div class="game-meta">
           <h3>${g.name}</h3>
           <p>${g.desc || ''}</p>
@@ -80,10 +89,9 @@ document.addEventListener('DOMContentLoaded', () => {
           <button class="play-btn">Play</button>
         </div>
       `;
-      el.querySelector('.play-btn').addEventListener('click', async () => {
+      gameItemEl.querySelector('.play-btn').addEventListener('click', async () => {
         stopActive();
         try {
-          // allow init to be async and to return an object with optional stop()
           const result = await g.init(playArea);
           activeInstance = (result && typeof result.stop === 'function') ? result : null;
         } catch (e) {
@@ -91,10 +99,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         document.querySelector('#placeholder')?.remove();
       });
-      listEl.appendChild(el);
+      gameListEl.appendChild(gameItemEl);
     });
   }
 
   search.addEventListener('input', (e) => renderList(e.target.value));
+  searchButton.addEventListener('click', (e) => {
+    const filter = document.getElementById('search').value;
+    renderList(filter);
+  });
+  search.addEventListener('keydown', handleSearchKeyDown);
   renderList();
+  if (!playArea.querySelector('.footer-note')) {
+    playArea.insertAdjacentHTML
+      ('beforeend', '<div class="footer-note">No game running. Select a game from the list to play.</div>');
+  }
 });
