@@ -24,6 +24,22 @@
             background-color: #0056b3;
         }
 
+        #logs-button {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background-color: #28a745;
+            padding: 20px 40px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 18px;
+            color: #fff;
+        }
+
+        #logs-button:hover {
+            background-color: #1e7e34;
+        }
+
         #credits-menu {
             display: none;
             position: fixed;
@@ -47,6 +63,30 @@
             font-size: 14px;
             color: #ffffff;
         }
+
+        #logs-menu {
+            display: none;
+            position: fixed;
+            top: 35%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #000000;
+            padding: 30px;
+            border-radius: 20px;
+            width: 400px;
+            text-align: center;         
+        }
+
+        #logs-menu h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        #logs-menu p {
+            margin: 20px 0;
+            font-size: 14px;
+            color: #ffffff;
+        }
     </style>
 </head>
 <body>
@@ -56,6 +96,7 @@
 
     <!-- This is the button that opens the menu -->
     <button id="credits-button">Credits</button>
+    <button id="logs-button">Logs</button>
 
     <!-- This is the menu that appears when you click the button -->
     <div id="credits-menu" style="display: none;">
@@ -64,6 +105,10 @@
         <p>I built this as a fun project. If you're a teacher reading this, I'm sorry for everything. WHAT HAS MY LIFE BECOME!</p>
         <p>I took a ton of time working on this (almost 10 minutes) so please enjoy. If you don't, I will find you and I will make you. (Enjoy it, not anything sinister) :D</p>
         <p>Some of these games I've made myself, and it's fun! Learning javascript, css, and html is easy, and if you want your own website you can set one up with github and cloudfare. I'd love to see the result! Just click on an untaken link and fill out that form!</p>
+    </div>
+    <div id="logs-menu" style="display: none;">
+        <h2>Logs</h2>
+        <p>This game was created on 2/1/2026 by a very stupid man. God bless him. </p>
     </div>
 
     <!-- This line connects your JS -->
@@ -75,6 +120,14 @@
 
         creditsButton.addEventListener('click', function() {
             creditsMenu.style.display = (creditsMenu.style.display === 'none') ? 'block' : 'none';
+            logsMenu.style.display = 'none';
+        });
+        const logsButton = document.getElementById('logs-button');
+        const logsMenu = document.getElementById('logs-menu');
+
+        logsButton.addEventListener('click', function() {
+            logsMenu.style.display = (logsMenu.style.display === 'none') ? 'block' : 'none';
+            creditsMenu.style.display = 'none';
         });
     </script>
 </body>
