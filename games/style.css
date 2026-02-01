@@ -1,46 +1,218 @@
-body {
+/* Reset and Base Styles */
+* {
     margin: 0;
-    overflow: hidden;
-    background: #050505;
-    font-family: 'Segoe UI', sans-serif;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-color: #050510;
+    color: #ffffff;
+    min-height: 100vh;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+}
+
+/* Header Styling */
+header {
+    background-color: #0f1219;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
     align-items: center;
-    height: 100vh;
+    border-bottom: 1px solid #1f2937;
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
-#particleCanvas {
-    position: absolute;
-    top: 0; left: 0;
-}
-
-.glass-card {
-    position: relative;
-    padding: 3rem;
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(15px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 20px;
-    text-align: center;
+.logo {
+    font-size: 24px;
+    font-weight: 600;
     color: white;
-    box-shadow: 0 0 30px rgba(0, 255, 255, 0.1);
 }
 
-h1 { margin: 0; color: #00f2ff; text-transform: uppercase; letter-spacing: 5px; }
+.highlight {
+    color: #3b82f6;
+}
 
-button {
-    margin-top: 20px;
-    padding: 12px 25px;
-    background: transparent;
-    border: 2px solid #00f2ff;
-    color: #00f2ff;
-    cursor: pointer;
-    font-weight: bold;
+/* Search Bar */
+.search-bar input {
+    background-color: #1e293b;
+    border: 2px solid #334155;
+    border-radius: 20px;
+    padding: 10px 20px;
+    color: white;
+    width: 300px;
+    outline: none;
     transition: 0.3s;
 }
 
-button:hover {
-    background: #00f2ff;
-    color: black;
-    box-shadow: 0 0 20px #00f2ff;
+.search-bar input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+}
+
+/* Main Content */
+main {
+    flex: 1;
+    padding: 40px;
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.category-title {
+    font-size: 22px;
+    margin-bottom: 20px;
+    color: #94a3b8;
+}
+
+/* Grid Layout for Games */
+.game-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 25px;
+}
+
+/* Game Cards */
+.game-card {
+    background-color: #111827;
+    border-radius: 20px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: 1px solid #1f2937;
+}
+
+.game-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+    border-color: #3b82f6;
+}
+
+.game-thumb {
+    height: 140px;
+    width: 100%;
+}
+
+.game-info {
+    padding: 15px;
+}
+
+.game-info h3 {
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.game-info p {
+    font-size: 12px;
+    color: #94a3b8;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #0f1219;
+    color: #64748b;
+    font-size: 14px;
+}
+
+/* Modal (Overlay) */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background-color: #1e293b;
+    width: 80%;
+    max-width: 900px;
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 0 30px rgba(59, 130, 246, 0.2);
+}
+
+.modal-header {
+    padding: 15px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #0f172a;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* NEW Full Screen Button Styles */
+#fullScreenBtn {
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    padding: 5px 12px;
+    border-radius: 5px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+#fullScreenBtn:hover {
+    background-color: #2563eb;
+}
+
+.close-btn {
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #ef4444;
+    line-height: 1;
+}
+
+.iframe-container {
+    height: 500px;
+    width: 100%;
+    background-color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Important: ensures the actual game frame fills the screen in fullscreen mode */
+.iframe-container iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.placeholder-screen {
+    color: white;
+    font-size: 1.5rem;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 600px) {
+    header {
+        flex-direction: column;
+        gap: 15px;
+    }
+    .search-bar input {
+        width: 100%;
+    }
+    .modal-content {
+        width: 95%;
+    }
 }

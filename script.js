@@ -1,5 +1,5 @@
 const sites = [
-    { name: "Games", url: "/games/" },
+    { name: "GameZone", url: "/games/" },
     { name: "Selenite", url: "https://development.churchinhuntsville.org" },
     { name: "Six Seven Games", url: "https://sixsevengames.pages.dev" },
     { name: "Duck Math", url: "https://ajdhbajhdsbashjbdhbawkjdbuyabidughauygediugweg8aw648676217.pages.dev" },

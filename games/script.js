@@ -1,52 +1,75 @@
-const canvas = document.getElementById('particleCanvas');
-const ctx = canvas.getContext('2d');
-let particles = [];
+// Get DOM elements
+const searchInput = document.getElementById('searchInput');
+const gameCards = document.querySelectorAll('.game-card');
+const modal = document.getElementById('gameModal');
+const modalTitle = document.getElementById('modalTitle');
+// Get the container we want to make full screen
+const gameFrameContainer = document.getElementById('gameFrameContainer');
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+// Function to filter games based on search input
+searchInput.addEventListener('keyup', (e) => {
+    const term = e.target.value.toLowerCase();
 
-class Particle {
-    constructor() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
-        this.size = Math.random() * 3 + 1;
-        this.speedX = Math.random() * 2 - 1;
-        this.speedY = Math.random() * 2 - 1;
-        this.color = `hsl(${Math.random() * 60 + 180}, 100%, 50%)`;
-    }
-
-    update() {
-        this.x += this.speedX;
-        this.y += this.speedY;
-        if (this.x > canvas.width || this.x < 0) this.speedX *= -1;
-        if (this.y > canvas.height || this.y < 0) this.speedY *= -1;
-    }
-    draw() {
-        ctx.fillStyle = this.color;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fill();
-    }
-}
-
-function init() {
-    for (let i = 0; i < 100; i++) particles.push(new Particle());
-    document.getElementById('particleCount').innerText = particles.length;
-}
-
-function animate() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    particles.forEach(p => {
-        p.update();
-        p.draw();
+    gameCards.forEach(card => {
+        const title = card.getAttribute('data-title').toLowerCase();
+        if (title.includes(term)) {
+            card.style.display = 'block';
+        } else {
+            card.style.display = 'none';
+        }
     });
-    requestAnimationFrame(animate);
-}
-
-document.getElementById('chaosBtn').addEventListener('click', () => {
-    for (let i = 0; i < 50; i++) particles.push(new Particle());
-    document.getElementById('particleCount').innerText = particles.length;
 });
 
-init();
-animate();
+// Function to open the game modal
+function openGame(title, gameUrl) {
+    modal.style.display = 'flex';
+    modalTitle.textContent = title;
+    
+    console.log(`Loading game: ${title} from ${gameUrl}`);
+    
+    // Uncomment this when using real links to load the game:
+    // gameFrameContainer.innerHTML = `<iframe src="${gameUrl}" allowfullscreen></iframe>`;
+}
+
+// Function to close the modal
+function closeGame() {
+    modal.style.display = 'none';
+    
+    // Exit full screen if it's currently active when closing
+    if (document.fullscreenElement) {
+        document.exitFullscreen();
+    }
+
+    // Clear iframe content
+    // gameFrameContainer.innerHTML = '<div class="placeholder-screen"><p>Game Loaded Here</p></div>';
+}
+
+// NEW: Function to toggle Full Screen
+function toggleFullScreen() {
+    if (!document.fullscreenElement) {
+        // Request full screen on the container
+        if (gameFrameContainer.requestFullscreen) {
+            gameFrameContainer.requestFullscreen();
+        } else if (gameFrameContainer.webkitRequestFullscreen) { /* Safari */
+            gameFrameContainer.webkitRequestFullscreen();
+        } else if (gameFrameContainer.msRequestFullscreen) { /* IE11 */
+            gameFrameContainer.msRequestFullscreen();
+        }
+    } else {
+        // Exit full screen
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) { /* Safari */
+            document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) { /* IE11 */
+            document.msExitFullscreen();
+        }
+    }
+}
+
+// Close modal if clicking outside the content box
+window.onclick = function(event) {
+    if (event.target == modal) {
+        closeGame();
+    }
+}

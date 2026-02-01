@@ -2,23 +2,81 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Ghastly Games</title>
-    <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/png" href="favicon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameZone</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-    <canvas id="particleCanvas"></canvas>
-    
-    <div class="glass-card">
-        <h1>Ghastly Lab</h1>
-        <p>Welcome to the Ghastly Lab!</p>
-        <div class="stats">
-            <div class="stat-item">
-                <span id="particleCount">0</span>
-                <label>Particles</label>
+
+    <header>
+        <div class="logo">Game<span class="highlight">Zone</span></div>
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Search for games...">
+        </div>
+    </header>
+
+    <main>
+        <div class="category-title">Top Picks</div>
+        
+        <div class="game-container" id="gameContainer">
+            <div class="game-card" data-title="Space Racer" onclick="openGame('Space Racer', 'https://example.com/game1')">
+                <div class="game-thumb" style="background-color: #3b82f6;"></div>
+                <div class="game-info">
+                    <h3>Space Racer</h3>
+                    <p>Racing</p>
+                </div>
+            </div>
+
+            <div class="game-card" data-title="Block Breaker" onclick="openGame('Block Breaker', 'https://example.com/game2')">
+                <div class="game-thumb" style="background-color: #8b5cf6;"></div>
+                <div class="game-info">
+                    <h3>Block Breaker</h3>
+                    <p>Arcade</p>
+                </div>
+            </div>
+
+            <div class="game-card" data-title="Math Blaster" onclick="openGame('Math Blaster', 'https://example.com/game3')">
+                <div class="game-thumb" style="background-color: #10b981;"></div>
+                <div class="game-info">
+                    <h3>Math Blaster</h3>
+                    <p>Educational</p>
+                </div>
+            </div>
+
+            <div class="game-card" data-title="Cyber Punk Run" onclick="openGame('Cyber Punk Run', 'https://example.com/game4')">
+                <div class="game-thumb" style="background-color: #f59e0b;"></div>
+                <div class="game-info">
+                    <h3>Cyber Punk Run</h3>
+                    <p>Action</p>
+                </div>
+            </div>
+            
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 GameZone Template. All rights reserved.</p>
+    </footer>
+
+    <div id="gameModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="header-left">
+                    <h2 id="modalTitle">Game Title</h2>
+                </div>
+                <div class="header-right">
+                    <button id="fullScreenBtn" onclick="toggleFullScreen()">&#x26F6; Full Screen</button>
+                    <span class="close-btn" onclick="closeGame()">&times;</span>
+                </div>
+            </div>
+            <div class="iframe-container" id="gameFrameContainer">
+                <div class="placeholder-screen">
+                    <p>Game Loaded Here</p>
+                </div>
             </div>
         </div>
-        <button id="chaosBtn">Ignite Chaos</button>
     </div>
 
     <script src="script.js"></script>
