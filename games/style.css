@@ -14,6 +14,15 @@ body {
     flex-direction: column;
 }
 
+.logo-img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%; /* This turns the square into a circle, cutting off white corners */
+    object-fit: cover;
+    vertical-align: middle;
+    margin-right: 10px;
+}
+
 /* Header Styling */
 header {
     background-color: #0f1219;
