@@ -7,13 +7,74 @@
     <title>Domain Hub</title>
     <!-- This line connects your CSS -->
     <link rel="stylesheet" href="styles.css">
+    <style>
+        #credits-button {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background-color: #007bff;
+            padding: 20px 40px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 18px;
+            color: #fff;
+        }
+
+        #credits-button:hover {
+            background-color: #0056b3;
+        }
+
+        #credits-menu {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #000000;
+            padding: 40px;
+            border-radius: 20px;
+            width: 650px;
+            text-align: center;
+        }
+
+        #credits-menu h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        #credits-menu p {
+            margin: 20px 0;
+            font-size: 14px;
+            color: #ffffff;
+        }
+    </style>
 </head>
 <body>
 
-    <h1>Game Sites</h1>
+    <h1>Ghastly Links</h1>
     <div id="link-grid"></div>
+
+    <!-- This is the button that opens the menu -->
+    <button id="credits-button">Credits</button>
+
+    <!-- This is the menu that appears when you click the button -->
+    <div id="credits-menu" style="display: none;">
+        <h2>Credits</h2>
+        <p>Special thanks to Nael for the support he gave me. He's a bum who doesn't know what a repo is. But it doesn't matter because he's my friend So text him at 669-321-6638 to annoy him.</p>
+        <p>With help from Jane Smith</p>
+        <p>And contributions from many others</p>
+    </div>
 
     <!-- This line connects your JS -->
     <script src="script.js"></script>
+    <script>
+        // This code shows the menu when the button is clicked, and hides it when it's not
+        const creditsButton = document.getElementById('credits-button');
+        const creditsMenu = document.getElementById('credits-menu');
+
+        creditsButton.addEventListener('click', function() {
+            creditsMenu.style.display = (creditsMenu.style.display === 'none') ? 'block' : 'none';
+        });
+    </script>
 </body>
 </html>
