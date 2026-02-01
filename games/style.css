@@ -1,5 +1,46 @@
-body { font-family: sans-serif; text-align: center; background: #f0f0f0; }
-.game-card { 
-    display: inline-block; padding: 20px; background: white; 
-    border-radius: 10px; text-decoration: none; color: #333; 
+body {
+    margin: 0;
+    overflow: hidden;
+    background: #050505;
+    font-family: 'Segoe UI', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+#particleCanvas {
+    position: absolute;
+    top: 0; left: 0;
+}
+
+.glass-card {
+    position: relative;
+    padding: 3rem;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    text-align: center;
+    color: white;
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.1);
+}
+
+h1 { margin: 0; color: #00f2ff; text-transform: uppercase; letter-spacing: 5px; }
+
+button {
+    margin-top: 20px;
+    padding: 12px 25px;
+    background: transparent;
+    border: 2px solid #00f2ff;
+    color: #00f2ff;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: #00f2ff;
+    color: black;
+    box-shadow: 0 0 20px #00f2ff;
 }

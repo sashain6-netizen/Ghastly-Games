@@ -2,15 +2,24 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>My Game Hub</title>
+    <title>Ghastly Lab | Particle UI</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Welcome to My Hub</h1>
-    <nav>
-        <!-- Linking to your folder -->
-        <a href="/game1/" class="game-card">Play Game 1</a>
-    </nav>
+    <canvas id="particleCanvas"></canvas>
+    
+    <div class="glass-card">
+        <h1>Ghastly Lab</h1>
+        <p>A separate experiment in interactive JS.</p>
+        <div class="stats">
+            <div class="stat-item">
+                <span id="particleCount">0</span>
+                <label>Particles</label>
+            </div>
+        </div>
+        <button id="chaosBtn">Ignite Chaos</button>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>
