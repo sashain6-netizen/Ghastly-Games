@@ -66,3 +66,10 @@ window.onclick = function(event) {
         closeGame();
     }
 }
+// ... existing JS ...
+
+// Function to close the ad pop-up
+function closeAd() {
+    const adPopup = document.getElementById('adPopup');
+    adPopup.style.display = 'none';
+}
