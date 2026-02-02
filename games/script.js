@@ -69,7 +69,45 @@ window.onclick = function(event) {
 // ... existing JS ...
 
 // Function to close the ad pop-up
+// Function to show the ad at a random spot
+function showAdRandomly() {
+    const adPopup = document.getElementById('adPopup');
+    
+    // 1. Get the window size (viewport)
+    const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
+    
+    // 2. Get the ad size (approximate or dynamic)
+    const adWidth = adPopup.offsetWidth || 300; 
+    const adHeight = adPopup.offsetHeight || 200;
+
+    // 3. Calculate max available positions so it stays fully on screen
+    // We subtract ad size so it doesn't spawn halfway off the edge
+    const maxLeft = windowWidth - adWidth;
+    const maxTop = windowHeight - adHeight;
+
+    // 4. Generate random coordinates
+    // Math.max(0, ...) ensures we don't get negative numbers on small screens
+    const randomLeft = Math.floor(Math.random() * Math.max(0, maxLeft));
+    const randomTop = Math.floor(Math.random() * Math.max(0, maxTop));
+
+    // 5. Apply new positions
+    // Important: We reset 'bottom' and 'right' to auto so 'top' and 'left' take priority
+    adPopup.style.bottom = 'auto';
+    adPopup.style.right = 'auto';
+    adPopup.style.left = randomLeft + 'px';
+    adPopup.style.top = randomTop + 'px';
+
+    // 6. Show the ad
+    adPopup.style.display = 'block';
+}
+
+// Function to close the ad and start the timer
 function closeAd() {
     const adPopup = document.getElementById('adPopup');
     adPopup.style.display = 'none';
+
+    // Set a timer for 100 seconds (100,000 milliseconds)
+    // After the time is up, it runs 'showAdRandomly'
+    setTimeout(showAdRandomly, 100000);
 }
