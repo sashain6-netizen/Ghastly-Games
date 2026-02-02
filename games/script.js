@@ -60,41 +60,42 @@ window.onclick = function(event) {
 // --- 3. ADVERTISEMENT LOGIC ---
 
 function showAdRandomly() {
-    console.log("Running showAdRandomly..."); // Debug check
-
     const adPopup = document.getElementById('adPopup');
     const adImage = document.getElementById('adImage');
 
-    // Safety Check: If HTML is missing, stop here
-    if (!adPopup || !adImage) {
-        console.error("CRITICAL: ID 'adPopup' or 'adImage' not found in HTML.");
-        return;
-    }
+    if (!adPopup || !adImage) return;
 
-    // --- YOUR IMAGES HERE ---
-    // Ensure these match your filenames exactly!
-    const adFiles = [
-        "ad1.png", 
-        "ad2.png"
-    ];
-
+    // 1. Set the Image
+    const adFiles = ["ad1.png", "ad2.png"];
     const randomIndex = Math.floor(Math.random() * adFiles.length);
-    const selectedImage = adFiles[randomIndex];
+    adImage.src = adFiles[randomIndex];
 
-    console.log("Selected Image:", selectedImage); // See what it picked
+    // 2. Force the dimensions (Use your ad's actual size here)
+    // This prevents the "0 height" bug if the image hasn't loaded yet
+    const adWidth = 300; 
+    const adHeight = 200; 
 
-    // Force the image source
-    adImage.src = selectedImage;
-
-    // Position Math
-    const w = window.innerWidth - (adPopup.offsetWidth || 300);
-    const h = window.innerHeight - (adPopup.offsetHeight || 200);
+    // 3. Calculate safe boundaries (Window size minus ad size minus 50px padding)
+    const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
     
-    const rLeft = Math.floor(Math.random() * Math.max(0, w));
-    const rTop = Math.floor(Math.random() * Math.max(0, h));
+    const maxLeft = windowWidth - adWidth - 50; 
+    const maxTop = windowHeight - adHeight - 50;
 
-    adPopup.style.left = rLeft + 'px';
-    adPopup.style.top = rTop + 'px';
+    // Ensure we don't get negative numbers
+    const randomLeft = Math.floor(Math.random() * Math.max(0, maxLeft));
+    const randomTop = Math.floor(Math.random() * Math.max(0, maxTop));
+
+    // 4. IMPORTANT: Clear the 'bottom' and 'right' styles from CSS
+    // If we don't do this, 'bottom: 20px' might fight with 'top'
+    adPopup.style.bottom = 'auto';
+    adPopup.style.right = 'auto';
+
+    // 5. Apply the new Random Positions
+    adPopup.style.left = randomLeft + "px";
+    adPopup.style.top = randomTop + "px";
+
+    // 6. Show the ad
     adPopup.style.display = 'block';
 }
 
