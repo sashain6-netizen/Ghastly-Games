@@ -234,7 +234,7 @@ footer {
     left: 20px;
     width: 300px; /* Adjust this width based on your image preference */
     background-color: transparent;
-    z-index: 900; /* High enough to sit over content, but under the Game Modal (1000) */
+    z-index: 2000; /* High enough to sit over content, but under the Game Modal (1000) */
     animation: slideIn 0.5s ease-out;
 }
 
