@@ -37,3 +37,64 @@ body {
     border-color: #00d4ff;
     background: #222;
 }
+
+.ad-popup {
+    position: fixed;
+    bottom: 20px; 
+    left: 20px;
+    width: 300px; 
+    z-index: 900; 
+    display: block;
+    /* ADD THIS LINE: */
+    animation: slideIn 0.8s ease-out forwards;
+}
+
+.ad-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #000; /* Black background like your other menus */
+    padding: 20px;
+    border-radius: 20px;
+    text-align: center;
+    border: 2px solid #333;
+    width: 400px; /* Adjust width as needed */
+    color: white;
+}
+
+/* Keep the other styles for the image and button the same */
+.ad-popup img {
+    width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    border: 2px solid #3b82f6; 
+    display: block;
+}
+
+.ad-close-btn {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background-color: #ef4444;
+    color: white;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    text-align: center;
+    line-height: 24px;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    border: 2px solid white;
+}
+
+.ad-close-btn:hover {
+    background-color: #d90e0e;
+}
+
+/* Optional: Simple slide-in animation */
+@keyframes slideIn {
+    from { transform: translateX(-100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}

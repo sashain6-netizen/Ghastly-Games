@@ -66,7 +66,7 @@ function showAdRandomly() {
     if (!adPopup || !adImage) return;
 
     // 1. Set the Image
-    const adFiles = ["ad1.png", "ad2.png"];
+    const adFiles = ["ad1.png", "ad2.png", "ad3.png", "ad4.png", "ad5.png"];
     const randomIndex = Math.floor(Math.random() * adFiles.length);
     adImage.src = adFiles[randomIndex];
 

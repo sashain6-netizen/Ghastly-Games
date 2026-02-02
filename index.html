@@ -7,87 +7,6 @@
     <title>Ghastly Hub</title>
     <!-- This line connects your CSS -->
     <link rel="stylesheet" href="styles.css">
-    <style>
-        #credits-button {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            background-color: #007bff;
-            padding: 20px 40px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 18px;
-            color: #fff;
-        }
-
-        #credits-button:hover {
-            background-color: #0056b3;
-        }
-
-        #logs-button {
-            position: fixed;
-            top: 10px;
-            left: 10px;
-            background-color: #28a745;
-            padding: 20px 40px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 18px;
-            color: #fff;
-        }
-
-        #logs-button:hover {
-            background-color: #1e7e34;
-        }
-
-        #credits-menu {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: #000000;
-            padding: 30px;
-            border-radius: 20px;
-            width: 400px;
-            text-align: center;
-        }
-
-        #credits-menu h2 {
-            font-size: 24px;
-            margin-bottom: 20px;
-        }
-
-        #credits-menu p {
-            margin: 20px 0;
-            font-size: 14px;
-            color: #ffffff;
-        }
-
-        #logs-menu {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: #000000;
-            padding: 30px;
-            border-radius: 20px;
-            width: 400px;
-            text-align: center;         
-        }
-
-        #logs-menu h2 {
-            font-size: 24px;
-            margin-bottom: 20px;
-        }
-
-        #logs-menu p {
-            margin: 20px 0;
-            font-size: 14px;
-            color: #ffffff;
-        }
-    </style>
 </head>
 <body>
 
@@ -114,6 +33,10 @@
     </div>
 
     <!-- This line connects your JS -->
+    <div id="adPopup" class="ad-popup">
+        <span class="ad-close-btn" onclick="closeAd()">&times;</span>
+        <img id="adImage" src="" alt="Advertisement">
+    </div>
     <script src="script.js"></script>
     <script>
         // This code shows the menu when the button is clicked, and hides it when it's not

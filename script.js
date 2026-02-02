@@ -32,3 +32,52 @@ sites.forEach(site => {
     card.innerHTML = `<span>${site.name}</span>`;
     grid.appendChild(card);
 });
+
+function showAdRandomly() {
+    const adPopup = document.getElementById('adPopup');
+    const adImage = document.getElementById('adImage');
+
+    if (!adPopup || !adImage) return;
+
+    // 1. Set the Image
+    const adFiles = ["ad1.png", "ad2.png", "ad3.png", "ad4.png", "ad5.png"];
+    const randomIndex = Math.floor(Math.random() * adFiles.length);
+    adImage.src = adFiles[randomIndex];
+
+    // 2. Force the dimensions (Use your ad's actual size here)
+    // This prevents the "0 height" bug if the image hasn't loaded yet
+    const adWidth = 300; 
+    const adHeight = 200; 
+
+    const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
+    
+    const maxLeft = windowWidth - adWidth - 50; 
+    const maxTop = windowHeight - adHeight - 50;
+
+    const randomLeft = Math.floor(Math.random() * Math.max(0, maxLeft));
+    const randomTop = Math.floor(Math.random() * Math.max(0, maxTop));
+
+    adPopup.style.bottom = 'auto';
+    adPopup.style.right = 'auto';
+
+    // 5. Apply the new Random Positions
+    adPopup.style.left = randomLeft + "px";
+    adPopup.style.top = randomTop + "px";
+
+    // 6. Show the ad
+    adPopup.style.display = 'block';
+}
+
+function closeAd() {
+    const adPopup = document.getElementById('adPopup');
+    if (adPopup) {
+        adPopup.style.display = 'none';
+        // Show again in 60 seconds
+        setTimeout(showAdRandomly, 60000);
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    showAdRandomly();
+});
