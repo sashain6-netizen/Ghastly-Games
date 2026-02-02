@@ -1,19 +1,12 @@
-// --- 1. DOM Elements ---
+// --- 1. SETUP & UTILS ---
+console.log("Script starting..."); // This helps us know it loaded
 
-alert("Javascript is connected!");
-
+// Function to handle the Search Bar
 const searchInput = document.getElementById('searchInput');
-const gameCards = document.querySelectorAll('.game-card');
-const modal = document.getElementById('gameModal');
-const modalTitle = document.getElementById('modalTitle');
-const gameFrameContainer = document.getElementById('gameFrameContainer');
-const adPopup = document.getElementById('adPopup');
-const adImage = document.getElementById('adImage');
-
-// --- 2. Search Functionality ---
 if (searchInput) {
     searchInput.addEventListener('keyup', (e) => {
         const term = e.target.value.toLowerCase();
+        const gameCards = document.querySelectorAll('.game-card');
         gameCards.forEach(card => {
             const title = card.getAttribute('data-title').toLowerCase();
             card.style.display = title.includes(term) ? 'block' : 'none';
@@ -21,113 +14,101 @@ if (searchInput) {
     });
 }
 
-// --- 3. Game Modal Logic ---
+// --- 2. GAME MODAL FUNCTIONS ---
+// These are global so HTML onclick can see them
 function openGame(title, gameUrl) {
-    modal.style.display = 'flex';
-    modalTitle.textContent = title;
+    const modal = document.getElementById('gameModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const gameFrameContainer = document.getElementById('gameFrameContainer');
     
-    gameFrameContainer.innerHTML = `
-        <iframe 
-            src="${gameUrl}" 
-            width="100%" 
-            height="100%" 
-            style="border:0;" 
-            allow="autoplay; gamepad; fullscreen; keyboard-events; accelerometer; gyroscope" 
-            allowfullscreen>
-        </iframe>`;
+    if (modal) {
+        modal.style.display = 'flex';
+        if (modalTitle) modalTitle.textContent = title;
+        if (gameFrameContainer) {
+            gameFrameContainer.innerHTML = `<iframe src="${gameUrl}" width="100%" height="100%" style="border:0;" allowfullscreen></iframe>`;
+        }
+    }
 }
 
 function closeGame() {
-    modal.style.display = 'none';
+    const modal = document.getElementById('gameModal');
+    const gameFrameContainer = document.getElementById('gameFrameContainer');
     
-    if (document.fullscreenElement) {
-        document.exitFullscreen();
-    }
-    // clear iframe to stop sound
-    gameFrameContainer.innerHTML = '<div class="placeholder-screen"><p>Game Loaded Here</p></div>';
+    if (modal) modal.style.display = 'none';
+    if (document.fullscreenElement) document.exitFullscreen();
+    if (gameFrameContainer) gameFrameContainer.innerHTML = '';
 }
 
 function toggleFullScreen() {
+    const container = document.getElementById('gameFrameContainer');
+    if (!container) return;
     if (!document.fullscreenElement) {
-        if (gameFrameContainer.requestFullscreen) {
-            gameFrameContainer.requestFullscreen();
-        } else if (gameFrameContainer.webkitRequestFullscreen) {
-            gameFrameContainer.webkitRequestFullscreen();
-        }
+        if(container.requestFullscreen) container.requestFullscreen();
+        else if(container.webkitRequestFullscreen) container.webkitRequestFullscreen();
     } else {
-        if (document.exitFullscreen) {
-            document.exitFullscreen();
-        }
+        if(document.exitFullscreen) document.exitFullscreen();
     }
 }
 
-// Close modal if clicking outside
+// Close game if clicking background
 window.onclick = function(event) {
-    if (event.target == modal) {
-        closeGame();
-    }
+    const modal = document.getElementById('gameModal');
+    if (event.target == modal) closeGame();
 }
 
-// --- 4. Random Ad Logic ---
+
+// --- 3. ADVERTISEMENT LOGIC ---
 
 function showAdRandomly() {
-    // Grab elements INSIDE the function to ensure they exist
+    console.log("Running showAdRandomly..."); // Debug check
+
     const adPopup = document.getElementById('adPopup');
     const adImage = document.getElementById('adImage');
 
+    // Safety Check: If HTML is missing, stop here
     if (!adPopup || !adImage) {
-        console.error("Ad elements not found! Check HTML IDs.");
+        console.error("CRITICAL: ID 'adPopup' or 'adImage' not found in HTML.");
         return;
     }
 
-    // --- UPDATED LIST ---
-    // We use the new simple names here
+    // --- YOUR IMAGES HERE ---
+    // Ensure these match your filenames exactly!
     const adFiles = [
         "ad1.png", 
         "ad2.png"
     ];
 
     const randomIndex = Math.floor(Math.random() * adFiles.length);
-    adImage.src = adFiles[randomIndex];
+    const selectedImage = adFiles[randomIndex];
 
-    // --- DEBUGGING LINE ---
-    // If it breaks again, press F12, go to Console, and see what this says:
-    console.log("Trying to load image:", adFiles[randomIndex]); 
+    console.log("Selected Image:", selectedImage); // See what it picked
 
-    // 2. Random Position Logic
-    const windowWidth = window.innerWidth;
-    const windowHeight = window.innerHeight;
+    // Force the image source
+    adImage.src = selectedImage;
+
+    // Position Math
+    const w = window.innerWidth - (adPopup.offsetWidth || 300);
+    const h = window.innerHeight - (adPopup.offsetHeight || 200);
     
-    // Use fallback size (300x200) if ad isn't visible yet
-    const adWidth = adPopup.offsetWidth || 300; 
-    const adHeight = adPopup.offsetHeight || 200;
+    const rLeft = Math.floor(Math.random() * Math.max(0, w));
+    const rTop = Math.floor(Math.random() * Math.max(0, h));
 
-    const maxLeft = windowWidth - adWidth;
-    const maxTop = windowHeight - adHeight;
-
-    const randomLeft = Math.floor(Math.random() * Math.max(0, maxLeft));
-    const randomTop = Math.floor(Math.random() * Math.max(0, maxTop));
-
-    // Reset styles to ensure new position works
-    adPopup.style.bottom = 'auto';
-    adPopup.style.right = 'auto';
-    adPopup.style.left = randomLeft + 'px';
-    adPopup.style.top = randomTop + 'px';
-
-    // Show the ad
+    adPopup.style.left = rLeft + 'px';
+    adPopup.style.top = rTop + 'px';
     adPopup.style.display = 'block';
 }
 
 function closeAd() {
-    adPopup.style.display = 'none';
-    
-    // Wait 60 seconds, then show again
-    setTimeout(showAdRandomly, 60000);
+    const adPopup = document.getElementById('adPopup');
+    if (adPopup) {
+        adPopup.style.display = 'none';
+        // Show again in 60 seconds
+        setTimeout(showAdRandomly, 60000);
+    }
 }
 
-// --- 5. Initialize ---
-// Use 'DOMContentLoaded' to ensure HTML is ready before running JS
+// --- 4. STARTUP ---
+// This ensures the page is 100% ready before running code
 document.addEventListener("DOMContentLoaded", function() {
-    // Start the first ad immediately
     showAdRandomly();
 });
