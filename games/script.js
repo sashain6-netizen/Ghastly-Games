@@ -73,41 +73,59 @@ window.onclick = function(event) {
 // Function to show the ad with a Random Image at a Random Spot
 // --- Random Ad Logic ---
 
+// Function to show the ad with a Random Image at a Random Spot
 function showAdRandomly() {
     const adPopup = document.getElementById('adPopup');
-    // This grabs the image tag inside your popup div
-    const adImage = adPopup.querySelector('img'); 
+    const adImage = document.getElementById('adImage');
 
-    // 1. List of your Ad Images
+    // --- 1. Random Image Logic ---
     const adFiles = [
         "Screenshot 2026-02-02 11.58.48 AM.png", 
         "Screenshot 2026-02-02 1.16.36 PM.png"
     ];
 
-    // 2. Pick a random number
+    // Pick a random index (0 or 1)
     const randomIndex = Math.floor(Math.random() * adFiles.length);
     
-    // 3. FORCE the image to change immediately
+    // Set the image source immediately
     adImage.src = adFiles[randomIndex];
 
-    // 4. Randomize Position (Your existing math)
+    // --- 2. Random Position Logic ---
     const windowWidth = window.innerWidth;
     const windowHeight = window.innerHeight;
+    
+    // Get dimensions (fallback to 300x200 if not yet rendered)
     const adWidth = adPopup.offsetWidth || 300; 
     const adHeight = adPopup.offsetHeight || 200;
+
     const maxLeft = windowWidth - adWidth;
     const maxTop = windowHeight - adHeight;
+
     const randomLeft = Math.floor(Math.random() * Math.max(0, maxLeft));
     const randomTop = Math.floor(Math.random() * Math.max(0, maxTop));
 
+    // Reset bottom/right to allow top/left positioning
     adPopup.style.bottom = 'auto';
     adPopup.style.right = 'auto';
     adPopup.style.left = randomLeft + 'px';
     adPopup.style.top = randomTop + 'px';
 
-    // 5. Show the popup
+    // --- 3. Show the ad ---
     adPopup.style.display = 'block';
 }
+
+// Function to close the ad
+function closeAd() {
+    document.getElementById('adPopup').style.display = 'none';
+    
+    // Optional: Show another ad after 60 seconds
+    setTimeout(showAdRandomly, 60000);
+}
+
+// --- CRITICAL: Run this immediately when the page loads ---
+window.onload = function() {
+    showAdRandomly();
+};
 
 function closeAd() {
     document.getElementById('adPopup').style.display = 'none';
