@@ -68,23 +68,34 @@ window.onclick = function(event) {
 // --- 4. Random Ad Logic ---
 
 function showAdRandomly() {
-    // 1. Random Image List
-    const adFiles = [
-        "Screenshot 2026-02-02 11.58.48 AM.png", 
-        "Screenshot 2026-02-02 1.16.36 PM.png"
-    ];
+    // Grab elements INSIDE the function to ensure they exist
+    const adPopup = document.getElementById('adPopup');
+    const adImage = document.getElementById('adImage');
 
-    // 2. Pick random image
-    const randomIndex = Math.floor(Math.random() * adFiles.length);
-    if (adImage) {
-        adImage.src = adFiles[randomIndex];
+    if (!adPopup || !adImage) {
+        console.error("Ad elements not found! Check HTML IDs.");
+        return;
     }
 
-    // 3. Random Position
+    // --- UPDATED LIST ---
+    // We use the new simple names here
+    const adFiles = [
+        "ad1.png", 
+        "ad2.png"
+    ];
+
+    const randomIndex = Math.floor(Math.random() * adFiles.length);
+    adImage.src = adFiles[randomIndex];
+
+    // --- DEBUGGING LINE ---
+    // If it breaks again, press F12, go to Console, and see what this says:
+    console.log("Trying to load image:", adFiles[randomIndex]); 
+
+    // 2. Random Position Logic
     const windowWidth = window.innerWidth;
     const windowHeight = window.innerHeight;
     
-    // Get dimensions (fallback if not visible yet)
+    // Use fallback size (300x200) if ad isn't visible yet
     const adWidth = adPopup.offsetWidth || 300; 
     const adHeight = adPopup.offsetHeight || 200;
 
@@ -94,13 +105,13 @@ function showAdRandomly() {
     const randomLeft = Math.floor(Math.random() * Math.max(0, maxLeft));
     const randomTop = Math.floor(Math.random() * Math.max(0, maxTop));
 
-    // Apply styles
+    // Reset styles to ensure new position works
     adPopup.style.bottom = 'auto';
     adPopup.style.right = 'auto';
     adPopup.style.left = randomLeft + 'px';
     adPopup.style.top = randomTop + 'px';
 
-    // Show it
+    // Show the ad
     adPopup.style.display = 'block';
 }
 
