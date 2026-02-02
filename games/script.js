@@ -1,4 +1,7 @@
 // --- 1. DOM Elements ---
+
+alert("Javascript is connected!");
+
 const searchInput = document.getElementById('searchInput');
 const gameCards = document.querySelectorAll('.game-card');
 const modal = document.getElementById('gameModal');
