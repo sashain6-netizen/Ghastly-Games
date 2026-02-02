@@ -109,5 +109,5 @@ function closeAd() {
 
     // Set a timer for 100 seconds (100,000 milliseconds)
     // After the time is up, it runs 'showAdRandomly'
-    setTimeout(showAdRandomly, 300);
+    setTimeout(showAdRandomly, 6000);
 }
