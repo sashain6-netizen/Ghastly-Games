@@ -70,37 +70,48 @@ window.onclick = function(event) {
 
 // Function to close the ad pop-up
 // Function to show the ad at a random spot
+// Function to show the ad with a Random Image at a Random Spot
 function showAdRandomly() {
     const adPopup = document.getElementById('adPopup');
+    const adImage = document.getElementById('adImage');
+
+    // --- 1. Random Image Logic ---
+    const adFiles = [
+        "Screenshot 2026-02-02 11.58.48 AM.png", // Your original ad
+        "Screenshot 2026-02-02 1.16.36 PM.png"   // The new ad
+    ];
+
+    // Pick a random number based on the list length
+    const randomIndex = Math.floor(Math.random() * adFiles.length);
     
-    // 1. Get the window size (viewport)
+    // Change the image source
+    adImage.src = adFiles[randomIndex];
+
+    // --- 2. Random Position Logic ---
     const windowWidth = window.innerWidth;
     const windowHeight = window.innerHeight;
     
-    // 2. Get the ad size (approximate or dynamic)
     const adWidth = adPopup.offsetWidth || 300; 
     const adHeight = adPopup.offsetHeight || 200;
 
-    // 3. Calculate max available positions so it stays fully on screen
-    // We subtract ad size so it doesn't spawn halfway off the edge
     const maxLeft = windowWidth - adWidth;
     const maxTop = windowHeight - adHeight;
 
-    // 4. Generate random coordinates
-    // Math.max(0, ...) ensures we don't get negative numbers on small screens
     const randomLeft = Math.floor(Math.random() * Math.max(0, maxLeft));
     const randomTop = Math.floor(Math.random() * Math.max(0, maxTop));
 
-    // 5. Apply new positions
-    // Important: We reset 'bottom' and 'right' to auto so 'top' and 'left' take priority
     adPopup.style.bottom = 'auto';
     adPopup.style.right = 'auto';
     adPopup.style.left = randomLeft + 'px';
     adPopup.style.top = randomTop + 'px';
 
-    // 6. Show the ad
+    // --- 3. Show the ad ---
     adPopup.style.display = 'block';
 }
+
+// Ensure the first ad on page load is also randomized (Optional)
+// Add this line at the very bottom of your script if you want the first one to be random too:
+// showAdRandomly();
 
 // Function to close the ad and start the timer
 function closeAd() {

@@ -237,6 +237,20 @@ footer {
     display: block; /* Ensures it is visible by default */
 }
 
+.ad-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #000; /* Black background like your other menus */
+    padding: 20px;
+    border-radius: 20px;
+    text-align: center;
+    border: 2px solid #333;
+    width: 400px; /* Adjust width as needed */
+    color: white;
+}
+
 /* Keep the other styles for the image and button the same */
 .ad-popup img {
     width: 100%;
