@@ -71,32 +71,32 @@ window.onclick = function(event) {
 // Function to close the ad pop-up
 // Function to show the ad at a random spot
 // Function to show the ad with a Random Image at a Random Spot
+// --- Random Ad Logic ---
+
 function showAdRandomly() {
     const adPopup = document.getElementById('adPopup');
-    const adImage = document.getElementById('adImage');
+    // This grabs the image tag inside your popup div
+    const adImage = adPopup.querySelector('img'); 
 
-    // --- 1. Random Image Logic ---
+    // 1. List of your Ad Images
     const adFiles = [
-        "Screenshot 2026-02-02 11.58.48 AM.png", // Your original ad
-        "Screenshot 2026-02-02 1.16.36 PM.png"   // The new ad
+        "Screenshot 2026-02-02 11.58.48 AM.png", 
+        "Screenshot 2026-02-02 1.16.36 PM.png"
     ];
 
-    // Pick a random number based on the list length
+    // 2. Pick a random number
     const randomIndex = Math.floor(Math.random() * adFiles.length);
     
-    // Change the image source
+    // 3. FORCE the image to change immediately
     adImage.src = adFiles[randomIndex];
 
-    // --- 2. Random Position Logic ---
+    // 4. Randomize Position (Your existing math)
     const windowWidth = window.innerWidth;
     const windowHeight = window.innerHeight;
-    
     const adWidth = adPopup.offsetWidth || 300; 
     const adHeight = adPopup.offsetHeight || 200;
-
     const maxLeft = windowWidth - adWidth;
     const maxTop = windowHeight - adHeight;
-
     const randomLeft = Math.floor(Math.random() * Math.max(0, maxLeft));
     const randomTop = Math.floor(Math.random() * Math.max(0, maxTop));
 
@@ -105,9 +105,21 @@ function showAdRandomly() {
     adPopup.style.left = randomLeft + 'px';
     adPopup.style.top = randomTop + 'px';
 
-    // --- 3. Show the ad ---
+    // 5. Show the popup
     adPopup.style.display = 'block';
 }
+
+function closeAd() {
+    document.getElementById('adPopup').style.display = 'none';
+    // Set timer for the next ad (60 seconds)
+    setTimeout(showAdRandomly, 60000);
+}
+
+// --- CRITICAL STEP: Run this when page loads ---
+// This forces the very first ad to be randomized
+window.onload = function() {
+    showAdRandomly();
+};
 
 // Ensure the first ad on page load is also randomized (Optional)
 // Add this line at the very bottom of your script if you want the first one to be random too:
