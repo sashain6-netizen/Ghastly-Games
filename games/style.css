@@ -227,40 +227,64 @@ footer {
 }
 /* ... existing CSS ... */
 
+/* ... existing CSS ... */
+
+/* --- ADVERTISEMENT STYLES --- */
+
 .ad-popup {
     position: fixed;
-    /* We set a default start position, but JS will override this later */
+    /* JS will set top/left/bottom/right */
     bottom: 20px; 
     left: 20px;
     width: 300px; 
     z-index: 900; 
-    display: block; /* Ensures it is visible by default */
-    animation: slideIn 0.8s ease-out forwards;
+    display: block; 
+    /* NOTE: I removed the nested animation classes from inside here */
 }
 
-.ad-content {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #000; /* Black background like your other menus */
-    padding: 20px;
-    border-radius: 20px;
-    text-align: center;
-    border: 2px solid #333;
-    width: 400px; /* Adjust width as needed */
-    color: white;
+/* These classes must be OUTSIDE .ad-popup so the JS can apply them */
+.slide-in-top { 
+    animation: slideInTop 0.8s ease-out forwards; 
 }
 
-/* Keep the other styles for the image and button the same */
+.slide-in-bottom { 
+    animation: slideInBottom 0.8s ease-out forwards; 
+}
+
+.slide-in-left { 
+    animation: slideInLeft 0.8s ease-out forwards; 
+}
+
+.slide-in-right { 
+    animation: slideInRight 0.8s ease-out forwards; 
+}
+
+/* Image styling */
+.ad-popup {
+    position: fixed;
+    width: 300px; /* This keeps the width consistent */
+    z-index: 900; 
+    display: none; 
+    overflow: visible; /* Allows the close button to hang off the edge */
+}
+
 .ad-popup img {
     width: 100%;
+    max-height: 200px; /* Add this to prevent massive height */
+    object-fit: cover;  /* This crops the image to fit the box instead of stretching it */
     border-radius: 10px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-    border: 2px solid #3b82f6; 
+    border: 2px solid transparent; 
     display: block;
+    transition: border-color 0.3s ease;
 }
 
+/* Hover state for the blue edge */
+.ad-popup:hover img {
+    border-color: #3b82f6;
+}
+
+/* Close Button styling */
 .ad-close-btn {
     position: absolute;
     top: -10px;
@@ -276,14 +300,27 @@ footer {
     font-weight: bold;
     box-shadow: 0 2px 5px rgba(0,0,0,0.3);
     border: 2px solid white;
+    z-index: 901; /* Ensure button is above the image */
 }
 
 .ad-close-btn:hover {
     background-color: #d90e0e;
 }
 
-/* Optional: Simple slide-in animation */
-@keyframes slideIn {
+/* --- ANIMATION KEYFRAMES --- */
+@keyframes slideInTop {
+    from { transform: translateY(-100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+@keyframes slideInBottom {
+    from { transform: translateY(100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+@keyframes slideInLeft {
     from { transform: translateX(-100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+@keyframes slideInRight {
+    from { transform: translateX(100%); opacity: 0; }
     to { transform: translateX(0); opacity: 1; }
 }

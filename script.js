@@ -44,28 +44,53 @@ function showAdRandomly() {
     const randomIndex = Math.floor(Math.random() * adFiles.length);
     adImage.src = adFiles[randomIndex];
 
-    // 2. Force the dimensions (Use your ad's actual size here)
-    // This prevents the "0 height" bug if the image hasn't loaded yet
-    const adWidth = 300; 
-    const adHeight = 200; 
-
-    const windowWidth = window.innerWidth;
-    const windowHeight = window.innerHeight;
-    
-    const maxLeft = windowWidth - adWidth - 50; 
-    const maxTop = windowHeight - adHeight - 50;
-
-    const randomLeft = Math.floor(Math.random() * Math.max(0, maxLeft));
-    const randomTop = Math.floor(Math.random() * Math.max(0, maxTop));
-
+    // 2. Clear ALL previous positioning and classes
+    // This is crucial so "top" doesn't fight with "bottom" from the last ad
+    adPopup.style.top = 'auto';
     adPopup.style.bottom = 'auto';
+    adPopup.style.left = 'auto';
     adPopup.style.right = 'auto';
+    adPopup.classList.remove('slide-in-top', 'slide-in-bottom', 'slide-in-left', 'slide-in-right');
 
-    // 5. Apply the new Random Positions
-    adPopup.style.left = randomLeft + "px";
-    adPopup.style.top = randomTop + "px";
+    // 3. Define Dimensions
+    const adWidth = 300; 
+    const adHeight = 200; // This should match your approx image height
+    const maxLeft = window.innerWidth - adWidth;
+    const maxTop = window.innerHeight - adHeight;
 
-    // 6. Show the ad
+    // 4. Randomly pick an edge: 0=Top, 1=Right, 2=Bottom, 3=Left
+    const edge = Math.floor(Math.random() * 4);
+
+    if (edge === 0) { 
+        // --- TOP EDGE ---
+        adPopup.style.top = '30px'; 
+        // Randomize horizontal position
+        adPopup.style.left = Math.floor(Math.random() * maxLeft) + 'px';
+        adPopup.classList.add('slide-in-top');
+
+    } else if (edge === 1) { 
+        // --- RIGHT EDGE ---
+        adPopup.style.right = '30px';
+        // Randomize vertical position
+        adPopup.style.top = Math.floor(Math.random() * maxTop) + 'px';
+        adPopup.classList.add('slide-in-right');
+
+    } else if (edge === 2) { 
+        // --- BOTTOM EDGE ---
+        adPopup.style.bottom = '30px';
+        // Randomize horizontal position
+        adPopup.style.left = Math.floor(Math.random() * maxLeft) + 'px';
+        adPopup.classList.add('slide-in-bottom');
+
+    } else { 
+        // --- LEFT EDGE ---
+        adPopup.style.left = '30px';
+        // Randomize vertical position
+        adPopup.style.top = Math.floor(Math.random() * maxTop) + 'px';
+        adPopup.classList.add('slide-in-left');
+    }
+
+    // 5. Show the ad
     adPopup.style.display = 'block';
 }
 
