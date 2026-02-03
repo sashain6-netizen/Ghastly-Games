@@ -131,3 +131,49 @@ body {
     from { transform: translateX(100%); opacity: 0; }
     to { transform: translateX(0); opacity: 1; }
 }
+
+/* --- BUTTON STYLES --- */
+#credits-button, #logs-button {
+    background-color: #1a1a1a;  /* Dark grey match */
+    color: #00d4ff;             /* Neon blue text */
+    border: 1px solid #333;     /* Subtle border */
+    border-radius: 8px;         /* Rounded corners */
+    padding: 12px 25px;         /* Make them bigger/easier to click */
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;            /* Changes cursor to pointer hand */
+    transition: all 0.3s ease;  /* Smooth animation */
+    margin: 10px;               /* Space around the buttons */
+    font-family: sans-serif;    /* Ensure font matches body */
+}
+
+/* Hover Effect (Matches your Link Cards) */
+#credits-button:hover, #logs-button:hover {
+    background-color: #222;
+    border-color: #00d4ff;      /* Blue border on hover */
+    transform: translateY(-3px); /* Moves up slightly */
+    box-shadow: 0 5px 15px rgba(0, 212, 255, 0.2); /* Adds a faint blue glow */
+}
+
+/* Active Effect (When you click down) */
+#credits-button:active, #logs-button:active {
+    transform: translateY(1px); /* Pushes down slightly */
+}
+
+/* Style the Menus (The text that pops up) */
+#credits-menu, #logs-menu {
+    background: #1a1a1a;
+    border: 1px solid #00d4ff;
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 20px;
+    max-width: 600px;
+    text-align: center;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
