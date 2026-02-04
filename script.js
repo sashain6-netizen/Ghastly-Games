@@ -8,7 +8,7 @@ const sites = [
     { name: "Watch Documentaries", url: "https://watchdocumentaries.com/games/" },
     { name: "Sigma Games", url: "http://kyeeldergroebe.us/" },
     { name: "Emupedia", url: "https://emupedia.net/beta/" },
-    { name: "Ultimate Games", url: "https://tenor.com/view/rickroll-roll-rick-never-gonna-give-you-up-never-gonna-gif-22954713" },
+    { name: "Ultimate Games", url: "https://media1.tenor.com/m/XbvDHnhj_YQAAAAd/bro-just-typing-shit-atm.gif" },
     { name: "Cool Math Games", url: "https://www.coolmathgames.com/" },
     { name: "Edugames", url: "https://edugames33.wixsite.com/edugames/games5" },
     { name: "Unlinked (Click for Details)", url: "https://docs.google.com/forms/d/e/1FAIpQLSfa1r9xeF5WwPNJ6zd7eY7VkT8zWOLstNIr5DlseG4jpnIfzQ/viewform?usp=publish-editor" },
