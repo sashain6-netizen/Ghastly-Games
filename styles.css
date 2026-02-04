@@ -147,20 +147,17 @@ body {
     font-family: sans-serif;    /* Ensure font matches body */
 }
 
-/* Hover Effect (Matches your Link Cards) */
 #credits-button:hover, #logs-button:hover {
     background-color: #222;
-    border-color: #00d4ff;      /* Blue border on hover */
-    transform: translateY(-3px); /* Moves up slightly */
-    box-shadow: 0 5px 15px rgba(0, 212, 255, 0.2); /* Adds a faint blue glow */
+    border-color: #00d4ff;     
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 212, 255, 0.2); 
 }
 
-/* Active Effect (When you click down) */
 #credits-button:active, #logs-button:active {
-    transform: translateY(1px); /* Pushes down slightly */
+    transform: translateY(1px); 
 }
 
-/* Style the Menus (The text that pops up) */
 #credits-menu, #logs-menu {
     background: #1a1a1a;
     border: 1px solid #00d4ff;
@@ -179,8 +176,18 @@ body {
 }
 
 .button-container {
-    display: flex;           /* This forces the buttons to sit side-by-side */
-    gap: 20px;               /* Adds space between the two buttons */
-    margin-top: 60px;        /* Pushes them lower down the page */
-    margin-bottom: 40px;     /* Adds some breathing room at the very bottom */
+    display: flex;          
+    gap: 20px;              
+    margin-top: 60px;    
+    margin-bottom: 40px;     
+}
+
+.info-box {
+  background-color: #f0f7fb; 
+  border-left: 5px solid #3498db; 
+  padding: 15px;
+  margin: 20px 0;
+  border-radius: 4px;
+  font-family: sans-serif;
+  color: #2c3e50;
 }
