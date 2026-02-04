@@ -106,3 +106,13 @@ function closeAd() {
 document.addEventListener("DOMContentLoaded", function() {
     showAdRandomly();
 });
+
+function toggleCredits() {
+    const menu = document.getElementById('credits-menu');
+    // If it's hidden (none), show it (block). Otherwise, hide it.
+    if (menu.style.display === 'none' || menu.style.display === '') {
+        menu.style.display = 'block';
+    } else {
+        menu.style.display = 'none';
+    }
+}
