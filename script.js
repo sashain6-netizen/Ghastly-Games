@@ -106,3 +106,30 @@ function closeAd() {
 document.addEventListener("DOMContentLoaded", function() {
     showAdRandomly();
 });
+
+// This code shows the menu when the button is clicked, and hides it when it's not
+const creditsButton = document.getElementById('credits-button');
+const creditsMenu = document.getElementById('credits-menu');
+
+creditsButton.addEventListener('click', function() {
+    creditsMenu.style.display = (creditsMenu.style.display === 'none') ? 'block' : 'none';
+    logsMenu.style.display = 'none';
+    infoMenu.style.display = 'none';
+});
+const logsButton = document.getElementById('logs-button');
+const logsMenu = document.getElementById('logs-menu');
+
+logsButton.addEventListener('click', function() {
+    logsMenu.style.display = (logsMenu.style.display === 'none') ? 'block' : 'none';
+    creditsMenu.style.display = 'none';
+    infoMenu.style.display = 'none';
+});
+
+const infoButton = document.getElementById('info-button');
+const infoMenu = document.getElementById('info-menu');
+
+infoButton.addEventListener('click', function() {
+    infoMenu.style.display = (infoMenu.style.display === 'none') ? 'block' : 'none';
+    creditsMenu.style.display = 'none';
+    logsMenu.style.display = 'none';
+});

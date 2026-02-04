@@ -16,44 +16,53 @@
     <div class="button-row">
         <button id="credits-button">Credits</button>
         <button id="logs-button">Logs</button>
+        <button id="info-button">Info</button>
     </div>
 
     <!-- This is the menu that appears when you click the button -->
     <!-- Only ONE credits-menu div here -->
-<div id="credits-menu" style="display: none;">
-    <h2>Credits</h2>
-
-    <div class="info-box">
-        <strong>Instagram</strong>
-        <p>Make sure to follow us at @ghastlygamesLHS for updates!</p>
+    <div id="credits-menu" style="display: none;">
+        <h2>Credits</h2>
+        <div class="credits-box">
+            <strong>Creator</strong>
+            <p>Simon Shain</p>
+        </div>
+        <div class="credits-box">
+            <strong>Social Media</strong>
+            <p>Anthony Stafford</p>
+        </div>
+        <div class="credits-box">
+            <strong>Ingame Advertisements</strong>
+            <p>Simon Shain, Anthony Stafford</p>
+        </div>
     </div>
 
-    <div class="info-box">
-        <strong>Shoutout</strong>
-        <p>Special thanks to Nael. He's a bum who doesn't know what a repo is.</p>
-    </div>
-
-    <div class="info-box">
-        <strong>The Project</strong>
-        <p>Built as a fun project. If you're a teacher reading this, I'm sorry. WHAT HAS MY LIFE BECOME!</p>
-    </div>
-
-    <div class="info-box">
-        <strong>Contact</strong>
-        <p>Reach me at InstallAVirus.buzz and click "Download" to get my email.</p>
-    </div>
-
-    <div class="info-box">
-        <strong>Wall of Bums</strong>
-        <p>Bum of the Day: Dawn Mary Andrade! Donors: Jacyln Smith, Anthony Stafford</p>
-    </div>
-</div>
-
-
-    </div>
     <div id="logs-menu" style="display: none;">
-        <h2>Logs</h2>
-        <p>This site was created on 2/1/2026 by a very stupid man. God bless him. </p>
+        <h2> Logs </h2>
+        <div class="logs-box">
+            <strong>02/01/2026</strong>
+            <p>Website created</p>
+        </div> 
+    </div>
+
+    <div id="info-menu" style="display: none;">
+        <h2>Info</h2>
+        <div class="info-box">
+            <strong>Instagram</strong>
+            <p>Check out our instagram, <a href="https://www.instagram.com/ghastlygamesLHS" class="contact">@ghastlygamesLHS</a>, for updates and information!</p>
+        </div>
+        <div class="info-box">
+            <strong>Support</strong>
+            <p>If you enjoy this server, consider texting the number <a href="tel:650-318-8595" class="contact">650-318-8595</a>. If you really like this server, don't mention where you got this number from.</p>
+        </div>
+        <div class="info-box">
+            <strong>Questions</strong>
+            <p>If you have any questions about games (or anything really, including deep moral/phsychological debates), click on an untaken link and fill out the form.</p>
+        </div>
+        <div class="info-box">
+            <strong>Wall of Bums</strong>
+            <span style="font-weight: 700;">Current Bums:</span><p>Dawn Maria Andrade, Jacyln Smith</p>
+        </div>
     </div>
 
     <!-- This line connects your JS -->
@@ -62,22 +71,5 @@
         <img id="adImage" src="" alt="Advertisement">
     </div>
     <script src="script.js"></script>
-    <script>
-        // This code shows the menu when the button is clicked, and hides it when it's not
-        const creditsButton = document.getElementById('credits-button');
-        const creditsMenu = document.getElementById('credits-menu');
-
-        creditsButton.addEventListener('click', function() {
-            creditsMenu.style.display = (creditsMenu.style.display === 'none') ? 'block' : 'none';
-            logsMenu.style.display = 'none';
-        });
-        const logsButton = document.getElementById('logs-button');
-        const logsMenu = document.getElementById('logs-menu');
-
-        logsButton.addEventListener('click', function() {
-            logsMenu.style.display = (logsMenu.style.display === 'none') ? 'block' : 'none';
-            creditsMenu.style.display = 'none';
-        });
-    </script>
 </body>
 </html>

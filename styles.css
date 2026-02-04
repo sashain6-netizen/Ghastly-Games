@@ -133,7 +133,7 @@ body {
 }
 
 /* --- BUTTON STYLES --- */
-#credits-button, #logs-button {
+#credits-button, #logs-button, #info-button {
     background-color: #1a1a1a;  /* Dark grey match */
     color: #00d4ff;             /* Neon blue text */
     border: 1px solid #333;     /* Subtle border */
@@ -147,18 +147,18 @@ body {
     font-family: sans-serif;    /* Ensure font matches body */
 }
 
-#credits-button:hover, #logs-button:hover {
+#credits-button:hover, #logs-button:hover, #info-button:hover {
     background-color: #222;
     border-color: #00d4ff;     
     transform: translateY(-3px);
     box-shadow: 0 5px 15px rgba(0, 212, 255, 0.2); 
 }
 
-#credits-button:active, #logs-button:active {
+#credits-button:active, #logs-button:active, #info-button:active {
     transform: translateY(1px); 
 }
 
-#credits-menu, #logs-menu {
+#credits-menu, #logs-menu, #info-menu {
     background: #1a1a1a;
     border: 1px solid #00d4ff;
     border-radius: 12px;
@@ -182,7 +182,7 @@ body {
     margin-bottom: 40px;     
 }
 
-.info-box {
+.credits-box {
   /* Layout & Spacing */
   display: flex;
   flex-direction: column; /* Stacked for better mobile reading */
@@ -201,8 +201,86 @@ body {
   text-align: left; /* Keeps text readable */
 }
 
-.info-box strong {
+.credits-box strong {
   color: #00d4ff; /* Neon Blue */
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 0.75rem;
+  margin-bottom: 5px;
+}
+
+.credits-box p {
+  margin: 0;
+  color: #ccc; 
+  font-size: 0.95rem;
+}
+
+.credits-box:hover {
+  transform: translateX(5px); 
+  background: #222;
+  border-left-color: white;
+}
+
+.logs-box {
+  /* Layout & Spacing */
+  display: flex;
+  flex-direction: column; /* Stacked for better mobile reading */
+  align-items: flex-start;
+  padding: 15px 20px;
+  margin: 15px 0;
+  
+  /* Matches your dark theme */
+  background: #1a1a1a; 
+  border-left: 4px solid #37ff00; /* Neon Blue instead of Pink */
+  border-radius: 8px;
+  
+  /* Shadow & Transition */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  text-align: left; /* Keeps text readable */
+}
+
+.logs-box strong {
+  color: #37ff00; /* Neon Blue */
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 0.75rem;
+  margin-bottom: 5px;
+}
+
+.logs-box p {
+  margin: 0;
+  color: #ccc; 
+  font-size: 0.95rem;
+}
+
+.logs-box:hover {
+  transform: translateX(5px); 
+  background: #222;
+  border-left-color: white;
+}
+
+.info-box {
+  /* Layout & Spacing */
+  display: flex;
+  flex-direction: column; /* Stacked for better mobile reading */
+  align-items: flex-start;
+  padding: 15px 20px;
+  margin: 15px 0;
+  
+  /* Matches your dark theme */
+  background: #1a1a1a; 
+  border-left: 4px solid #ff0000; /* Neon Blue instead of Pink */
+  border-radius: 8px;
+  
+  /* Shadow & Transition */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  text-align: left; /* Keeps text readable */
+}
+
+.info-box strong {
+  color: #ff0000; /* Neon Blue */
   text-transform: uppercase;
   letter-spacing: 1px;
   font-size: 0.75rem;
@@ -211,14 +289,22 @@ body {
 
 .info-box p {
   margin: 0;
-  color: #ccc; /* Slightly dimmed white for readability */
+  color: #ccc; 
   font-size: 0.95rem;
 }
 
-/* Subtle hover effect */
 .info-box:hover {
-  transform: translateX(5px); /* Slides right slightly on hover */
+  transform: translateX(5px); 
   background: #222;
   border-left-color: white;
 }
 
+.contact {
+    color: #603b82;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.contact:hover {
+    color: #7f52c2;
+}
