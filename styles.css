@@ -308,3 +308,29 @@ body {
 .contact:hover {
     color: #7f52c2;
 }
+
+.thumb-btn {
+    background-color: #007bff; /* Blue like Facebook/Cloudflare colors */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.thumb-btn:hover {
+    background-color: #0056b3;
+    transform: scale(1.05); /* Slight pop out effect */
+}
+
+.thumb-btn:disabled {
+    background-color: #6c757d; /* Grey when already liked */
+    cursor: not-allowed;
+    transform: none;
+}
+

@@ -137,14 +137,27 @@ infoButton.addEventListener('click', function() {
 const btn = document.getElementById('like-btn');
 const display = document.getElementById('like-count');
 
-// This fetches the number from your /like function
-fetch('/like').then(res => res.json()).then(data => {
-display.innerText = data.likes;
+// Load total likes (and views)
+fetch('/stats').then(res => res.json()).then(data => {
+    display.innerText = data.likes;
+    
+    // Check if they already liked it in this session
+    if (localStorage.getItem('hasLiked')) {
+        btn.disabled = true;
+        btn.innerHTML = "👍 Liked!";
+    }
 });
 
 btn.onclick = async () => {
-btn.disabled = true; 
-const res = await fetch('/like', { method: 'POST' });
-const data = await res.json();
-display.innerText = data.likes;
+    if (localStorage.getItem('hasLiked')) return;
+    
+    btn.disabled = true; 
+    const res = await fetch('/stats', { method: 'POST' });
+    const data = await res.json();
+    
+    display.innerText = data.likes;
+    btn.innerHTML = "👍 Liked!";
+    localStorage.setItem('hasLiked', 'true'); // Remembers they liked it
 };
+
+
