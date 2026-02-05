@@ -167,3 +167,11 @@ if (btn && display) {
         }
     };
 }
+
+// --- VIEW COUNT LOGIC ---
+const viewCount = document.getElementById('view-count');
+if (viewCount) {
+    fetch('/stats').then(res => res.json()).then(data => {
+        viewCount.innerText = data.views;
+    }).catch(err => console.error("Stats failed to load:", err));
+}

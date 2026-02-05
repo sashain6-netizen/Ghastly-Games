@@ -9,11 +9,6 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
-    <button id="like-btn" class="thumb-btn">
-    👍 Like | <span id="like-count">...</span>
-    </button>
-
     <h1>Ghastly Links</h1>
     <div id="link-grid"></div>
 
@@ -76,8 +71,17 @@
             <p>If you have any questions about games (or anything really, including deep moral/phsychological debates), click on an untaken link and fill out the form.</p>
         </div>
         <div class="info-box">
-            <strong>Wall of Bums</strong>
-            <span style="font-weight: 700;">Current Bums:</span><p>Dawn Maria Andrade, Jacyln Smith, Serra Elvanoglu</p>
+            <strong>Statistics</strong>
+            <div class="stats-row">
+            <button id="like-btn" class="thumb-btn">
+                👍 Like | <span id="like-count">...</span>
+            </button>
+
+            <button class="view-count">
+                Visits: <span id="view-count">...</span>
+            </button>
+        </div>
+            </button>
         </div>
     </div>
 
