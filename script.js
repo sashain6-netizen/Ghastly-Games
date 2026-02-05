@@ -176,12 +176,38 @@ if (viewCount) {
     }).catch(err => console.error("Stats failed to load:", err));
 }
 
-document.getElementById('signup-btn').addEventListener('click', async () => {
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    const messageBox = document.getElementById('message');
+// Account creation and login
 
-    // Send the data to your /signup function
+// --- NEW POPUP LOGIC ---
+
+function openAuth(type) {
+    document.getElementById('auth-overlay').style.display = 'flex';
+    document.getElementById('signup-form-container').style.display = 'none';
+    document.getElementById('login-form-container').style.display = 'none';
+    
+    if (type === 'signup') {
+        document.getElementById('signup-form-container').style.display = 'block';
+    } else {
+        document.getElementById('login-form-container').style.display = 'block';
+    }
+}
+
+function closeAuth(event) {
+    // If an event is passed (clicking the overlay), check it. 
+    // If no event (clicking the X), just close.
+    if (event && event.target !== document.getElementById('auth-overlay')) return;
+    document.getElementById('auth-overlay').style.display = 'none';
+}
+
+// These functions are what your HTML 'onclick' attributes are calling!
+
+async function handleSignup() {
+    const email = document.getElementById('reg-email').value; // Matches your HTML
+    const password = document.getElementById('reg-password').value; // Matches your HTML
+    const messageBox = document.getElementById('signup-msg');
+
+    messageBox.innerText = "Connecting...";
+
     const response = await fetch('/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -191,18 +217,20 @@ document.getElementById('signup-btn').addEventListener('click', async () => {
     const result = await response.json();
 
     if (response.ok) {
-        messageBox.style.color = "green";
-        messageBox.innerText = "Success! Account created. Now you can log in.";
+        messageBox.style.color = "#bc6ff1";
+        messageBox.innerText = "Success! Account created. Now log in!";
     } else {
         messageBox.style.color = "red";
-        messageBox.innerText = "Error: " + result.error;
+        messageBox.innerText = result.error;
     }
-});
+}
 
-document.getElementById('login-btn').addEventListener('click', async () => {
+async function handleLogin() {
     const email = document.getElementById('login-email').value;
     const password = document.getElementById('login-password').value;
-    const messageBox = document.getElementById('login-message');
+    const messageBox = document.getElementById('login-msg');
+
+    messageBox.innerText = "Verifying...";
 
     const response = await fetch('/login', {
         method: 'POST',
@@ -214,30 +242,11 @@ document.getElementById('login-btn').addEventListener('click', async () => {
 
     if (response.ok) {
         messageBox.style.color = "#bc6ff1";
-        messageBox.innerText = `Welcome back, ${result.user.email}! XP: ${result.user.xp}`;
-        // You can now redirect them or unlock game features!
+        messageBox.innerText = `Welcome back, ${result.user.email}!`;
+        // Closes the popup after 1 second so they can see the success message
+        setTimeout(() => closeAuth(), 1000);
     } else {
-        messageBox.style.color = "#ff4d4d";
+        messageBox.style.color = "red";
         messageBox.innerText = result.error;
     }
-});
-
-function openAuth(type) {
-    // Show the overlay
-    document.getElementById('auth-overlay').style.display = 'flex';
-    
-    // Hide both forms first
-    document.getElementById('signup-form-container').style.display = 'none';
-    document.getElementById('login-form-container').style.display = 'none';
-    
-    // Show the one the user clicked
-    if (type === 'signup') {
-        document.getElementById('signup-form-container').style.display = 'block';
-    } else {
-        document.getElementById('login-form-container').style.display = 'block';
-    }
-}
-
-function closeAuth(event) {
-    document.getElementById('auth-overlay').style.display = 'none';
 }
