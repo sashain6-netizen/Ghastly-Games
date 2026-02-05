@@ -1,0 +1,6 @@
+name = "ghastly-games"
+pages_build_output_dir = "./public"
+
+[[kv_namespaces]]
+binding = "LIKES_STORAGE"
+id = "4a54228ae8d5493dbb6f927085d2a5c0"

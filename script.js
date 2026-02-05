@@ -175,3 +175,69 @@ if (viewCount) {
         viewCount.innerText = data.views;
     }).catch(err => console.error("Stats failed to load:", err));
 }
+
+document.getElementById('signup-btn').addEventListener('click', async () => {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const messageBox = document.getElementById('message');
+
+    // Send the data to your /signup function
+    const response = await fetch('/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+        messageBox.style.color = "green";
+        messageBox.innerText = "Success! Account created. Now you can log in.";
+    } else {
+        messageBox.style.color = "red";
+        messageBox.innerText = "Error: " + result.error;
+    }
+});
+
+document.getElementById('login-btn').addEventListener('click', async () => {
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+    const messageBox = document.getElementById('login-message');
+
+    const response = await fetch('/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+        messageBox.style.color = "#bc6ff1";
+        messageBox.innerText = `Welcome back, ${result.user.email}! XP: ${result.user.xp}`;
+        // You can now redirect them or unlock game features!
+    } else {
+        messageBox.style.color = "#ff4d4d";
+        messageBox.innerText = result.error;
+    }
+});
+
+function openAuth(type) {
+    // Show the overlay
+    document.getElementById('auth-overlay').style.display = 'flex';
+    
+    // Hide both forms first
+    document.getElementById('signup-form-container').style.display = 'none';
+    document.getElementById('login-form-container').style.display = 'none';
+    
+    // Show the one the user clicked
+    if (type === 'signup') {
+        document.getElementById('signup-form-container').style.display = 'block';
+    } else {
+        document.getElementById('login-form-container').style.display = 'block';
+    }
+}
+
+function closeAuth(event) {
+    document.getElementById('auth-overlay').style.display = 'none';
+}

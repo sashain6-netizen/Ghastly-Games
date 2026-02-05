@@ -379,3 +379,206 @@ body {
     flex-wrap: wrap;           /* Allows them to stack on very small mobile screens */
 }
 
+#ghastly-auth-system {
+    display: flex;
+    justify-content: center;
+    padding: 40px 20px;
+}
+
+#ghastly-auth-system #signup-container {
+    background: #1a0b2e; 
+    padding: 2.5rem;
+    border-radius: 15px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+    border: 2px solid #3d1d5a;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    font-family: 'Segoe UI', sans-serif; /* Keeps font local to this box */
+}
+
+#ghastly-auth-system h2 {
+    color: #bc6ff1;
+    margin-top: 0;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+}
+
+#ghastly-auth-system input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    background: #0d0216;
+    border: 1px solid #5a2d82;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 16px;
+    display: block; /* Ensures they stack even if your old CSS floats things */
+}
+
+#ghastly-auth-system input:focus {
+    border-color: #bc6ff1;
+    outline: none;
+    box-shadow: 0 0 10px rgba(188, 111, 241, 0.3);
+}
+
+#ghastly-auth-system button {
+    width: 100%;
+    padding: 14px;
+    margin-top: 15px;
+    background: linear-gradient(135deg, #892cdc, #bc6ff1);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+#ghastly-auth-system button:hover {
+    transform: scale(1.02);
+    filter: brightness(1.1);
+}
+
+#ghastly-auth-system #message {
+    color: #e0d1ed;
+    margin-top: 15px;
+}
+
+/* The dark background behind the popup */
+#auth-overlay {
+    display: none; /* Hidden until button is clicked */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+}
+
+#ghastly-auth-system {
+    position: relative;
+    background: #1a0b2e;
+    padding: 30px;
+    border-radius: 15px;
+    border: 2px solid #bc6ff1;
+    width: 90%;
+    max-width: 400px;
+}
+
+#close-btn {
+    position: absolute;
+    max-width: 20%;
+    top: 12px;
+    right: 12px;
+    background: rgba(255, 255, 255, 0.05); /* Very subtle circle background */
+    border: none;
+    color: #bc6ff1;
+    
+    /* Precise Sizing */
+    width: 30px;
+    height: 30px;
+    font-size: 20px; /* Controlled text size */
+    line-height: 1; /* Prevents the 'x' from drifting down */
+    
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.2s ease;
+}
+
+#close-btn:hover {
+    background: rgba(188, 111, 241, 0.2);
+    color: #fff;
+    transform: rotate(90deg); /* Ghostly spin effect */
+}
+
+#close-btn:hover {
+    background: rgba(188, 111, 241, 0.2);
+    color: #fff;
+    transform: rotate(90deg); /* Ghostly spin effect */
+}
+
+.auth-form {
+    display: none; /* Hidden until toggled */
+}
+
+/* Auth buttons styling */
+#auth-buttons button {
+    background: #bc6ff1;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    margin: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+#ghastly-auth-system h2 {
+    margin-top: 50px; /* Gives the X button some breathing room */
+    padding-right: 30px; /* Ensures text doesn't overlap the X on small screens */
+}
+
+/* Positions the whole group to the top right */
+#ghastly-header-right {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 100;
+}
+
+/* The box surrounding the buttons */
+.auth-box-container {
+    background: rgba(26, 11, 46, 0.8); /* Dark ghastly purple */
+    border: 2px solid #bc6ff1;
+    padding: 10px 15px;
+    border-radius: 12px;
+    display: flex;
+    gap: 15px; /* Space between buttons */
+    box-shadow: 0 0 15px rgba(188, 111, 241, 0.3);
+}
+
+/* Making the buttons bigger and styled */
+.auth-btn {
+    all: unset; /* Clears default button styling */
+    cursor: pointer;
+    font-family: 'Segoe UI', sans-serif;
+    font-weight: bold;
+    font-size: 1.1rem; /* Bigger text */
+    padding: 12px 24px; /* More clickable area */
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Specific style for Sign Up (The "Glow" button) */
+.auth-btn.signup {
+    background: #bc6ff1;
+    color: #0d0216;
+}
+
+.auth-btn.signup:hover {
+    background: #ffffff;
+    box-shadow: 0 0 20px #bc6ff1;
+    transform: scale(1.05);
+}
+
+/* Specific style for Login (The "Outline" button) */
+.auth-btn.login {
+    color: #bc6ff1;
+    border: 1px solid #bc6ff1;
+}
+
+.auth-btn.login:hover {
+    background: rgba(188, 111, 241, 0.1);
+    color: #fff;
+    border-color: #fff;
+}
+
