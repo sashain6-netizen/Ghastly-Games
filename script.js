@@ -133,3 +133,18 @@ infoButton.addEventListener('click', function() {
     creditsMenu.style.display = 'none';
     logsMenu.style.display = 'none';
 });
+
+const btn = document.getElementById('like-btn');
+const display = document.getElementById('like-count');
+
+// This fetches the number from your /like function
+fetch('/like').then(res => res.json()).then(data => {
+display.innerText = data.likes;
+});
+
+btn.onclick = async () => {
+btn.disabled = true; 
+const res = await fetch('/like', { method: 'POST' });
+const data = await res.json();
+display.innerText = data.likes;
+};
