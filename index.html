@@ -10,10 +10,17 @@
 </head>
 <body>
     <div id="ghastly-header-right">
-        <div class="auth-box-container">
+        <div id="ghastly-header-right">
+        <div id="logged-out-box" class="auth-box-container">
             <button class="auth-btn signup" onclick="openAuth('signup')">SIGN UP</button>
             <button class="auth-btn login" onclick="openAuth('login')">LOGIN</button>
         </div>
+
+        <div id="logged-in-box" class="auth-box-container" style="display: none;">
+            <span id="user-display" style="color: #bc6ff1; font-weight: bold; margin-right: 10px;"></span>
+            <button class="auth-btn login" onclick="handleLogout()" style="padding: 5px 10px; font-size: 0.8rem;">LOGOUT</button>
+        </div>
+    </div>
     </div>
 
     <div id="auth-overlay" onclick="closeAuth(event)">

@@ -250,3 +250,67 @@ async function handleLogin() {
         messageBox.innerText = result.error;
     }
 }
+
+// 1. Function to update the UI based on login status
+function updateAuthUI() {
+    const loggedOutBox = document.getElementById('logged-out-box');
+    const loggedInBox = document.getElementById('logged-in-box');
+    const userDisplay = document.getElementById('user-display');
+    
+    const savedUser = localStorage.getItem('ghastlyUser');
+
+    if (savedUser) {
+        loggedOutBox.style.display = 'none';
+        loggedInBox.style.display = 'flex';
+        userDisplay.innerText = `👻 ${savedUser}`;
+    } else {
+        loggedOutBox.style.display = 'flex';
+        loggedInBox.style.display = 'none';
+    }
+}
+
+// 2. Modify your existing handleLogin function to save the user
+async function handleLogin() {
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+    const messageBox = document.getElementById('login-msg');
+
+    messageBox.innerText = "Verifying...";
+
+    try {
+        const response = await fetch('/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            // SUCCESS: Save the user to the browser's memory
+            localStorage.setItem('ghastlyUser', result.user.email);
+            messageBox.style.color = "#bc6ff1";
+            messageBox.innerText = "Welcome back!";
+            
+            updateAuthUI(); // Refresh the buttons
+            setTimeout(() => closeAuth(), 1000);
+        } else {
+            messageBox.style.color = "red";
+            messageBox.innerText = result.error;
+        }
+    } catch (err) {
+        messageBox.innerText = "Login failed.";
+    }
+}
+
+// 3. Add a Logout function
+function handleLogout() {
+    localStorage.removeItem('ghastlyUser');
+    updateAuthUI();
+}
+
+// 4. Run the check immediately when the page loads
+document.addEventListener("DOMContentLoaded", function() {
+    updateAuthUI();
+    // ... your other existing code (showAdRandomly, etc) ...
+});
