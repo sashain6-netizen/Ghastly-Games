@@ -1,20 +1,19 @@
-<p>Total Likes: <span id="like-count">Loading...</span></p>
-<button id="like-btn">❤️ Like</button>
+export async function onRequest(context) {
+  const { request, env } = context;
+  const key = "total_likes";
 
-<script>
-  const btn = document.getElementById('like-btn');
-  const display = document.getElementById('like-count');
+  // 1. Get the current count from your KV database
+  let count = await env.LIKES_STORAGE.get(key);
+  count = count ? parseInt(count) : 0;
 
-  // Load the current count when the page opens
-  fetch('/like').then(res => res.json()).then(data => {
-    display.innerText = data.likes;
+  // 2. If the button was clicked (POST), add 1
+  if (request.method === "POST") {
+    count += 1;
+    await env.LIKES_STORAGE.put(key, count.toString());
+  }
+
+  // 3. Send the number back to the HTML page
+  return new Response(JSON.stringify({ likes: count }), {
+    headers: { "Content-Type": "application/json" },
   });
-
-  // Increment when clicked
-  btn.onclick = async () => {
-    btn.disabled = true; // Prevent double-clicking
-    const res = await fetch('/like', { method: 'POST' });
-    const data = await res.json();
-    display.innerText = data.likes;
-  };
-</script>
+}
