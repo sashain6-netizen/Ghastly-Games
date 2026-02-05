@@ -134,35 +134,36 @@ infoButton.addEventListener('click', function() {
     logsMenu.style.display = 'none';
 });
 
-const btn = document.getElementById('like-btn');
-const display = document.getElementById('like-count');
-
-// Load total likes (and views)
+// --- LIKE BUTTON LOGIC ---
 const btn = document.getElementById('like-btn');
 const display = document.getElementById('like-count');
 
 // 1. Fetch count on load
-fetch('/stats').then(res => res.json()).then(data => {
-    display.innerText = data.likes;
-    
-    if (localStorage.getItem('hasLiked')) {
-        btn.disabled = true;
-        // Keep the thumb and the count, just change the word "Like" to "Liked"
-        btn.innerHTML = `👍 Liked | <span id="like-count">${data.likes}</span>`;
-    }
-});
+if (btn && display) {
+    fetch('/stats').then(res => res.json()).then(data => {
+        display.innerText = data.likes;
+        
+        if (localStorage.getItem('hasLiked')) {
+            btn.disabled = true;
+            btn.innerHTML = `👍 Liked | <span id="like-count">${data.likes}</span>`;
+        }
+    }).catch(err => console.error("Stats failed to load:", err));
 
-// 2. Handle the click
-btn.onclick = async () => {
-    if (localStorage.getItem('hasLiked')) return;
-    
-    btn.disabled = true; 
-    const res = await fetch('/stats', { method: 'POST' });
-    const data = await res.json();
-    
-    // Update only the number inside the button
-    document.getElementById('like-count').innerText = data.likes;
-    btn.innerHTML = `👍 Liked | <span id="like-count">${data.likes}</span>`;
-    
-    localStorage.setItem('hasLiked', 'true');
-};
+    // 2. Handle the click
+    btn.onclick = async () => {
+        if (localStorage.getItem('hasLiked')) return;
+        
+        btn.disabled = true; 
+        try {
+            const res = await fetch('/stats', { method: 'POST' });
+            const data = await res.json();
+            
+            // Update the display inside the button
+            btn.innerHTML = `👍 Liked | <span id="like-count">${data.likes}</span>`;
+            localStorage.setItem('hasLiked', 'true');
+        } catch (err) {
+            console.error("Like failed:", err);
+            btn.disabled = false;
+        }
+    };
+}
