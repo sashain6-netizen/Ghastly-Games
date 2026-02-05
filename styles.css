@@ -334,3 +334,13 @@ body {
     transform: none;
 }
 
+.thumb-btn {
+    min-width: 120px; /* Ensures the button doesn't jump in size when loading */
+    font-weight: bold;
+}
+
+#like-count {
+    margin-left: 5px;
+    opacity: 0.9;
+}
+

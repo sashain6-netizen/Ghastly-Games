@@ -138,16 +138,21 @@ const btn = document.getElementById('like-btn');
 const display = document.getElementById('like-count');
 
 // Load total likes (and views)
+const btn = document.getElementById('like-btn');
+const display = document.getElementById('like-count');
+
+// 1. Fetch count on load
 fetch('/stats').then(res => res.json()).then(data => {
     display.innerText = data.likes;
     
-    // Check if they already liked it in this session
     if (localStorage.getItem('hasLiked')) {
         btn.disabled = true;
-        btn.innerHTML = "👍 Liked!";
+        // Keep the thumb and the count, just change the word "Like" to "Liked"
+        btn.innerHTML = `👍 Liked | <span id="like-count">${data.likes}</span>`;
     }
 });
 
+// 2. Handle the click
 btn.onclick = async () => {
     if (localStorage.getItem('hasLiked')) return;
     
@@ -155,9 +160,9 @@ btn.onclick = async () => {
     const res = await fetch('/stats', { method: 'POST' });
     const data = await res.json();
     
-    display.innerText = data.likes;
-    btn.innerHTML = "👍 Liked!";
-    localStorage.setItem('hasLiked', 'true'); // Remembers they liked it
+    // Update only the number inside the button
+    document.getElementById('like-count').innerText = data.likes;
+    btn.innerHTML = `👍 Liked | <span id="like-count">${data.likes}</span>`;
+    
+    localStorage.setItem('hasLiked', 'true');
 };
-
-
