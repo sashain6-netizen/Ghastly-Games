@@ -314,3 +314,7 @@ document.addEventListener("DOMContentLoaded", function() {
     updateAuthUI();
     // ... your other existing code (showAdRandomly, etc) ...
 });
+
+if (document.getElementById('ghastly_verify').value !== "") {
+    return; // Bot detected, ignore the signup
+}

@@ -535,13 +535,21 @@ body {
 
 /* The box surrounding the buttons */
 .auth-box-container {
-    background: rgba(26, 11, 46, 0.8); /* Dark ghastly purple */
-    border: 2px solid #bc6ff1;
-    padding: 10px 15px;
+    
+    /* THE SMART WIDTH FIX */
+    width: fit-content;       /* Shrinks to fit content */
+    max-width: 900px;        /* The absolute widest it can ever get */
+    min-width: 150px;        /* Prevents it from looking like a tiny sliver */
+    
+    height: 55px;
+    padding: 0 25px;         /* Horizontal breathing room */
     border-radius: 12px;
+    
     display: flex;
-    gap: 15px; /* Space between buttons */
-    box-shadow: 0 0 15px rgba(188, 111, 241, 0.3);
+    align-items: center;
+    justify-content: center;
+    gap: 20px;               /* Keeps a consistent gap between name and button */
+    white-space: nowrap;     /* Keeps everything on one clean line */
 }
 
 /* Making the buttons bigger and styled */
