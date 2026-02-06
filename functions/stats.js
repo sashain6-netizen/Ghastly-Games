@@ -4,31 +4,32 @@ export async function onRequest(context) {
   const isLike = request.method === "POST";
   const targetId = isLike ? "total_likes" : "total_views";
   const otherId = isLike ? "total_views" : "total_likes";
+  
+  const ip = request.headers.get("CF-Connecting-IP") || "anonymous";
 
   try {
-    // --- IP LOCK LOGIC FOR LIKES ---
-    if (isLike) {
-      const ip = request.headers.get("CF-Connecting-IP") || "anonymous";
-      const lockKey = `like_lock:${ip}`;
+    // --- IP LOCK LOGIC (FOR BOTH LIKES AND VIEWS) ---
+    // Views lock for 30 mins (1800s), Likes lock for 24h (86400s)
+    const lockKey = isLike ? `like_lock:${ip}` : `view_lock:${ip}`;
+    const alreadyLocked = await env.LIKES_STORAGE.get(lockKey);
 
-      // 1. Check KV if this IP already liked
-      const alreadyLiked = await env.LIKES_STORAGE.get(lockKey);
+    if (alreadyLocked) {
+      // If locked, just fetch and return totals without updating D1
+      const allStats = await env.DB.prepare("SELECT id, count FROM stats").all();
+      const statsMap = Object.fromEntries(allStats.results.map(r => [r.id, r.count]));
       
-      if (alreadyLiked) {
-        // If they already liked, just return current totals without incrementing
-        const allStats = await env.DB.prepare("SELECT id, count FROM stats").all();
-        const statsMap = Object.fromEntries(allStats.results.map(r => [r.id, r.count]));
-        
-        return new Response(JSON.stringify({
-          likes: statsMap.total_likes,
-          views: statsMap.total_views,
-          message: "Already liked"
-        }), { headers: { "Content-Type": "application/json" } });
-      }
-
-      // 2. Lock this IP in KV for 24 hours (86400 seconds)
-      await env.LIKES_STORAGE.put(lockKey, "true", { expirationTtl: 86400 });
+      return new Response(JSON.stringify({
+        likes: statsMap.total_likes,
+        views: statsMap.total_views,
+        message: isLike ? "Already liked" : "View already counted"
+      }), { 
+        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" } 
+      });
     }
+
+    // Set the lock in KV before updating the database
+    const expiry = isLike ? 86400 : 1800; 
+    await env.LIKES_STORAGE.put(lockKey, "true", { expirationTtl: expiry });
 
     // --- DATABASE UPDATES ---
     const updatedRow = await env.DB.prepare(`
