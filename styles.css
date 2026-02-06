@@ -345,6 +345,48 @@ body {
     opacity: 0.9;
 }
 
+.golden-btn {
+    background-color: #ffea00; /* Blue like Facebook/Cloudflare colors */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.golden-btn:hover {
+    background-color: #b5b319;
+    transform: scale(1.05); /* Slight pop out effect */
+}
+
+.golden-btn:disabled {
+    background-color: #6c757d; /* Grey when already liked */
+    cursor: not-allowed;
+    transform: none;
+}
+
+.golden-btn {
+    min-width: 120px; /* Ensures the button doesn't jump in size when loading */
+    font-weight: bold;
+}
+
+#golden-count {
+    margin-left: 5px;
+    margin-top: 5px;
+    opacity: 0.9;
+}
+
+#golden-state {
+    margin-left: 5px;
+    margin-top: 5px;
+    opacity: 0.9;
+}
+
 .view-count {
     background-color: #00ff0d; /* Blue like Facebook/Cloudflare colors */
     color: white;
