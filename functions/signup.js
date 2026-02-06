@@ -13,7 +13,7 @@ export async function onRequest(context) {
 
     // --- RATE LIMITING ---
     const clientIP = request.headers.get("CF-Connecting-IP") || "anonymous";
-    const limitKey = `limit_v2:${clientIP}`;
+    const limitKey = `limit:${clientIP}`;
 
     const hasSignedUpRecently = await env.LIKES_STORAGE.get(limitKey);
     if (hasSignedUpRecently) {
