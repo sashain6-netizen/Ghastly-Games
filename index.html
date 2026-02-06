@@ -10,7 +10,6 @@
 </head>
 <body>
     <div id="ghastly-header-right">
-        <div id="ghastly-header-right">
         <div id="logged-out-box" class="auth-box-container">
             <button class="auth-btn signup" onclick="openAuth('signup')">SIGN UP</button>
             <button class="auth-btn login" onclick="openAuth('login')">LOGIN</button>
@@ -21,12 +20,12 @@
             <button class="auth-btn login" onclick="handleLogout()" style="padding: 5px 10px; font-size: 0.8rem;">LOGOUT</button>
         </div>
     </div>
-    </div>
+
     <input type="text" id="ghastly_verify" style="display:none" tabindex="-1">
 
     <div id="auth-overlay" onclick="closeAuth(event)">
         <div id="ghastly-auth-system" onclick="event.stopPropagation()">
-            <button id="close-btn" onclick="closeAuth()">×</button>
+            <button id="close-btn" onclick="closeAuth()">x</button>
             
             <div id="signup-form-container" class="auth-form">
                 <h2>Join Ghastly Games</h2>
