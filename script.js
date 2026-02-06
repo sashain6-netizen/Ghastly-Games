@@ -384,7 +384,7 @@ if (goldenBtn) {
 // --- PAGE LOAD INITIALIZATION ---
 // This runs once when the website opens
 document.addEventListener("DOMContentLoaded", function() {
-    // 1. Show Ads
+    // 1. Show 
     if (typeof showAdRandomly === "function") showAdRandomly();
     
     // 2. Initial Stats (Likes/Views)
