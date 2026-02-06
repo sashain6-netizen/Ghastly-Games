@@ -204,11 +204,17 @@ function closeAuth(event) {
 // These functions are what your HTML 'onclick' attributes are calling!
 
 async function handleSignup() {
-  const email = document.getElementById('reg-email').value; // Matches your HTML
-  const password = document.getElementById('reg-password').value; // Matches your HTML
+  const emailInput = document.getElementById('reg-email');
+  const passwordInput = document.getElementById('reg-password');
   const messageBox = document.getElementById('signup-msg');
+  const botCheck = document.getElementById('ghastly_verify');
 
-  // Check if the email is in the correct format
+  if (botCheck && botCheck.value !== "") return;
+
+  const email = emailInput.value.trim();
+  const password = passwordInput.value;
+
+  // Frontend Validation
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailPattern.test(email)) {
     messageBox.style.color = "red";
@@ -216,35 +222,31 @@ async function handleSignup() {
     return;
   }
 
-  // Check if the email is already taken
-  const existingEmail = await fetch('/check-email', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email })
-  });
-
-  if (existingEmail.ok) {
-    messageBox.style.color = "red";
-    messageBox.innerText = 'Email already exists.';
-    return;
-  }
-
+  messageBox.style.color = "white"; // Reset color
   messageBox.innerText = "Connecting...";
 
-  const response = await fetch('/signup', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password })
-  });
+  try {
+    const response = await fetch('/signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
 
-  const result = await response.json();
+    // We get the JSON data regardless of whether the response was "ok" or not
+    const result = await response.json();
 
-  if (response.ok) {
-    messageBox.style.color = "#bc6ff1";
-    messageBox.innerText = "Success! Account created. Now log in!";
-  } else {
+    if (response.ok) {
+      messageBox.style.color = "#bc6ff1";
+      messageBox.innerText = "Success! Now log in.";
+    } else {
+      // THIS IS THE KEY PART:
+      // If the email exists, result.error will be "An account with this email already exists."
+      messageBox.style.color = "red";
+      messageBox.innerText = result.error || "An error occurred.";
+    }
+  } catch (err) {
     messageBox.style.color = "red";
-    messageBox.innerText = result.error;
+    messageBox.innerText = "Server error. Try again later.";
   }
 }
 async function handleLogin() {
