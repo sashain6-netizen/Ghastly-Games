@@ -1,5 +1,8 @@
-// 1. The Function that talks to the Worker
+// --- LIKE & STATS SYSTEM ---
+
 async function updateStats(isClick = false) {
+    console.log("updateStats called. Click mode:", isClick);
+    
     const likeDisplay = document.getElementById('likes'); 
     const viewDisplay = document.getElementById('views');
     const goldenCountSpan = document.getElementById('golden-count');
@@ -8,16 +11,21 @@ async function updateStats(isClick = false) {
     try {
         const method = isClick ? 'POST' : 'GET';
         const res = await fetch('/stats', { method });
+        
+        if (!res.ok) throw new Error(`Server error: ${res.status}`);
+        
         const data = await res.json();
+        console.log("Worker returned data:", data);
 
-        // Update the HTML with the numbers from the Worker
+        // Update the HTML - using the keys your worker sends
         if (likeDisplay) likeDisplay.innerText = data.likes ?? 0;
         if (viewDisplay) viewDisplay.innerText = data.views ?? 0;
         if (goldenCountSpan) goldenCountSpan.innerText = data.global_total ?? 0;
 
-        // If they just clicked, disable the button and save to local storage
+        // Handle the Button UI
         if (isClick && likeBtn) {
             likeBtn.disabled = true;
+            likeBtn.innerHTML = `👍 Liked | <span id="likes">${data.likes}</span>`;
             localStorage.setItem('hasLiked', 'true');
         }
     } catch (err) {
@@ -25,24 +33,37 @@ async function updateStats(isClick = false) {
     }
 }
 
-// 2. The Initialization (Put this inside your existing DOMContentLoaded)
+// --- PAGE LOAD INITIALIZATION ---
+
 document.addEventListener("DOMContentLoaded", function() {
-    // ... your other code (ads, menus, etc.) ...
+    console.log("DOM fully loaded and parsed");
 
+    // 1. Ads Timer
+    setTimeout(() => {
+        if (typeof showAdRandomly === "function") showAdRandomly();
+    }, 500);
+    
+    // 2. Setup Like Button Listener
     const likeBtn = document.getElementById('like-btn');
-
-    // Check if they already liked it previously
-    if (localStorage.getItem('hasLiked') === 'true' && likeBtn) {
-        likeBtn.disabled = true;
-    }
-
-    // Add the click listener back!
     if (likeBtn) {
+        // Check local storage status
+        if (localStorage.getItem('hasLiked') === 'true') {
+            likeBtn.disabled = true;
+            likeBtn.innerHTML = `👍 Liked | <span id="likes">...</span>`;
+        }
+
         likeBtn.addEventListener('click', function() {
-            updateStats(true); // true = it's a click/POST
+            updateStats(true);
         });
     }
 
-    // Call it immediately on load to get the view count and current likes
-    updateStats(false); // false = it's a page load/GET
+    // 3. Kick off the stats fetch (This replaces the '...')
+    updateStats(false);
+
+    // 4. Handle Account state
+    const savedEmail = localStorage.getItem('user_email');
+    const savedBalance = localStorage.getItem('golden_balance');
+    if (savedEmail && typeof updateUIState === "function") {
+        updateUIState(savedEmail, savedBalance || 0);
+    }
 });
