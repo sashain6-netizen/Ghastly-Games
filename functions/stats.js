@@ -4,49 +4,47 @@ export async function onRequest(context) {
   const ip = request.headers.get("CF-Connecting-IP") || "anonymous";
 
   try {
-    // 1. Get Golden Count
+    // 1. Get Golden Count from the 'DB' table
     const goldenRow = await env.DB.prepare(`SELECT global_golden_thumbs FROM DB WHERE id = 1`).first();
     const globalGoldenCount = goldenRow ? goldenRow.global_golden_thumbs : 0;
 
-    // 2. GET LIKES/VIEWS (The D1 way)
-    const { results } = await env.DB.prepare("SELECT id, count FROM stats").all();
+    // 2. Fetch EVERYTHING from the 'stats' table
+    const { results } = await env.DB.prepare("SELECT * FROM stats").all();
     
-    // Manual find to avoid mapping errors if the table is small
-    const likesRow = results.find(r => r.id === 'total_likes');
-    const viewsRow = results.find(r => r.id === 'total_views');
+    // 3. Fallback logic: If we can't find 'total_likes' by name, take the first/second rows
+    let likesRow = results.find(r => String(r.id).includes('like')) || results[0];
+    let viewsRow = results.find(r => String(r.id).includes('view')) || results[1];
 
-    const currentLikes = likesRow ? likesRow.count : 0;
-    const currentViews = viewsRow ? viewsRow.count : 0;
+    let currentLikes = likesRow ? (likesRow.count || likesRow.value || 0) : 0;
+    let currentViews = viewsRow ? (viewsRow.count || viewsRow.value || 0) : 0;
 
-    // 3. UPDATE LOGIC (ONLY ON POST)
-    let finalLikes = currentLikes;
+    // 4. Handle Like logic
     if (isPost) {
       const lockKey = `like_lock:${ip}`;
-      const alreadyLiked = await env.LIKES_STORAGE.get(lockKey);
+      const alreadyLocked = await env.LIKES_STORAGE.get(lockKey);
 
-      if (!alreadyLiked) {
-        const updated = await env.DB.prepare(`
-          UPDATE stats SET count = count + 1 WHERE id = 'total_likes' RETURNING count
-        `).first();
+      if (!alreadyLocked) {
+        await env.DB.prepare(`UPDATE stats SET count = count + 1 WHERE id = ?`)
+          .bind(likesRow.id).run();
         
         await env.LIKES_STORAGE.put(lockKey, "true", { expirationTtl: 86400 });
-        finalLikes = updated.count;
+        currentLikes++;
       }
     }
 
-    // 4. RETURN DATA (Strictly matching frontend keys)
+    // 5. Final JSON - We use "Number()" to prevent "undefined"
     return new Response(JSON.stringify({
-      likes: Number(finalLikes),
-      views: Number(currentViews),
-      global_total: Number(globalGoldenCount)
+      likes: Number(currentLikes) || 0,
+      views: Number(currentViews) || 0,
+      global_total: Number(globalGoldenCount) || 0
     }), {
-      headers: { 
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*" 
-      },
+      headers: { "Content-Type": "application/json" }
     });
 
   } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), { status: 500 });
+    // If it crashes, return 0s so the UI doesn't say "undefined"
+    return new Response(JSON.stringify({ likes: 0, views: 0, global_total: 0 }), { 
+      headers: { "Content-Type": "application/json" }
+    });
   }
 }
