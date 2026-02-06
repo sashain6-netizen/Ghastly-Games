@@ -204,29 +204,49 @@ function closeAuth(event) {
 // These functions are what your HTML 'onclick' attributes are calling!
 
 async function handleSignup() {
-    const email = document.getElementById('reg-email').value; // Matches your HTML
-    const password = document.getElementById('reg-password').value; // Matches your HTML
-    const messageBox = document.getElementById('signup-msg');
+  const email = document.getElementById('reg-email').value; // Matches your HTML
+  const password = document.getElementById('reg-password').value; // Matches your HTML
+  const messageBox = document.getElementById('signup-msg');
 
-    messageBox.innerText = "Connecting...";
+  // Check if the email is in the correct format
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailPattern.test(email)) {
+    messageBox.style.color = "red";
+    messageBox.innerText = 'Invalid email format.';
+    return;
+  }
 
-    const response = await fetch('/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-    });
+  // Check if the email is already taken
+  const existingEmail = await fetch('/check-email', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email })
+  });
 
-    const result = await response.json();
+  if (existingEmail.ok) {
+    messageBox.style.color = "red";
+    messageBox.innerText = 'Email already exists.';
+    return;
+  }
 
-    if (response.ok) {
-        messageBox.style.color = "#bc6ff1";
-        messageBox.innerText = "Success! Account created. Now log in!";
-    } else {
-        messageBox.style.color = "red";
-        messageBox.innerText = result.error;
-    }
+  messageBox.innerText = "Connecting...";
+
+  const response = await fetch('/signup', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password })
+  });
+
+  const result = await response.json();
+
+  if (response.ok) {
+    messageBox.style.color = "#bc6ff1";
+    messageBox.innerText = "Success! Account created. Now log in!";
+  } else {
+    messageBox.style.color = "red";
+    messageBox.innerText = result.error;
+  }
 }
-
 async function handleLogin() {
     const email = document.getElementById('login-email').value;
     const password = document.getElementById('login-password').value;
