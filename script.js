@@ -286,6 +286,16 @@ async function handleLogin() {
     }
 }
 
+function updateUIState(email, balance) {
+    document.getElementById('logged-out-box').style.display = 'none';
+    document.getElementById('logged-in-box').style.display = 'flex';
+    document.getElementById('user-display').innerText = email;
+    
+    // ✅ FIX: Update the PERSONAL balance span, NOT the global golden-count
+    const personalDisplay = document.getElementById('personal-balance');
+    if (personalDisplay) personalDisplay.innerText = balance;
+}
+
 function handleLogout() {
     localStorage.removeItem('user_email');
     localStorage.removeItem('golden_balance');
@@ -294,21 +304,14 @@ function handleLogout() {
     document.getElementById('logged-in-box').style.display = 'none';
     document.getElementById('user-display').innerText = "";
     
-    // Reset the count display
-    const countDisplay = document.getElementById('golden-count');
-    if(countDisplay) countDisplay.innerText = "0";
+    // ✅ FIX: Reset personal balance on logout
+    const personalDisplay = document.getElementById('personal-balance');
+    if (personalDisplay) personalDisplay.innerText = "0";
     
     document.getElementById('golden-state').innerText = "Ready";
-}
-
-function updateUIState(email, balance) {
-    document.getElementById('logged-out-box').style.display = 'none';
-    document.getElementById('logged-in-box').style.display = 'flex';
-    document.getElementById('user-display').innerText = email;
     
-    // Update the HTML display
-    const countDisplay = document.getElementById('golden-count');
-    if (countDisplay) countDisplay.innerText = balance;
+    // Refresh global stats to show the real D1 number (0)
+    updateStats(false);
 }
 
 // --- GOLDEN THUMB BUTTON LOGIC ---
