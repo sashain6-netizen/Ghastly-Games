@@ -137,45 +137,51 @@ infoButton.addEventListener('click', function() {
 });
 
 // --- LIKE BUTTON LOGIC ---
-const btn = document.getElementById('like-btn');
-const display = document.getElementById('like-count');
+// --- COMBINED STATS LOGIC (D1 VERSION) ---
+const likeBtn = document.getElementById('like-btn');
+const likeDisplay = document.getElementById('like-count');
+const viewDisplay = document.getElementById('view-count');
 
-// 1. Fetch count on load
-if (btn && display) {
-    fetch('/stats').then(res => res.json()).then(data => {
-        display.innerText = data.likes;
-        
-        if (localStorage.getItem('hasLiked')) {
-            btn.disabled = true;
-            btn.innerHTML = `👍 Liked | <span id="like-count">${data.likes}</span>`;
-        }
-    }).catch(err => console.error("Stats failed to load:", err));
+async function updateStats(isClick = false) {
+    try {
+        // If isClick is true, we POST (increment likes), otherwise GET (increment views)
+        const method = isClick ? 'POST' : 'GET';
+        const res = await fetch('/stats', { method });
+        const data = await res.json();
 
-    // 2. Handle the click
-    btn.onclick = async () => {
-        if (localStorage.getItem('hasLiked')) return;
-        
-        btn.disabled = true; 
-        try {
-            const res = await fetch('/stats', { method: 'POST' });
-            const data = await res.json();
-            
-            // Update the display inside the button
-            btn.innerHTML = `👍 Liked | <span id="like-count">${data.likes}</span>`;
+        // Update both displays simultaneously with the fresh data from D1
+        if (likeDisplay) likeDisplay.innerText = data.likes;
+        if (viewDisplay) viewDisplay.innerText = data.views;
+
+        // If this was a successful like click, update the button state
+        if (isClick && likeBtn) {
+            likeBtn.disabled = true;
+            likeBtn.innerHTML = `👍 Liked | <span id="like-count">${data.likes}</span>`;
             localStorage.setItem('hasLiked', 'true');
-        } catch (err) {
-            console.error("Like failed:", err);
-            btn.disabled = false;
         }
-    };
+        
+        // Handle initial button state on page load
+        if (!isClick && localStorage.getItem('hasLiked') && likeBtn) {
+            likeBtn.disabled = true;
+            likeBtn.innerHTML = `👍 Liked | <span id="like-count">${data.likes}</span>`;
+        }
+    } catch (err) {
+        console.error("Stats sync failed:", err);
+    }
 }
 
-// --- VIEW COUNT LOGIC ---
-const viewCount = document.getElementById('view-count');
-if (viewCount) {
-    fetch('/stats').then(res => res.json()).then(data => {
-        viewCount.innerText = data.views;
-    }).catch(err => console.error("Stats failed to load:", err));
+// 1. Run on page load: Increments view count and gets initial totals
+document.addEventListener("DOMContentLoaded", () => {
+    updateStats(false);
+});
+
+// 2. Handle the like button click
+if (likeBtn) {
+    likeBtn.onclick = () => {
+        if (!localStorage.getItem('hasLiked')) {
+            updateStats(true);
+        }
+    };
 }
 
 // Account creation and login
