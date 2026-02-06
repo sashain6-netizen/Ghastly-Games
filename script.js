@@ -135,13 +135,22 @@ const viewDisplay = document.getElementById('view-count');
 
 async function updateStats(isClick = false) {
     try {
+        // 1. Fetch the data from your /stats worker
         const method = isClick ? 'POST' : 'GET';
         const res = await fetch('/stats', { method });
         const data = await res.json();
 
+        // 2. Update Standard Stats (Likes and Views)
         if (likeDisplay) likeDisplay.innerText = data.likes;
         if (viewDisplay) viewDisplay.innerText = data.views;
 
+        // 3. Update the Golden Thumb Count (The D1 Variable)
+        const goldenCountSpan = document.getElementById('golden-count');
+        if (goldenCountSpan && data.global_total !== undefined) {
+            goldenCountSpan.innerText = data.global_total;
+        }
+
+        // 4. Handle Like Button UI State
         if (isClick && likeBtn) {
             likeBtn.disabled = true;
             likeBtn.innerHTML = `👍 Liked | <span id="like-count">${data.likes}</span>`;
@@ -152,6 +161,7 @@ async function updateStats(isClick = false) {
             likeBtn.disabled = true;
             likeBtn.innerHTML = `👍 Liked | <span id="like-count">${data.likes}</span>`;
         }
+
     } catch (err) {
         console.error("Stats sync failed:", err);
     }

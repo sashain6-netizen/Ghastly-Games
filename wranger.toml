@@ -8,3 +8,8 @@ id = "4a54228ae8d5493dbb6f927085d2a5c0"
 [[analytics_engine_datasets]]
 binding = "VIEWS"
 dataset = "page_views"
+
+[[d1_databases]]
+binding = "DB" # This is the name we use in the code (env.DB)
+database_name = "ghastly-games"
+database_id = "09c22259-1c3d-463e-be41-d33c21ca677f"

@@ -15,6 +15,7 @@ export async function onRequest(context) {
       });
     }
 
+    // --- 1. USER CHECK (KV STORAGE) ---
     const userKey = `user:${email.toLowerCase().trim()}`;
     const userJson = await env.LIKES_STORAGE.get(userKey);
 
@@ -26,8 +27,6 @@ export async function onRequest(context) {
     }
 
     let userData = JSON.parse(userJson);
-
-    // --- CHECK TIME LOGIC ---
     const now = Date.now(); 
     const oneDay = 24 * 60 * 60 * 1000; 
     const lastClaim = userData.last_daily_claim || 0; 
@@ -42,26 +41,28 @@ export async function onRequest(context) {
       });
     }
 
-    // --- 1. UPDATE USER REWARD ---
+    // --- 2. UPDATE USER REWARD (KV) ---
     userData.g_bucks = (userData.g_bucks || 0) + 1; 
     userData.last_daily_claim = now; 
     await env.LIKES_STORAGE.put(userKey, JSON.stringify(userData));
 
-    // --- 2. UPDATE GLOBAL COUNT (NEW!) ---
-    // Get the current global total
-    let globalCount = await env.LIKES_STORAGE.get("global_golden_count");
-    globalCount = parseInt(globalCount) || 0; // If it doesn't exist, start at 0
+    // --- 3. UPDATE GLOBAL COUNT (D1 DATABASE) ---
+    // Note: I am assuming your D1 table is named 'DB' and 
+    // you have one row where id = 1.
     
-    // Add 1 to global
-    globalCount++;
-    
-    // Save it back
-    await env.LIKES_STORAGE.put("global_golden_count", globalCount.toString());
+    const { results } = await env.DB.prepare(`
+      UPDATE DB 
+      SET global_golden_thumbs = global_golden_thumbs + 1 
+      WHERE id = 1
+      RETURNING global_golden_thumbs
+    `).run();
+
+    const newGlobalCount = results[0]?.global_golden_thumbs || 0;
 
     return new Response(JSON.stringify({
       success: true,
-      new_balance: userData.g_bucks,     // Your personal money
-      global_total: globalCount,         // The total clicks by everyone
+      new_balance: userData.g_bucks,
+      global_total: newGlobalCount,
       message: "You earned 1 G-Buck!"
     }), {
       headers: { "Content-Type": "application/json" }
