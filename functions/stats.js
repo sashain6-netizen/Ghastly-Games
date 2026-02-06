@@ -1,27 +1,44 @@
 export async function onRequest(context) {
   const { request, env } = context;
   
-  // 1. Determine which stat we are updating
-  // POST = Like button clicked, GET = Page loaded (view)
   const isLike = request.method === "POST";
   const targetId = isLike ? "total_likes" : "total_views";
   const otherId = isLike ? "total_views" : "total_likes";
 
   try {
-    // 2. Atomic Update: Increment the count and get the NEW value back immediately
+    // --- IP LOCK LOGIC FOR LIKES ---
+    if (isLike) {
+      const ip = request.headers.get("CF-Connecting-IP") || "anonymous";
+      const lockKey = `like_lock:${ip}`;
+
+      // 1. Check KV if this IP already liked
+      const alreadyLiked = await env.LIKES_STORAGE.get(lockKey);
+      
+      if (alreadyLiked) {
+        // If they already liked, just return current totals without incrementing
+        const allStats = await env.DB.prepare("SELECT id, count FROM stats").all();
+        const statsMap = Object.fromEntries(allStats.results.map(r => [r.id, r.count]));
+        
+        return new Response(JSON.stringify({
+          likes: statsMap.total_likes,
+          views: statsMap.total_views,
+          message: "Already liked"
+        }), { headers: { "Content-Type": "application/json" } });
+      }
+
+      // 2. Lock this IP in KV for 24 hours (86400 seconds)
+      await env.LIKES_STORAGE.put(lockKey, "true", { expirationTtl: 86400 });
+    }
+
+    // --- DATABASE UPDATES ---
     const updatedRow = await env.DB.prepare(`
-      UPDATE stats 
-      SET count = count + 1 
-      WHERE id = ? 
-      RETURNING count
+      UPDATE stats SET count = count + 1 WHERE id = ? RETURNING count
     `).bind(targetId).first();
 
-    // 3. Fetch the other stat so we can return both to the frontend
     const otherRow = await env.DB.prepare(`
       SELECT count FROM stats WHERE id = ?
     `).bind(otherId).first();
 
-    // 4. Organize the data for the response
     const data = {
       likes: isLike ? updatedRow.count : otherRow.count,
       views: isLike ? otherRow.count : updatedRow.count
