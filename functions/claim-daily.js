@@ -28,12 +28,11 @@ export async function onRequest(context) {
     let userData = JSON.parse(userJson);
 
     // --- CHECK TIME LOGIC ---
-    const now = Date.now(); // Current time in milliseconds
-    const oneDay = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
-    const lastClaim = userData.last_daily_claim || 0; // Default to 0 if missing
+    const now = Date.now(); 
+    const oneDay = 24 * 60 * 60 * 1000; 
+    const lastClaim = userData.last_daily_claim || 0; 
 
     if (now - lastClaim < oneDay) {
-      // Calculate hours left
       const hoursLeft = Math.ceil((oneDay - (now - lastClaim)) / (1000 * 60 * 60));
       return new Response(JSON.stringify({ 
         success: false, 
@@ -43,16 +42,26 @@ export async function onRequest(context) {
       });
     }
 
-    // --- UPDATE REWARD ---
-    userData.g_bucks = (userData.g_bucks || 0) + 1; // Add 1 Buck
-    userData.last_daily_claim = now; // Update timestamp
-
-    // Save back to KV
+    // --- 1. UPDATE USER REWARD ---
+    userData.g_bucks = (userData.g_bucks || 0) + 1; 
+    userData.last_daily_claim = now; 
     await env.LIKES_STORAGE.put(userKey, JSON.stringify(userData));
+
+    // --- 2. UPDATE GLOBAL COUNT (NEW!) ---
+    // Get the current global total
+    let globalCount = await env.LIKES_STORAGE.get("global_golden_count");
+    globalCount = parseInt(globalCount) || 0; // If it doesn't exist, start at 0
+    
+    // Add 1 to global
+    globalCount++;
+    
+    // Save it back
+    await env.LIKES_STORAGE.put("global_golden_count", globalCount.toString());
 
     return new Response(JSON.stringify({
       success: true,
-      new_balance: userData.g_bucks,
+      new_balance: userData.g_bucks,     // Your personal money
+      global_total: globalCount,         // The total clicks by everyone
       message: "You earned 1 G-Buck!"
     }), {
       headers: { "Content-Type": "application/json" }

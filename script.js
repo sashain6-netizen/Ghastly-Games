@@ -383,7 +383,7 @@ if (goldenBtn) {
 
             if (data.success) {
                 // Success!
-                if (goldenCount) goldenCount.innerText = data.new_balance;
+                if (goldenCount) goldenCount.innerText = data.global_total;
                 localStorage.setItem('golden_balance', data.new_balance);
                 
                 if (goldenState) goldenState.innerText = "Claimed!";
