@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ghastly Hub</title>
-    <!-- This line connects your CSS -->
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -14,7 +13,6 @@
             <button class="auth-btn signup" onclick="openAuth('signup')">SIGN UP</button>
             <button class="auth-btn login" onclick="openAuth('login')">LOGIN</button>
         </div>
-
         <div id="logged-in-box" class="auth-box-container" style="display: none;">
             <span id="user-display" style="color: #bc6ff1; font-weight: bold; margin-right: 10px;"></span>
             <button class="auth-btn login" onclick="handleLogout()" style="padding: 5px 10px; font-size: 0.8rem;">LOGOUT</button>
@@ -26,7 +24,6 @@
     <div id="auth-overlay" onclick="closeAuth(event)">
         <div id="ghastly-auth-system" onclick="event.stopPropagation()">
             <button id="close-btn" onclick="closeAuth()">x</button>
-            
             <div id="signup-form-container" class="auth-form">
                 <h2>Join Ghastly Games</h2>
                 <input type="email" id="reg-email" placeholder="Email">
@@ -34,7 +31,6 @@
                 <button onclick="handleSignup()">Create Account</button>
                 <p id="signup-msg"></p>
             </div>
-
             <div id="login-form-container" class="auth-form">
                 <h2>Ghastly Login</h2>
                 <input type="email" id="login-email" placeholder="Email">
@@ -44,6 +40,7 @@
             </div>
         </div>
     </div>
+
     <h1>Ghastly Links</h1>
     <div id="link-grid"></div>
 
@@ -53,60 +50,36 @@
         <button id="info-button">Info</button>
     </div>
 
-    <!-- This is the menu that appears when you click the button -->
-    <!-- Only ONE credits-menu div here -->
     <div id="credits-menu" style="display: none;">
         <h2>Credits</h2>
-        <div class="credits-box">
-            <strong>Creator</strong>
-            <p>Simon Shain</p>
-        </div>
-        <div class="credits-box">
-            <strong>Social Media</strong>
-            <p>Anthony Stafford</p>
-        </div>
-        <div class="credits-box">
-            <strong>Ingame Advertisements</strong>
-            <p>Simon Shain, Anthony Stafford</p>
-        </div>
-        <div class="credits-box">
-            <strong>Special Supporters</strong>
-            <p>Nael Ulrych, Anthony Stafford</p>
-        </div>
-        <div class="credits-box">
-            <strong>Supporters</strong>
-            <p>Aiden Mui, Jaclyn Smith</p>
-<div id="info-menu" style="display: none;">
+        <div class="credits-box"><strong>Creator</strong><p>Simon Shain</p></div>
+        <div class="credits-box"><strong>Social Media</strong><p>Anthony Stafford</p></div>
+        <div class="credits-box"><strong>Ingame Advertisements</strong><p>Simon Shain, Anthony Stafford</p></div>
+        <div class="credits-box"><strong>Special Supporters</strong><p>Nael Ulrych, Anthony Stafford</p></div>
+        <div class="credits-box"><strong>Supporters</strong><p>Aiden Mui, Jaclyn Smith</p></div>
+    </div>
+
+    <div id="info-menu" style="display: none;">
         <h2>Info</h2>
         <div class="info-box">
             <strong>Instagram</strong>
-            <p>Check out our instagram, <a href="https://www.instagram.com/ghastlygamesLHS" class="contact">@ghastlygamesLHS</a>, for updates and information!</p>
+            <p>Check out our instagram, <a href="https://www.instagram.com/ghastlygamesLHS" class="contact">@ghastlygamesLHS</a></p>
         </div>
         <div class="info-box">
             <strong>Support</strong>
-            <p>If you enjoy this server, consider texting the number <a href="tel:650-318-8595" class="contact">650-318-8595</a>. If you really like this server, don't mention where you got this number from.</p>
-        </div>
-        <div class="info-box">
-            <strong>Questions</strong>
-            <p>If you have any questions about games (or anything really, including deep moral/phsychological debates), click on an untaken link and fill out the form.</p>
+            <p>If you enjoy this server, consider texting <a href="tel:650-318-8595" class="contact">650-318-8595</a>.</p>
         </div>
         <div class="info-box">
             <strong>Statistics</strong>
             <div class="stats-row">
-                <button id="like-btn" class="thumb-btn">
-                👍 Like | <span id="like-count">...</span>
-                </button>
-
-                <button class="view-count">
-                    Visits: <span id="view-count">...</span>
-                </button>
-
-                <button id="golden-thumb-btn" class="golden-btn">
-                👍✨ Golden Thumb: <span id="golden-state">Ready</span> | <span id="golden-count">0</span>
-                </button>
+                <button id="like-btn" class="thumb-btn">👍 Like | <span id="like-count">...</span></button>
+                <button class="view-count">Visits: <span id="view-count">...</span></button>
+                <button id="golden-thumb-btn" class="golden-btn">👍✨ Golden Thumb: <span id="golden-state">Ready</span> | <span id="golden-count">0</span></button>
             </div>
         </div>
-    </div> <div id="game-modal-overlay" class="modal-overlay" style="display: none;" onclick="closeGameModal()">
+    </div>
+
+    <div id="game-modal-overlay" class="modal-overlay" style="display: none;" onclick="closeGameModal()">
         <div class="modal-box" onclick="event.stopPropagation()">
             <h2 id="modal-title" style="color: #bc6ff1; margin-top: 0;">Notice</h2>
             <p id="modal-message" style="font-size: 1.1rem; margin: 20px 0;">...</p>
@@ -114,7 +87,7 @@
         </div>
     </div>
 
-    <div id="adPopup" class="ad-popup">
+    <div id="adPopup" class="ad-popup" style="display: none;">
         <span class="ad-close-btn" onclick="closeAd()">&times;</span>
         <img id="adImage" src="" alt="Advertisement">
     </div>
