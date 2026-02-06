@@ -52,7 +52,6 @@ export async function onRequest(context) {
     await env.LIKES_STORAGE.put(userKey, JSON.stringify(userData));
 
     // --- NEW LOGIC: START THE CLOCK ---
-    // We store a simple "true" value that expires in 3600 seconds (1 hour)
     await env.LIKES_STORAGE.put(limitKey, "true", { expirationTtl: 3600 });
     // --- END NEW LOGIC ---
 
