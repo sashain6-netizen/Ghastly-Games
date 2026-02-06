@@ -186,6 +186,8 @@ function openAuth(type) {
     document.getElementById('auth-overlay').style.display = 'flex';
     document.getElementById('signup-form-container').style.display = 'none';
     document.getElementById('login-form-container').style.display = 'none';
+
+    resetForm();
     
     if (type === 'signup') {
         document.getElementById('signup-form-container').style.display = 'block';
@@ -248,6 +250,7 @@ async function handleSignup() {
     messageBox.style.color = "red";
     messageBox.innerText = "Server error. Try again later.";
   }
+  resetForm();
 }
 async function handleLogin() {
     const email = document.getElementById('login-email').value;
@@ -273,6 +276,7 @@ async function handleLogin() {
         messageBox.style.color = "red";
         messageBox.innerText = result.error;
     }
+    resetForm();
 }
 
 // 1. Function to update the UI based on login status
@@ -356,3 +360,12 @@ function someFunction() {
     });
 })();
 
+function resetForm() {
+  const emailInput = document.getElementById('reg-email');
+  const passwordInput = document.getElementById('reg-password');
+  const messageBox = document.getElementById('signup-msg');
+
+  emailInput.value = '';
+  passwordInput.value = '';
+  messageBox.innerText = '';
+}
