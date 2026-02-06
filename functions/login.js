@@ -34,8 +34,11 @@ export async function onRequest(context) {
 
     // 4. Compare the hashes
     if (attemptedHash === userData.password) {
-      // In a more advanced version, you'd set a cookie here. 
-      // For now, we return a success message and user stats.
+      return new Response(JSON.stringify({ 
+        success: true, 
+        message: "Logged in!",
+        g_bucks: userData.g_bucks ||
+      }), { ... });
       return new Response(JSON.stringify({ 
         success: true, 
         message: "Login successful!",

@@ -46,6 +46,8 @@ export async function onRequest(context) {
       password: hashedPassword,
       created_at: new Date().toISOString(),
       xp: 0 
+      g_bucks: 0
+      last_daily_claim: 0
     };
 
     // Save the User

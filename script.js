@@ -264,26 +264,53 @@ async function handleLogin() {
     const password = document.getElementById('login-password').value;
     const messageBox = document.getElementById('login-msg');
 
-    resetForm();
-
+    // 1. Reset UI state
     messageBox.innerText = "Verifying...";
+    messageBox.style.color = "#bc6ff1"; // Your theme color
 
-    const response = await fetch('/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-    });
+    try {
+        const response = await fetch('/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
 
-    const result = await response.json();
+        const result = await response.json();
 
-    if (response.ok) {
-        messageBox.style.color = "#bc6ff1";
-        messageBox.innerText = `Welcome back, ${result.user.email}!`;
-        // Closes the popup after 1 second so they can see the success message
-        setTimeout(() => closeAuth(), 1000);
-    } else {
+        if (response.ok) {
+            // --- SUCCESS LOGIC ---
+            
+            messageBox.innerText = `Welcome back!`;
+            
+            // A. Save email to browser (CRITICAL for the Reward Button)
+            localStorage.setItem('user_email', result.user.email);
+
+            // B. Update the Header (Hide Login / Show User)
+            document.getElementById('logged-out-box').style.display = 'none';
+            document.getElementById('logged-in-box').style.display = 'flex';
+            document.getElementById('user-display').innerText = result.user.email;
+
+            // C. Update the Golden Thumb Count immediately
+            // (Assumes your backend sends 'g_bucks' in the response)
+            const currentBucks = result.user.g_bucks !== undefined ? result.user.g_bucks : 0;
+            document.getElementById('golden-count').innerText = currentBucks;
+
+            // D. Close the popup after a short delay
+            setTimeout(() => {
+                closeAuth();
+                // Clear the password field for security
+                document.getElementById('login-password').value = ""; 
+            }, 1000);
+
+        } else {
+            // --- ERROR LOGIC ---
+            messageBox.style.color = "red";
+            messageBox.innerText = result.error || "Login failed.";
+        }
+    } catch (error) {
+        console.error(error);
         messageBox.style.color = "red";
-        messageBox.innerText = result.error;
+        messageBox.innerText = "Server error. Please try again.";
     }
 }
 
@@ -383,3 +410,52 @@ function resetForm() {
   loginPasswordInput.value = '';
   loginMessageBox.innerText = '';
 }
+
+// --- GOLDEN THUMB LOGIC ---
+const goldenBtn = document.getElementById("golden-thumb-btn");
+const goldenState = document.getElementById("golden-state");
+const goldenCount = document.getElementById("golden-count");
+
+goldenBtn.addEventListener("click", async () => {
+    const userEmail = localStorage.getItem("user_email");
+
+    // 1. Check if logged in
+    if (!userEmail) {
+        alert("You must be logged in to claim a Golden Thumb!");
+        return;
+    }
+
+    // 2. UI Feedback (prevent double clicking)
+    goldenState.innerText = "Checking...";
+    goldenBtn.disabled = true;
+
+    try {
+        // 3. Call the Backend
+        const res = await fetch("/claim-daily", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: userEmail })
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+            // SUCCESS: Update the count and status
+            goldenCount.innerText = data.new_balance;
+            goldenState.innerText = "Claimed! ✅";
+            
+            // Optional: Reset text after a few seconds
+            setTimeout(() => { goldenState.innerText = "Done"; }, 3000);
+        } else {
+            // FAILURE: Show the error message (e.g., "Come back in 4 hours")
+            goldenState.innerText = "Wait ⏳";
+            alert(data.message); 
+        }
+
+    } catch (err) {
+        console.error(err);
+        goldenState.innerText = "Error ❌";
+    } finally {
+        goldenBtn.disabled = false;
+    }
+});
