@@ -459,3 +459,32 @@ goldenBtn.addEventListener("click", async () => {
         goldenBtn.disabled = false;
     }
 });
+
+// --- RUN ON PAGE LOAD ---
+document.addEventListener("DOMContentLoaded", () => {
+    // 1. Check if user is logged in
+    const savedEmail = localStorage.getItem("user_email");
+    const savedBalance = localStorage.getItem("golden_balance"); // We will save this below
+    
+    const countDisplay = document.getElementById("golden-count");
+    const stateDisplay = document.getElementById("golden-state");
+
+    if (savedEmail) {
+        // User is logged in
+        document.getElementById("user-display").innerText = savedEmail;
+        document.getElementById("logged-out-box").style.display = 'none';
+        document.getElementById("logged-in-box").style.display = 'flex';
+        
+        // Restore the Golden Thumb count
+        if (countDisplay) {
+            countDisplay.innerText = savedBalance || "0"; 
+        }
+        if (stateDisplay) {
+            stateDisplay.innerText = "Ready";
+        }
+    } else {
+        // User is NOT logged in
+        if (countDisplay) countDisplay.innerText = "0";
+        if (stateDisplay) stateDisplay.innerText = "Login First";
+    }
+});
