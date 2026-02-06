@@ -134,37 +134,32 @@ const likeDisplay = document.getElementById('like-count');
 const viewDisplay = document.getElementById('view-count');
 
 async function updateStats(isClick = false) {
-    // 1. Grab all elements
     const likeDisplay = document.getElementById('likes'); 
     const viewDisplay = document.getElementById('views');
     const goldenCountSpan = document.getElementById('golden-count');
     const likeBtn = document.getElementById('like-btn');
 
-    // 2. Safety check: stop if HTML is missing
-    if (!likeDisplay || !viewDisplay) return;
-
     try {
         const method = isClick ? 'POST' : 'GET';
         const res = await fetch('/stats', { method });
-        
         if (!res.ok) return; 
 
         const data = await res.json();
 
-        // 3. Update the numbers on screen
-        likeDisplay.innerText = data.likes !== undefined ? data.likes : "0";
-        viewDisplay.innerText = data.views !== undefined ? data.views : "0";
-        
-        if (goldenCountSpan) {
-            goldenCountSpan.innerText = data.global_total || "0";
-        }
+        // 1. Update the numbers
+        if (likeDisplay) likeDisplay.innerText = data.likes ?? "0";
+        if (viewDisplay) viewDisplay.innerText = data.views ?? "0";
+        if (goldenCountSpan) goldenCountSpan.innerText = data.global_total ?? "0";
 
-        // 4. Update the button UI if it was a click
-        if (isClick && likeBtn) {
-            likeBtn.disabled = true;
-            // This preserves the look of the button after liking
-            likeBtn.innerHTML = `👍 Liked | <span id="likes">${data.likes}</span>`;
-            localStorage.setItem('hasLiked', 'true');
+        // 2. Handle Like Button Logic
+        if (likeBtn) {
+            // If we just clicked OR if we already liked it in the past
+            if (isClick || localStorage.getItem('hasLiked') === 'true') {
+                likeBtn.disabled = true;
+                likeBtn.style.opacity = "0.7";
+                likeBtn.innerHTML = `👍 Liked | <span id="likes">${data.likes}</span>`;
+                if (isClick) localStorage.setItem('hasLiked', 'true');
+            }
         }
     } catch (err) {
         console.error("Sync failed:", err);
@@ -394,17 +389,36 @@ if (goldenBtn) {
 }
 
 // --- PAGE LOAD INITIALIZATION ---
+// --- PAGE LOAD INITIALIZATION ---
 document.addEventListener("DOMContentLoaded", function() {
+    // 1. Ads Timer
     setTimeout(() => {
         console.log("Ghastly Hub: Initializing Ads...");
         showAdRandomly();
     }, 500);
     
-    if (typeof updateStats === "function") updateStats(false);
+    // 2. Setup Like Button
+    const likeBtn = document.getElementById('like-btn');
+    if (likeBtn) {
+        // IMPORTANT: Check if they already liked it before adding the listener
+        if (localStorage.getItem('hasLiked') === 'true') {
+            likeBtn.disabled = true;
+            likeBtn.style.opacity = "0.7";
+            // We'll let updateStats fill in the number, but we set the text now
+            likeBtn.innerHTML = `👍 Liked | <span id="likes">...</span>`;
+        }
 
+        likeBtn.addEventListener('click', function() {
+            updateStats(true); // Triggers the POST and the increment
+        });
+    }
+
+    // 3. Initial Stats Fetch (Run this ONCE to fill in all numbers)
+    updateStats(false);
+
+    // 4. Handle Account state
     const savedEmail = localStorage.getItem('user_email');
     const savedBalance = localStorage.getItem('golden_balance');
-
     if (savedEmail) {
         updateUIState(savedEmail, savedBalance || 0);
     }
