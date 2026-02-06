@@ -134,37 +134,29 @@ const likeDisplay = document.getElementById('like-count');
 const viewDisplay = document.getElementById('view-count');
 
 async function updateStats(isClick = false) {
-    // 1. SELECT THE CORRECT SPANS (Matching your new HTML)
-    const likeDisplay = document.getElementById('likes'); // Was like-count
-    const viewDisplay = document.getElementById('views'); // Was view-count
+    // These must match the id="" in your HTML
+    const likeDisplay = document.getElementById('likes'); 
+    const viewDisplay = document.getElementById('views');
     const goldenCountSpan = document.getElementById('golden-count');
 
     try {
-        // 2. FETCH DATA
         const method = isClick ? 'POST' : 'GET';
         const res = await fetch('/stats', { method });
         const data = await res.json();
 
-        // 3. INJECT DATA (Using Nullish Coalescing to avoid 'undefined')
+        // data.likes and data.views come from the Worker's JSON response
         if (likeDisplay) likeDisplay.innerText = data.likes ?? 0;
         if (viewDisplay) viewDisplay.innerText = data.views ?? 0;
         if (goldenCountSpan) goldenCountSpan.innerText = data.global_total ?? 0;
 
-        // 4. UPDATE LIKE BUTTON UI
+        // UI state for the button
         if (isClick && likeBtn) {
             likeBtn.disabled = true;
-            // Update the span inside the button to match the new 'likes' ID
-            likeBtn.innerHTML = `👍 Liked | <span id="likes">${data.likes ?? 0}</span>`;
+            likeBtn.innerHTML = `👍 Liked | <span id="likes">${data.likes}</span>`;
             localStorage.setItem('hasLiked', 'true');
         }
-        
-        if (!isClick && localStorage.getItem('hasLiked') && likeBtn) {
-            likeBtn.disabled = true;
-            likeBtn.innerHTML = `👍 Liked | <span id="likes">${data.likes ?? 0}</span>`;
-        }
-
     } catch (err) {
-        console.error("Stats sync failed:", err);
+        console.error("Sync failed:", err);
     }
 }
 
