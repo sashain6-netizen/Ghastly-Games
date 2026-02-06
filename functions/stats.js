@@ -1,58 +1,45 @@
 export async function onRequest(context) {
   const { request, env } = context;
   
-  const isLike = request.method === "POST";
-  const targetId = isLike ? "total_likes" : "total_views";
-  const otherId = isLike ? "total_views" : "total_likes";
-  
+  const isPost = request.method === "POST"; // This is a Like click
   const ip = request.headers.get("CF-Connecting-IP") || "anonymous";
 
   try {
-    // 1. FETCH GLOBAL GOLDEN THUMBS FROM D1
-    // We fetch this first so it's available for every response
+    // 1. ALWAYS GET THE GOLDEN COUNT (READ ONLY)
     const goldenRow = await env.DB.prepare(`
       SELECT global_golden_thumbs FROM DB WHERE id = 1
     `).first();
     const globalGoldenCount = goldenRow ? goldenRow.global_golden_thumbs : 0;
 
-    // --- IP LOCK LOGIC ---
-    const lockKey = isLike ? `like_lock:${ip}` : `view_lock:${ip}`;
-    const alreadyLocked = await env.LIKES_STORAGE.get(lockKey);
+    // 2. GET CURRENT LIKES/VIEWS (READ ONLY)
+    const allStats = await env.DB.prepare("SELECT id, count FROM stats").all();
+    const statsMap = Object.fromEntries(allStats.results.map(r => [r.id, r.count]));
 
-    if (alreadyLocked) {
-      const allStats = await env.DB.prepare("SELECT id, count FROM stats").all();
-      const statsMap = Object.fromEntries(allStats.results.map(r => [r.id, r.count]));
-      
-      return new Response(JSON.stringify({
-        likes: statsMap.total_likes,
-        views: statsMap.total_views,
-        global_total: globalGoldenCount, // Include global count even if locked
-        message: isLike ? "Already liked" : "View already counted"
-      }), { 
-        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" } 
-      });
+    // 3. LOGIC FOR UPDATING (ONLY ON POST)
+    if (isPost) {
+      const lockKey = `like_lock:${ip}`;
+      const alreadyLiked = await env.LIKES_STORAGE.get(lockKey);
+
+      if (!alreadyLiked) {
+        // Increment Like in DB
+        const updatedLike = await env.DB.prepare(`
+          UPDATE stats SET count = count + 1 WHERE id = 'total_likes' RETURNING count
+        `).first();
+        
+        // Lock the IP for 24 hours
+        await env.LIKES_STORAGE.put(lockKey, "true", { expirationTtl: 86400 });
+        
+        statsMap.total_likes = updatedLike.count;
+      }
     }
 
-    // Set the lock in KV
-    const expiry = isLike ? 86400 : 1800; 
-    await env.LIKES_STORAGE.put(lockKey, "true", { expirationTtl: expiry });
-
-    // --- DATABASE UPDATES FOR LIKES/VIEWS ---
-    const updatedRow = await env.DB.prepare(`
-      UPDATE stats SET count = count + 1 WHERE id = ? RETURNING count
-    `).bind(targetId).first();
-
-    const otherRow = await env.DB.prepare(`
-      SELECT count FROM stats WHERE id = ?
-    `).bind(otherId).first();
-
-    const data = {
-      likes: isLike ? updatedRow.count : otherRow.count,
-      views: isLike ? otherRow.count : updatedRow.count,
-      global_total: globalGoldenCount // Include global count in successful update
-    };
-
-    return new Response(JSON.stringify(data), {
+    // 4. RETURN THE DATA
+    // This ensures that on Page Load (GET), we just send back the current numbers
+    return new Response(JSON.stringify({
+      likes: statsMap.total_likes || 0,
+      views: statsMap.total_views || 0,
+      global_total: globalGoldenCount
+    }), {
       headers: { 
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*" 
