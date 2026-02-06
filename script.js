@@ -208,7 +208,6 @@ async function handleSignup() {
   const password = document.getElementById('reg-password').value; // Matches your HTML
   const messageBox = document.getElementById('signup-msg');
 
-  if (!messageBox) return;
   // Check if the email is in the correct format
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailPattern.test(email)) {
@@ -248,20 +247,10 @@ async function handleSignup() {
     messageBox.innerText = result.error;
   }
 }
-/*************  ✨ Windsurf Command ⭐  *************/
-/**
- * Handles user login by making a POST request to the server
- * @param {string} email - The user's email
- * @param {string} password - The user's password
- * @returns {Promise} - A promise that resolves to the server's JSON response
- */
-/*******  e1766418-4223-441f-8023-eb1f2a736c9e  *******/
 async function handleLogin() {
     const email = document.getElementById('login-email').value;
     const password = document.getElementById('login-password').value;
     const messageBox = document.getElementById('login-msg');
-
-    if (!messageBox) return;
 
     messageBox.innerText = "Verifying...";
 
