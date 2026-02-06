@@ -344,11 +344,13 @@ if (goldenBtn) {
         const userEmail = localStorage.getItem("user_email");
 
         if (!userEmail) {
-            alert("You must be logged in to claim a Golden Thumb!");
+            // Instead of alert, we show it on the button
+            goldenState.innerText = "Login first!";
+            setTimeout(() => { goldenState.innerText = "Ready"; }, 3000);
             return;
         }
 
-        goldenState.innerText = "Checking...";
+        goldenState.innerText = "Claiming...";
         goldenBtn.disabled = true;
 
         try {
@@ -361,15 +363,25 @@ if (goldenBtn) {
             const data = await res.json();
 
             if (data.success) {
-                // Update Balance on Screen and in Memory
+                // Update the balance and show success message
                 goldenCount.innerText = data.new_balance;
                 localStorage.setItem('golden_balance', data.new_balance);
                 
-                goldenState.innerText = "Claimed! ✅";
-                setTimeout(() => { goldenState.innerText = "Done"; }, 3000);
+                goldenState.innerText = "+1 G-Buck! ✨";
+                goldenState.style.color = "#ffd700"; // Gold color
+                
+                setTimeout(() => { 
+                    goldenState.innerText = "Ready"; 
+                    goldenState.style.color = ""; 
+                }, 5000);
             } else {
+                // This shows the "Already claimed! Come back in X hours" message in-game
                 goldenState.innerText = "Wait ⏳";
-                alert(data.message); 
+                
+                // Optional: Create a temporary floating notification
+                showInGameNotification(data.message);
+                
+                setTimeout(() => { goldenState.innerText = "Ready"; }, 3000);
             }
 
         } catch (err) {
@@ -379,6 +391,22 @@ if (goldenBtn) {
             goldenBtn.disabled = false;
         }
     });
+}
+
+// 2. Add this helper function for "In-Game" floating pop-ups
+function showInGameNotification(message) {
+    const notification = document.createElement('div');
+    notification.className = 'game-notification';
+    notification.innerText = message;
+    
+    // Add it to the body
+    document.body.appendChild(notification);
+    
+    // Remove it after 4 seconds
+    setTimeout(() => {
+        notification.classList.add('fade-out');
+        setTimeout(() => notification.remove(), 500);
+    }, 4000);
 }
 
 // --- PAGE LOAD INITIALIZATION ---
