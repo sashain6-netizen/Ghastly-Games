@@ -11,19 +11,16 @@ export async function onRequest(context) {
   try {
     const { email, password } = await request.json();
 
-    // --- NEW LOGIC: RATE LIMITING ---
-    // Identify the user by their IP address
+    // --- RATE LIMITING ---
     const clientIP = request.headers.get("CF-Connecting-IP") || "anonymous";
     const limitKey = `limit:${clientIP}`;
 
-    // Check if this IP has signed up in the last hour
     const hasSignedUpRecently = await env.LIKES_STORAGE.get(limitKey);
     if (hasSignedUpRecently) {
       return new Response(JSON.stringify({ 
         error: "Too many accounts. Please wait 1 hour before signing up again." 
       }), { status: 429 });
     }
-    // --- END NEW LOGIC ---
 
     if (!email || !password || password.length < 8) {
       return new Response(JSON.stringify({ error: "Password must be at least 8 characters." }), { status: 400 });
@@ -41,21 +38,21 @@ export async function onRequest(context) {
     const hashArray = Array.from(new Uint8Array(hashBuffer));
     const hashedPassword = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
+    // --- FIX IS HERE (ADDED COMMAS) ---
     const userData = {
       email: email.toLowerCase().trim(),
       password: hashedPassword,
       created_at: new Date().toISOString(),
-      xp: 0 
-      g_bucks: 0
+      xp: 0,              // Comma added
+      g_bucks: 0,         // Comma added
       last_daily_claim: 0
     };
 
     // Save the User
     await env.LIKES_STORAGE.put(userKey, JSON.stringify(userData));
 
-    // --- NEW LOGIC: START THE CLOCK ---
+    // START THE CLOCK (1 Hour Lockout)
     await env.LIKES_STORAGE.put(limitKey, "true", { expirationTtl: 3600 });
-    // --- END NEW LOGIC ---
 
     return new Response(JSON.stringify({ success: true, message: "Account created!" }), {
       status: 201,
