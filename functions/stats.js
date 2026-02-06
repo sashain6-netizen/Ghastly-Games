@@ -4,37 +4,40 @@ export async function onRequest(context) {
   const ip = request.headers.get("CF-Connecting-IP") || "anonymous";
 
   try {
-    // 1. Get Golden Count (Using your exact column name)
-    const goldenRow = await env.DB.prepare(`SELECT global_golden_thumbs FROM DB WHERE id = 1`).first();
-    const globalCount = goldenRow ? goldenRow.global_golden_thumbs : 0;
-
-    // 2. Get Likes and Views (Using your exact IDs: total_likes, total_views)
-    const likesRow = await env.DB.prepare(`SELECT count FROM stats WHERE id = 'total_likes'`).first();
-    const viewsRow = await env.DB.prepare(`SELECT count FROM stats WHERE id = 'total_views'`).first();
-
-    let likes = likesRow ? likesRow.count : 0;
-    let views = viewsRow ? viewsRow.count : 0;
-
-    // 3. Handle the Like Click
+    // 1. UPDATE LOGIC
     if (isPost) {
       const lockKey = `like_lock:${ip}`;
       const locked = await env.LIKES_STORAGE.get(lockKey);
       if (!locked) {
-        // Update using the exact ID 'total_likes'
+        // Match the ID 'total_likes' exactly as it is in your D1
         await env.DB.prepare(`UPDATE stats SET count = count + 1 WHERE id = 'total_likes'`).run();
         await env.LIKES_STORAGE.put(lockKey, "true", { expirationTtl: 86400 });
-        likes++;
       }
+    } else {
+      // Increment views on every GET request
+      await env.DB.prepare(`UPDATE stats SET count = count + 1 WHERE id = 'total_views'`).run();
     }
 
-    // 4. Send the data back to the frontend
-    return new Response(JSON.stringify({
-      likes: likes,
-      views: views,
-      global_total: globalCount
-    }), { headers: { "Content-Type": "application/json" } });
+    // 2. FETCH LOGIC (Getting the data back out)
+    const likesRow = await env.DB.prepare(`SELECT count FROM stats WHERE id = 'total_likes'`).first();
+    const viewsRow = await env.DB.prepare(`SELECT count FROM stats WHERE id = 'total_views'`).first();
+    const goldenRow = await env.DB.prepare(`SELECT count FROM stats WHERE id = 'global_golde_thumbs'`).first();
+
+    // 3. MAP TO JSON
+    const responseData = {
+      likes: likesRow ? likesRow.count : 0,
+      views: viewsRow ? viewsRow.count : 0,
+      global_total: goldenRow ? goldenRow.count : 0
+    };
+
+    return new Response(JSON.stringify(responseData), {
+      headers: { "Content-Type": "application/json" }
+    });
 
   } catch (err) {
-    return new Response(JSON.stringify({ error: err.message, likes: 0, views: 0 }));
+    return new Response(JSON.stringify({ error: err.message, likes: 0, views: 0 }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" }
+    });
   }
 }
