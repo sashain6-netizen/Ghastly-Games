@@ -134,24 +134,35 @@ const likeDisplay = document.getElementById('like-count');
 const viewDisplay = document.getElementById('view-count');
 
 async function updateStats(isClick = false) {
-    // These must match the id="" in your HTML
+    // 1. Grab all elements
     const likeDisplay = document.getElementById('likes'); 
     const viewDisplay = document.getElementById('views');
     const goldenCountSpan = document.getElementById('golden-count');
+    const likeBtn = document.getElementById('like-btn');
+
+    // 2. Safety check: stop if HTML is missing
+    if (!likeDisplay || !viewDisplay) return;
 
     try {
         const method = isClick ? 'POST' : 'GET';
         const res = await fetch('/stats', { method });
+        
+        if (!res.ok) return; 
+
         const data = await res.json();
 
-        // data.likes and data.views come from the Worker's JSON response
-        if (likeDisplay) likeDisplay.innerText = data.likes ?? 0;
-        if (viewDisplay) viewDisplay.innerText = data.views ?? 0;
-        if (goldenCountSpan) goldenCountSpan.innerText = data.global_total ?? 0;
+        // 3. Update the numbers on screen
+        likeDisplay.innerText = data.likes !== undefined ? data.likes : "0";
+        viewDisplay.innerText = data.views !== undefined ? data.views : "0";
+        
+        if (goldenCountSpan) {
+            goldenCountSpan.innerText = data.global_total || "0";
+        }
 
-        // UI state for the button
+        // 4. Update the button UI if it was a click
         if (isClick && likeBtn) {
             likeBtn.disabled = true;
+            // This preserves the look of the button after liking
             likeBtn.innerHTML = `👍 Liked | <span id="likes">${data.likes}</span>`;
             localStorage.setItem('hasLiked', 'true');
         }

@@ -1,69 +1,43 @@
-// --- LIKE & STATS SYSTEM ---
+export async function onRequest(context) {
+  const { request, env } = context;
+  const isPost = request.method === "POST";
+  const ip = request.headers.get("CF-Connecting-IP") || "anonymous";
 
-async function updateStats(isClick = false) {
-    console.log("updateStats called. Click mode:", isClick);
-    
-    const likeDisplay = document.getElementById('likes'); 
-    const viewDisplay = document.getElementById('views');
-    const goldenCountSpan = document.getElementById('golden-count');
-    const likeBtn = document.getElementById('like-btn');
-
-    try {
-        const method = isClick ? 'POST' : 'GET';
-        const res = await fetch('/stats', { method });
-        
-        if (!res.ok) throw new Error(`Server error: ${res.status}`);
-        
-        const data = await res.json();
-        console.log("Worker returned data:", data);
-
-        // Update the HTML - using the keys your worker sends
-        if (likeDisplay) likeDisplay.innerText = data.likes ?? 0;
-        if (viewDisplay) viewDisplay.innerText = data.views ?? 0;
-        if (goldenCountSpan) goldenCountSpan.innerText = data.global_total ?? 0;
-
-        // Handle the Button UI
-        if (isClick && likeBtn) {
-            likeBtn.disabled = true;
-            likeBtn.innerHTML = `👍 Liked | <span id="likes">${data.likes}</span>`;
-            localStorage.setItem('hasLiked', 'true');
-        }
-    } catch (err) {
-        console.error("Stats sync failed:", err);
+  try {
+    // 1. UPDATE LOGIC
+    if (isPost) {
+      const lockKey = `like_lock:${ip}`;
+      const locked = await env.LIKES_STORAGE.get(lockKey);
+      if (!locked) {
+        // Match the ID 'total_likes' exactly as it is in your D1
+        await env.DB.prepare(`UPDATE stats SET count = count + 1 WHERE id = 'total_likes'`).run();
+        await env.LIKES_STORAGE.put(lockKey, "true", { expirationTtl: 86400 });
+      }
+    } else {
+      // Increment views on every GET request
+      await env.DB.prepare(`UPDATE stats SET count = count + 1 WHERE id = 'total_views'`).run();
     }
+
+    // 2. FETCH LOGIC (Getting the data back out)
+    const likesRow = await env.DB.prepare(`SELECT count FROM stats WHERE id = 'total_likes'`).first();
+    const viewsRow = await env.DB.prepare(`SELECT count FROM stats WHERE id = 'total_views'`).first();
+    const goldenRow = await env.DB.prepare(`SELECT count FROM stats WHERE id = 'global_golde_thumbs'`).first();
+
+    // 3. MAP TO JSON
+    const responseData = {
+      likes: likesRow ? likesRow.count : 0,
+      views: viewsRow ? viewsRow.count : 0,
+      global_total: goldenRow ? goldenRow.count : 0
+    };
+
+    return new Response(JSON.stringify(responseData), {
+      headers: { "Content-Type": "application/json" }
+    });
+
+  } catch (err) {
+    return new Response(JSON.stringify({ error: err.message, likes: 0, views: 0 }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" }
+    });
+  }
 }
-
-// --- PAGE LOAD INITIALIZATION ---
-
-document.addEventListener("DOMContentLoaded", function() {
-    console.log("DOM fully loaded and parsed");
-
-    // 1. Ads Timer
-    setTimeout(() => {
-        if (typeof showAdRandomly === "function") showAdRandomly();
-    }, 500);
-    
-    // 2. Setup Like Button Listener
-    const likeBtn = document.getElementById('like-btn');
-    if (likeBtn) {
-        // Check local storage status
-        if (localStorage.getItem('hasLiked') === 'true') {
-            likeBtn.disabled = true;
-            likeBtn.innerHTML = `👍 Liked | <span id="likes">...</span>`;
-        }
-
-        likeBtn.addEventListener('click', function() {
-            updateStats(true);
-        });
-    }
-
-    // 3. Kick off the stats fetch (This replaces the '...')
-    updateStats(false);
-
-    // 4. Handle Account state
-    const savedEmail = localStorage.getItem('user_email');
-    const savedBalance = localStorage.getItem('golden_balance');
-    if (savedEmail && typeof updateUIState === "function") {
-        updateUIState(savedEmail, savedBalance || 0);
-    }
-});
