@@ -1,43 +1,48 @@
-export async function onRequest(context) {
-  const { request, env } = context;
-  const isPost = request.method === "POST";
-  const ip = request.headers.get("CF-Connecting-IP") || "anonymous";
+// 1. The Function that talks to the Worker
+async function updateStats(isClick = false) {
+    const likeDisplay = document.getElementById('likes'); 
+    const viewDisplay = document.getElementById('views');
+    const goldenCountSpan = document.getElementById('golden-count');
+    const likeBtn = document.getElementById('like-btn');
 
-  try {
-    // 1. UPDATE LOGIC
-    if (isPost) {
-      const lockKey = `like_lock:${ip}`;
-      const locked = await env.LIKES_STORAGE.get(lockKey);
-      if (!locked) {
-        // Match the ID 'total_likes' exactly as it is in your D1
-        await env.DB.prepare(`UPDATE stats SET count = count + 1 WHERE id = 'total_likes'`).run();
-        await env.LIKES_STORAGE.put(lockKey, "true", { expirationTtl: 86400 });
-      }
-    } else {
-      // Increment views on every GET request
-      await env.DB.prepare(`UPDATE stats SET count = count + 1 WHERE id = 'total_views'`).run();
+    try {
+        const method = isClick ? 'POST' : 'GET';
+        const res = await fetch('/stats', { method });
+        const data = await res.json();
+
+        // Update the HTML with the numbers from the Worker
+        if (likeDisplay) likeDisplay.innerText = data.likes ?? 0;
+        if (viewDisplay) viewDisplay.innerText = data.views ?? 0;
+        if (goldenCountSpan) goldenCountSpan.innerText = data.global_total ?? 0;
+
+        // If they just clicked, disable the button and save to local storage
+        if (isClick && likeBtn) {
+            likeBtn.disabled = true;
+            localStorage.setItem('hasLiked', 'true');
+        }
+    } catch (err) {
+        console.error("Stats sync failed:", err);
+    }
+}
+
+// 2. The Initialization (Put this inside your existing DOMContentLoaded)
+document.addEventListener("DOMContentLoaded", function() {
+    // ... your other code (ads, menus, etc.) ...
+
+    const likeBtn = document.getElementById('like-btn');
+
+    // Check if they already liked it previously
+    if (localStorage.getItem('hasLiked') === 'true' && likeBtn) {
+        likeBtn.disabled = true;
     }
 
-    // 2. FETCH LOGIC (Getting the data back out)
-    const likesRow = await env.DB.prepare(`SELECT count FROM stats WHERE id = 'total_likes'`).first();
-    const viewsRow = await env.DB.prepare(`SELECT count FROM stats WHERE id = 'total_views'`).first();
-    const goldenRow = await env.DB.prepare(`SELECT count FROM stats WHERE id = 'global_golde_thumbs'`).first();
+    // Add the click listener back!
+    if (likeBtn) {
+        likeBtn.addEventListener('click', function() {
+            updateStats(true); // true = it's a click/POST
+        });
+    }
 
-    // 3. MAP TO JSON
-    const responseData = {
-      likes: likesRow ? likesRow.count : 0,
-      views: viewsRow ? viewsRow.count : 0,
-      global_total: goldenRow ? goldenRow.count : 0
-    };
-
-    return new Response(JSON.stringify(responseData), {
-      headers: { "Content-Type": "application/json" }
-    });
-
-  } catch (err) {
-    return new Response(JSON.stringify({ error: err.message, likes: 0, views: 0 }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" }
-    });
-  }
-}
+    // Call it immediately on load to get the view count and current likes
+    updateStats(false); // false = it's a page load/GET
+});
