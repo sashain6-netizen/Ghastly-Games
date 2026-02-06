@@ -185,9 +185,11 @@ if (likeBtn) {
 }
 
 // Account creation and login
+// ==========================================
+// ACCOUNT, LOGIN & REWARD LOGIC
+// ==========================================
 
-// --- NEW POPUP LOGIC ---
-
+// --- POPUP HANDLERS ---
 function openAuth(type) {
     document.getElementById('auth-overlay').style.display = 'flex';
     document.getElementById('signup-form-container').style.display = 'none';
@@ -203,28 +205,31 @@ function openAuth(type) {
 }
 
 function closeAuth(event) {
-    // If an event is passed (clicking the overlay), check it. 
-    // If no event (clicking the X), just close.
     if (event && event.target !== document.getElementById('auth-overlay')) return;
     document.getElementById('auth-overlay').style.display = 'none';
 }
 
-// These functions are what your HTML 'onclick' attributes are calling!
+function resetForm() {
+    document.getElementById('reg-email').value = '';
+    document.getElementById('reg-password').value = '';
+    document.getElementById('signup-msg').innerText = '';
+    document.getElementById('login-email').value = '';
+    document.getElementById('login-password').value = '';
+    document.getElementById('login-msg').innerText = '';
+}
 
+// --- SIGNUP FUNCTION ---
 async function handleSignup() {
   const emailInput = document.getElementById('reg-email');
   const passwordInput = document.getElementById('reg-password');
   const messageBox = document.getElementById('signup-msg');
   const botCheck = document.getElementById('ghastly_verify');
 
-  resetForm();
-
-  if (botCheck && botCheck.value !== "") return;
+  if (botCheck && botCheck.value !== "") return; // Bot protection
 
   const email = emailInput.value.trim();
   const password = passwordInput.value;
 
-  // Frontend Validation
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailPattern.test(email)) {
     messageBox.style.color = "red";
@@ -232,7 +237,7 @@ async function handleSignup() {
     return;
   }
 
-  messageBox.style.color = "white"; // Reset color
+  messageBox.style.color = "white";
   messageBox.innerText = "Connecting...";
 
   try {
@@ -242,15 +247,13 @@ async function handleSignup() {
       body: JSON.stringify({ email, password })
     });
 
-    // We get the JSON data regardless of whether the response was "ok" or not
     const result = await response.json();
 
     if (response.ok) {
       messageBox.style.color = "#bc6ff1";
       messageBox.innerText = "Success! Now log in.";
+      resetForm(); // Optional: clear form
     } else {
-      // THIS IS THE KEY PART:
-      // If the email exists, result.error will be "An account with this email already exists."
       messageBox.style.color = "red";
       messageBox.innerText = result.error || "An error occurred.";
     }
@@ -259,14 +262,15 @@ async function handleSignup() {
     messageBox.innerText = "Server error. Try again later.";
   }
 }
+
+// --- LOGIN FUNCTION (UNIFIED) ---
 async function handleLogin() {
     const email = document.getElementById('login-email').value;
     const password = document.getElementById('login-password').value;
     const messageBox = document.getElementById('login-msg');
 
-    // 1. Reset UI state
     messageBox.innerText = "Verifying...";
-    messageBox.style.color = "#bc6ff1"; // Your theme color
+    messageBox.style.color = "#bc6ff1"; 
 
     try {
         const response = await fetch('/login', {
@@ -278,184 +282,119 @@ async function handleLogin() {
         const result = await response.json();
 
         if (response.ok) {
-            // --- SUCCESS LOGIC ---
-            
+            // --- SUCCESS ---
             messageBox.innerText = `Welcome back!`;
             
-            // A. Save email to browser (CRITICAL for the Reward Button)
+            // 1. Save Identity and Balance
             localStorage.setItem('user_email', result.user.email);
+            localStorage.setItem('golden_balance', result.user.g_bucks || 0);
 
-            // B. Update the Header (Hide Login / Show User)
-            document.getElementById('logged-out-box').style.display = 'none';
-            document.getElementById('logged-in-box').style.display = 'flex';
-            document.getElementById('user-display').innerText = result.user.email;
+            // 2. Update UI
+            updateUIState(result.user.email, result.user.g_bucks || 0);
 
-            // C. Update the Golden Thumb Count immediately
-            // (Assumes your backend sends 'g_bucks' in the response)
-            const currentBucks = result.user.g_bucks !== undefined ? result.user.g_bucks : 0;
-            document.getElementById('golden-count').innerText = currentBucks;
-
-            // D. Close the popup after a short delay
+            // 3. Close Popup
             setTimeout(() => {
                 closeAuth();
-                // Clear the password field for security
-                document.getElementById('login-password').value = ""; 
             }, 1000);
 
         } else {
-            // --- ERROR LOGIC ---
             messageBox.style.color = "red";
             messageBox.innerText = result.error || "Login failed.";
         }
     } catch (error) {
         console.error(error);
         messageBox.style.color = "red";
-        messageBox.innerText = "Server error. Please try again.";
+        messageBox.innerText = "Server error.";
     }
 }
 
-// 1. Function to update the UI based on login status
-function updateAuthUI() {
-    const loggedOutBox = document.getElementById('logged-out-box');
-    const loggedInBox = document.getElementById('logged-in-box');
-    const userDisplay = document.getElementById('user-display');
-    
-    const savedUser = localStorage.getItem('ghastlyUser');
-
-    if (savedUser) {
-        loggedOutBox.style.display = 'none';
-        loggedInBox.style.display = 'flex';
-        userDisplay.innerText = `👻 ${savedUser}`;
-    } else {
-        loggedOutBox.style.display = 'flex';
-        loggedInBox.style.display = 'none';
-    }
-}
-
-// 2. Modify your existing handleLogin function to save the user
-async function handleLogin() {
-    const email = document.getElementById('login-email').value;
-    const password = document.getElementById('login-password').value;
-    const messageBox = document.getElementById('login-msg');
-
-    messageBox.innerText = "Verifying...";
-
-    try {
-        const response = await fetch('/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password })
-        });
-
-        const result = await response.json();
-
-        if (response.ok) {
-            // SUCCESS: Save the user to the browser's memory
-            localStorage.setItem('ghastlyUser', result.user.email);
-            messageBox.style.color = "#bc6ff1";
-            messageBox.innerText = "Welcome back!";
-            
-            updateAuthUI(); // Refresh the buttons
-            setTimeout(() => closeAuth(), 1000);
-        } else {
-            messageBox.style.color = "red";
-            messageBox.innerText = result.error;
-        }
-    } catch (err) {
-        messageBox.innerText = "Login failed.";
-    }
-}
-
-// 3. Add a Logout function
+// --- LOGOUT FUNCTION ---
 function handleLogout() {
-    localStorage.removeItem('ghastlyUser');
-    updateAuthUI();
+    // 1. Clear Data
+    localStorage.removeItem('user_email');
+    localStorage.removeItem('golden_balance');
+    
+    // 2. Reset UI
+    document.getElementById('logged-out-box').style.display = 'flex';
+    document.getElementById('logged-in-box').style.display = 'none';
+    document.getElementById('user-display').innerText = "";
+    
+    // 3. Reset Golden Thumb
+    document.getElementById('golden-count').innerText = "0";
+    document.getElementById('golden-state').innerText = "Ready";
 }
 
-// 4. Run the check immediately when the page loads
-document.addEventListener("DOMContentLoaded", function() {
-    updateAuthUI();
-    // ... your other existing code (showAdRandomly, etc) ...
-});
-
-function someFunction() {
-    if (document.getElementById('ghastly_verify').value !== "") {
-        return; // Bot detected, ignore the signup
-    }
-    // Rest of your code...
+// --- HELPER TO UPDATE UI ---
+function updateUIState(email, balance) {
+    document.getElementById('logged-out-box').style.display = 'none';
+    document.getElementById('logged-in-box').style.display = 'flex';
+    document.getElementById('user-display').innerText = email;
+    
+    const countElement = document.getElementById('golden-count');
+    if (countElement) countElement.innerText = balance;
 }
 
-(() => {
-    document.getElementById('signup-form').addEventListener('submit', (event) => {
-        if (document.getElementById('ghastly_verify').value !== "") {
-            event.preventDefault(); // Prevent the form from being submitted
-            alert('Bot detected!'); // Display a message to the user
-            return;
-        }
-    });
-})();
-
-function resetForm() {
-  const emailInput = document.getElementById('reg-email');
-  const passwordInput = document.getElementById('reg-password');
-  const signupMessageBox = document.getElementById('signup-msg');
-  const loginEmailInput = document.getElementById('login-email');
-  const loginPasswordInput = document.getElementById('login-password');
-  const loginMessageBox = document.getElementById('login-msg');
-
-  emailInput.value = '';
-  passwordInput.value = '';
-  signupMessageBox.innerText = '';
-  loginEmailInput.value = '';
-  loginPasswordInput.value = '';
-  loginMessageBox.innerText = '';
-}
-
-// --- GOLDEN THUMB LOGIC ---
+// --- GOLDEN THUMB BUTTON LOGIC ---
 const goldenBtn = document.getElementById("golden-thumb-btn");
 const goldenState = document.getElementById("golden-state");
 const goldenCount = document.getElementById("golden-count");
 
-goldenBtn.addEventListener("click", async () => {
-    const userEmail = localStorage.getItem("user_email");
+if (goldenBtn) {
+    goldenBtn.addEventListener("click", async () => {
+        const userEmail = localStorage.getItem("user_email");
 
-    // 1. Check if logged in
-    if (!userEmail) {
-        alert("You must be logged in to claim a Golden Thumb!");
-        return;
-    }
-
-    // 2. UI Feedback (prevent double clicking)
-    goldenState.innerText = "Checking...";
-    goldenBtn.disabled = true;
-
-    try {
-        // 3. Call the Backend
-        const res = await fetch("/claim-daily", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email: userEmail })
-        });
-
-        const data = await res.json();
-
-        if (data.success) {
-            // SUCCESS: Update the count and status
-            goldenCount.innerText = data.new_balance;
-            goldenState.innerText = "Claimed! ✅";
-            
-            // Optional: Reset text after a few seconds
-            setTimeout(() => { goldenState.innerText = "Done"; }, 3000);
-        } else {
-            // FAILURE: Show the error message (e.g., "Come back in 4 hours")
-            goldenState.innerText = "Wait ⏳";
-            alert(data.message); 
+        if (!userEmail) {
+            alert("You must be logged in to claim a Golden Thumb!");
+            return;
         }
 
-    } catch (err) {
-        console.error(err);
-        goldenState.innerText = "Error ❌";
-    } finally {
-        goldenBtn.disabled = false;
+        goldenState.innerText = "Checking...";
+        goldenBtn.disabled = true;
+
+        try {
+            const res = await fetch("/claim-daily", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email: userEmail })
+            });
+
+            const data = await res.json();
+
+            if (data.success) {
+                // Update Balance on Screen and in Memory
+                goldenCount.innerText = data.new_balance;
+                localStorage.setItem('golden_balance', data.new_balance);
+                
+                goldenState.innerText = "Claimed! ✅";
+                setTimeout(() => { goldenState.innerText = "Done"; }, 3000);
+            } else {
+                goldenState.innerText = "Wait ⏳";
+                alert(data.message); 
+            }
+
+        } catch (err) {
+            console.error(err);
+            goldenState.innerText = "Error ❌";
+        } finally {
+            goldenBtn.disabled = false;
+        }
+    });
+}
+
+// --- PAGE LOAD INITIALIZATION ---
+// This runs once when the website opens
+document.addEventListener("DOMContentLoaded", function() {
+    // 1. Show Ads
+    if (typeof showAdRandomly === "function") showAdRandomly();
+    
+    // 2. Initial Stats (Likes/Views)
+    if (typeof updateStats === "function") updateStats(false);
+
+    // 3. Check Login Status
+    const savedEmail = localStorage.getItem('user_email');
+    const savedBalance = localStorage.getItem('golden_balance');
+
+    if (savedEmail) {
+        updateUIState(savedEmail, savedBalance || 0);
     }
 });
