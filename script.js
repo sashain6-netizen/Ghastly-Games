@@ -195,15 +195,30 @@ async function handleSignup() {
   const messageBox = document.getElementById('signup-msg');
   const botCheck = document.getElementById('ghastly_verify');
 
+  // 1. Bot Protection
   if (botCheck && botCheck.value !== "") return;
 
+  // 2. Get Values
   const email = emailInput.value.trim();
   const password = passwordInput.value;
 
-  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailPattern.test(email)) {
+  // --- DEBUGGING: REMOVE THIS AFTER FIXING ---
+  // This will show a popup telling you exactly what the code read.
+  // If this says "Email is: [ ]", then the code isn't finding your text.
+  alert(`Debug Check:\nEmail: [${email}]\nPassword length: ${password.length}`);
+  // -------------------------------------------
+
+  // 3. Simple Validation
+  // If the email is shorter than 5 letters (a@b.c), it's definitely wrong.
+  if (email.length < 5 || !email.includes('@') || !email.includes('.')) {
     messageBox.style.color = "red";
-    messageBox.innerText = 'Invalid email format.';
+    messageBox.innerText = 'Invalid email format (Needs @ and .)';
+    return;
+  }
+
+  if (password.length < 8) {
+    messageBox.style.color = "red";
+    messageBox.innerText = 'Password must be at least 8 characters.';
     return;
   }
 
@@ -222,14 +237,15 @@ async function handleSignup() {
     if (response.ok) {
       messageBox.style.color = "#bc6ff1";
       messageBox.innerText = "Success! Now log in.";
-      resetForm(); 
+      emailInput.value = '';
+      passwordInput.value = '';
     } else {
       messageBox.style.color = "red";
       messageBox.innerText = result.error || "An error occurred.";
     }
   } catch (err) {
     messageBox.style.color = "red";
-    messageBox.innerText = "Server error.";
+    messageBox.innerText = "Server error. Try again later.";
   }
 }
 
