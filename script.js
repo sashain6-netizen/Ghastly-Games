@@ -258,7 +258,6 @@ async function handleLogin() {
     const password = document.getElementById('login-password').value;
     const messageBox = document.getElementById('login-msg');
 
-
     resetForm();
 
     messageBox.innerText = "Verifying...";
@@ -366,9 +365,15 @@ function someFunction() {
 function resetForm() {
   const emailInput = document.getElementById('reg-email');
   const passwordInput = document.getElementById('reg-password');
-  const messageBox = document.getElementById('signup-msg');
+  const signupMessageBox = document.getElementById('signup-msg');
+  const loginEmailInput = document.getElementById('login-email');
+  const loginPasswordInput = document.getElementById('login-password');
+  const loginMessageBox = document.getElementById('login-msg');
 
   emailInput.value = '';
   passwordInput.value = '';
-  messageBox.innerText = '';
+  signupMessageBox.innerText = '';
+  loginEmailInput.value = '';
+  loginPasswordInput.value = '';
+  loginMessageBox.innerText = '';
 }
