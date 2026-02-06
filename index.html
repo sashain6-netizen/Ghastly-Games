@@ -120,6 +120,14 @@
         </div>
     </div>
 
+    <form action="/signup" method="POST">
+        <!-- Your form fields -->
+        <div class="g-recaptcha" data-sitekey="YOUR_SITE_KEY"></div>
+        <button type="submit">Submit</button>
+    </form>
+
+    <script src='https://www.google.com/recaptcha/api.js'></script>
+
     <!-- This line connects your JS -->
     <div id="adPopup" class="ad-popup">
         <span class="ad-close-btn" onclick="closeAd()">&times;</span>

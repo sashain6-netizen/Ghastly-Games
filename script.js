@@ -315,6 +315,20 @@ document.addEventListener("DOMContentLoaded", function() {
     // ... your other existing code (showAdRandomly, etc) ...
 });
 
-if (document.getElementById('ghastly_verify').value !== "") {
-    return; // Bot detected, ignore the signup
+function someFunction() {
+    if (document.getElementById('ghastly_verify').value !== "") {
+        return; // Bot detected, ignore the signup
+    }
+    // Rest of your code...
 }
+
+(() => {
+    document.getElementById('signup-form').addEventListener('submit', (event) => {
+        if (document.getElementById('ghastly_verify').value !== "") {
+            event.preventDefault(); // Prevent the form from being submitted
+            alert('Bot detected!'); // Display a message to the user
+            return;
+        }
+        // Rest of your code...
+    });
+})();
