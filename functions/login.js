@@ -16,17 +16,18 @@ export async function onRequest(context) {
       return new Response(JSON.stringify({ error: "Missing email or password" }), { status: 400 });
     }
 
-    // 2. Look up the user in your likes_db KV using the "user:" prefix
+    // 2. Look up the user
     const userKey = `user:${email.toLowerCase().trim()}`;
     const userDataJSON = await env.LIKES_STORAGE.get(userKey);
 
     if (!userDataJSON) {
-      return new Response(JSON.stringify({ error: "User not found. Please sign up first." }), { status: 404 });
+      // It's safer to say "Invalid credentials" than "User not found" for security
+      return new Response(JSON.stringify({ error: "Invalid email or password." }), { status: 401 });
     }
 
     const userData = JSON.parse(userDataJSON);
 
-    // 3. Re-hash the "attempted" password to see if it matches the stored one
+    // 3. Re-hash the "attempted" password
     const msgUint8 = new TextEncoder().encode(password);
     const hashBuffer = await crypto.subtle.digest("SHA-256", msgUint8);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
@@ -34,23 +35,21 @@ export async function onRequest(context) {
 
     // 4. Compare the hashes
     if (attemptedHash === userData.password) {
-      return new Response(JSON.stringify({ 
-        success: true, 
-        message: "Logged in!",
-        g_bucks: userData.g_bucks || 0 
-      }), { ... });
+      // --- SUCCESS ---
       return new Response(JSON.stringify({ 
         success: true, 
         message: "Login successful!",
         user: { 
           email: userData.email, 
-          xp: userData.xp || 0 
+          xp: userData.xp || 0,
+          g_bucks: userData.g_bucks || 0
         } 
       }), {
+        status: 200,
         headers: { "Content-Type": "application/json" }
       });
     } else {
-      return new Response(JSON.stringify({ error: "Incorrect password." }), { status: 401 });
+      return new Response(JSON.stringify({ error: "Invalid email or password." }), { status: 401 });
     }
 
   } catch (err) {
