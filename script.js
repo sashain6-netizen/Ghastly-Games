@@ -354,21 +354,3 @@ function someFunction() {
     });
 })();
 
-const redis = require('redis');
-const client = redis.createClient();
-
-// When a user attempts to create an account
-app.post('/signup', async (req, res) => {
-  const userId = req.body.userId; 
-
-  // Check if the user has created an account within the last 10 minutes
-  const lastCreationTimestamp = await client.get(userId);
-  if (lastCreationTimestamp && Date.now() - parseInt(lastCreationTimestamp) < 10 * 60 * 1000) {
-    return res.status(400).json({ error: 'Please wait before creating another account.' });
-  }
-
-  // Store the current timestamp for the user
-  await client.set(userId, Date.now(), 'EX', 10 * 60);
-
-  res.status(201).json({ message: 'Account created successfully.' });
-});
