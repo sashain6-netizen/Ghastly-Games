@@ -134,32 +134,33 @@ const likeDisplay = document.getElementById('like-count');
 const viewDisplay = document.getElementById('view-count');
 
 async function updateStats(isClick = false) {
+    // 1. SELECT THE CORRECT SPANS (Matching your new HTML)
+    const likeDisplay = document.getElementById('likes'); // Was like-count
+    const viewDisplay = document.getElementById('views'); // Was view-count
+    const goldenCountSpan = document.getElementById('golden-count');
+
     try {
-        // 1. Fetch the data from your /stats worker
+        // 2. FETCH DATA
         const method = isClick ? 'POST' : 'GET';
         const res = await fetch('/stats', { method });
         const data = await res.json();
 
-        // 2. Update Standard Stats (Likes and Views)
-        if (likeDisplay) likeDisplay.innerText = data.likes;
-        if (viewDisplay) viewDisplay.innerText = data.views;
+        // 3. INJECT DATA (Using Nullish Coalescing to avoid 'undefined')
+        if (likeDisplay) likeDisplay.innerText = data.likes ?? 0;
+        if (viewDisplay) viewDisplay.innerText = data.views ?? 0;
+        if (goldenCountSpan) goldenCountSpan.innerText = data.global_total ?? 0;
 
-        // 3. Update the Golden Thumb Count (The D1 Variable)
-        const goldenCountSpan = document.getElementById('golden-count');
-        if (goldenCountSpan && data.global_total !== undefined) {
-            goldenCountSpan.innerText = data.global_total;
-        }
-
-        // 4. Handle Like Button UI State
+        // 4. UPDATE LIKE BUTTON UI
         if (isClick && likeBtn) {
             likeBtn.disabled = true;
-            likeBtn.innerHTML = `👍 Liked | <span id="like-count">${data.likes}</span>`;
+            // Update the span inside the button to match the new 'likes' ID
+            likeBtn.innerHTML = `👍 Liked | <span id="likes">${data.likes ?? 0}</span>`;
             localStorage.setItem('hasLiked', 'true');
         }
         
         if (!isClick && localStorage.getItem('hasLiked') && likeBtn) {
             likeBtn.disabled = true;
-            likeBtn.innerHTML = `👍 Liked | <span id="like-count">${data.likes}</span>`;
+            likeBtn.innerHTML = `👍 Liked | <span id="likes">${data.likes ?? 0}</span>`;
         }
 
     } catch (err) {
