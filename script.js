@@ -332,3 +332,28 @@ function someFunction() {
         // Rest of your code...
     });
 })();
+
+const redis = require('redis');
+const client = redis.createClient();
+
+// When a user attempts to create an account
+app.post('/signup', (req, res) => {
+  const userId = req.body.userId; // Assuming the user ID is sent in the request body
+
+  // Check if the user has created an account within the last 10 minutes
+  client.get(userId, (err, lastCreationTimestamp) => {
+    if (lastCreationTimestamp && Date.now() - parseInt(lastCreationTimestamp) < 10 * 60 * 1000) {
+      // User has created an account within the last 10 minutes
+      res.status(400).json({ error: 'Please wait before creating another account.' });
+    } else {
+      // User has not created an account within the last 10 minutes
+      // Create the account as usual
+      // ...
+
+      // Store the current timestamp for the user
+      client.set(userId, Date.now(), 'EX', 10 * 60); // Set the expiration time to 10 minutes
+
+      res.status(201).json({ message: 'Account created successfully.' });
+    }
+  });
+});
