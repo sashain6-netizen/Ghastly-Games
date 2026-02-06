@@ -37,7 +37,7 @@ export async function onRequest(context) {
       return new Response(JSON.stringify({ 
         success: true, 
         message: "Logged in!",
-        g_bucks: userData.g_bucks ||
+        g_bucks: userData.g_bucks || 0 
       }), { ... });
       return new Response(JSON.stringify({ 
         success: true, 
