@@ -52,7 +52,7 @@ export async function onRequest(context) {
     await env.LIKES_STORAGE.put(userKey, JSON.stringify(userData));
 
     // START THE CLOCK (1 Hour Lockout)
-    await env.LIKES_STORAGE.put(limitKey, "true", { expirationTtl: 3600 });
+    await env.LIKES_STORAGE.put(limitKey, "true", { expirationTtl: 1 });
 
     return new Response(JSON.stringify({ success: true, message: "Account created!" }), {
       status: 201,
