@@ -39,25 +39,21 @@ function showAdRandomly() {
 
     if (!adPopup || !adImage) return;
 
-    // 1. Set the Image
     const adFiles = ["games/ads/ad1.png", "games/ads/ad2.png", "games/ads/ad3.png", "games/ads/ad4.png", "games/ads/ad5.png", "games/ads/ad6.png", "games/ads/ad7.png", "games/ads/ad8.png", "games/ads/ad9.png", "games/ads/ad10.png", "games/ads/ad11.png", "games/ads/ad12.png", "games/ads/ad13.png", "games/ads/ad14.png", "games/ads/ad15.png", "games/ads/ad16.png"];
     const randomIndex = Math.floor(Math.random() * adFiles.length);
     adImage.src = adFiles[randomIndex];
 
-    // 2. Clear ALL previous positioning and classes
     adPopup.style.top = 'auto';
     adPopup.style.bottom = 'auto';
     adPopup.style.left = 'auto';
     adPopup.style.right = 'auto';
     adPopup.classList.remove('slide-in-top', 'slide-in-bottom', 'slide-in-left', 'slide-in-right');
 
-    // 3. Define Dimensions
     const adWidth = 300; 
     const adHeight = 200; 
     const maxLeft = window.innerWidth - adWidth;
     const maxTop = window.innerHeight - adHeight;
 
-    // 4. Randomly pick an edge
     const edge = Math.floor(Math.random() * 4);
 
     if (edge === 0) { 
@@ -78,7 +74,6 @@ function showAdRandomly() {
         adPopup.classList.add('slide-in-left');
     }
 
-    // 5. Show the ad
     adPopup.style.display = 'block';
 }
 
@@ -91,7 +86,7 @@ function closeAd() {
 }
 
 // ==========================================
-// MENU SYSTEM (Fixed)
+// MENU SYSTEM (Logs logic included)
 // ==========================================
 
 const creditsButton = document.getElementById('credits-button');
@@ -260,8 +255,10 @@ async function handleLogin() {
             messageBox.innerText = `Welcome back!`;
             
             localStorage.setItem('user_email', result.user.email);
+            // Storing the balance for local use
             localStorage.setItem('golden_balance', result.user.g_bucks || 0);
 
+            // Update UI
             updateUIState(result.user.email, result.user.g_bucks || 0);
 
             setTimeout(() => {
@@ -287,9 +284,9 @@ function handleLogout() {
     document.getElementById('logged-in-box').style.display = 'none';
     document.getElementById('user-display').innerText = "";
     
-    // UPDATED: Now clears the renamed element
-    const globalCountEl = document.getElementById('global_golden_count');
-    if(globalCountEl) globalCountEl.innerText = "0";
+    // Reset the count display
+    const countDisplay = document.getElementById('golden-count');
+    if(countDisplay) countDisplay.innerText = "0";
     
     document.getElementById('golden-state').innerText = "Ready";
 }
@@ -299,9 +296,9 @@ function updateUIState(email, balance) {
     document.getElementById('logged-in-box').style.display = 'flex';
     document.getElementById('user-display').innerText = email;
     
-    // UPDATED: Looks for the new ID
-    const countElement = document.getElementById('global_golden_count');
-    if (countElement) countElement.innerText = balance;
+    // Update the HTML display
+    const countDisplay = document.getElementById('golden-count');
+    if (countDisplay) countDisplay.innerText = balance;
 }
 
 // --- GOLDEN THUMB BUTTON LOGIC ---
@@ -327,8 +324,8 @@ function closeGameModal() {
 
 const goldenBtn = document.getElementById("golden-thumb-btn");
 const goldenState = document.getElementById("golden-state");
-// UPDATED: Variable name changed
-const globalGoldenCount = document.getElementById("global_golden_count");
+// ✅ FIXED: We look for the HTML ID "golden-count"
+const goldenCountDisplay = document.getElementById("golden-count");
 
 if (goldenBtn) {
     goldenBtn.addEventListener("click", async () => {
@@ -352,8 +349,11 @@ if (goldenBtn) {
             const data = await res.json();
 
             if (data.success) {
-                // UPDATED: Now updates the new variable
-                if (globalGoldenCount) globalGoldenCount.innerText = data.global_total;
+                // ✅ SUCCESS: Update the HTML "golden-count" with the GLOBAL total
+                // (assuming data.global_total is the KV variable from backend)
+                if (goldenCountDisplay) goldenCountDisplay.innerText = data.global_total;
+                
+                // Save personal balance
                 localStorage.setItem('golden_balance', data.new_balance);
                 
                 if (goldenState) goldenState.innerText = "Claimed!";
