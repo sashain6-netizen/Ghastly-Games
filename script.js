@@ -211,6 +211,8 @@ async function handleSignup() {
   const messageBox = document.getElementById('signup-msg');
   const botCheck = document.getElementById('ghastly_verify');
 
+  resetForm();
+
   if (botCheck && botCheck.value !== "") return;
 
   const email = emailInput.value.trim();
@@ -250,12 +252,14 @@ async function handleSignup() {
     messageBox.style.color = "red";
     messageBox.innerText = "Server error. Try again later.";
   }
-  resetForm();
 }
 async function handleLogin() {
     const email = document.getElementById('login-email').value;
     const password = document.getElementById('login-password').value;
     const messageBox = document.getElementById('login-msg');
+
+
+    resetForm();
 
     messageBox.innerText = "Verifying...";
 
@@ -276,7 +280,6 @@ async function handleLogin() {
         messageBox.style.color = "red";
         messageBox.innerText = result.error;
     }
-    resetForm();
 }
 
 // 1. Function to update the UI based on login status
