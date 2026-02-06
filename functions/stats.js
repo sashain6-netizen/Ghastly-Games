@@ -1,42 +1,44 @@
 export async function onRequest(context) {
   const { request, env } = context;
-  
-  const isPost = request.method === "POST"; 
+  const isPost = request.method === "POST";
   const ip = request.headers.get("CF-Connecting-IP") || "anonymous";
 
   try {
-    // 1. GET THE GOLDEN COUNT
-    const goldenRow = await env.DB.prepare(`
-      SELECT global_golden_thumbs FROM DB WHERE id = 1
-    `).first();
+    // 1. Get Golden Count
+    const goldenRow = await env.DB.prepare(`SELECT global_golden_thumbs FROM DB WHERE id = 1`).first();
     const globalGoldenCount = goldenRow ? goldenRow.global_golden_thumbs : 0;
 
-    // 2. GET LIKES/VIEWS
-    const allStats = await env.DB.prepare("SELECT id, count FROM stats").all();
-    // This creates a map where keys are 'total_likes' and 'total_views'
-    const statsMap = Object.fromEntries(allStats.results.map(r => [r.id, r.count]));
+    // 2. GET LIKES/VIEWS (The D1 way)
+    const { results } = await env.DB.prepare("SELECT id, count FROM stats").all();
+    
+    // Manual find to avoid mapping errors if the table is small
+    const likesRow = results.find(r => r.id === 'total_likes');
+    const viewsRow = results.find(r => r.id === 'total_views');
+
+    const currentLikes = likesRow ? likesRow.count : 0;
+    const currentViews = viewsRow ? viewsRow.count : 0;
 
     // 3. UPDATE LOGIC (ONLY ON POST)
+    let finalLikes = currentLikes;
     if (isPost) {
       const lockKey = `like_lock:${ip}`;
       const alreadyLiked = await env.LIKES_STORAGE.get(lockKey);
 
       if (!alreadyLiked) {
-        const updatedLike = await env.DB.prepare(`
+        const updated = await env.DB.prepare(`
           UPDATE stats SET count = count + 1 WHERE id = 'total_likes' RETURNING count
         `).first();
         
         await env.LIKES_STORAGE.put(lockKey, "true", { expirationTtl: 86400 });
-        statsMap.total_likes = updatedLike.count;
+        finalLikes = updated.count;
       }
     }
 
-    // 4. RETURN DATA (Mapped to frontend names)
+    // 4. RETURN DATA (Strictly matching frontend keys)
     return new Response(JSON.stringify({
-      // We explicitly map the DB IDs to the names the frontend expects
-      likes: statsMap.total_likes ?? 0,
-      views: statsMap.total_views ?? 0,
-      global_total: globalGoldenCount
+      likes: Number(finalLikes),
+      views: Number(currentViews),
+      global_total: Number(globalGoldenCount)
     }), {
       headers: { 
         "Content-Type": "application/json",
@@ -45,9 +47,6 @@ export async function onRequest(context) {
     });
 
   } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), { 
-      status: 500,
-      headers: { "Content-Type": "application/json" }
-    });
+    return new Response(JSON.stringify({ error: error.message }), { status: 500 });
   }
 }
