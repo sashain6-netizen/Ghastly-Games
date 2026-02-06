@@ -335,6 +335,27 @@ function updateUIState(email, balance) {
 }
 
 // --- GOLDEN THUMB BUTTON LOGIC ---
+// --- NEW HELPER FUNCTIONS FOR MODAL ---
+function showGameModal(title, message) {
+    const overlay = document.getElementById('game-modal-overlay');
+    const titleEl = document.getElementById('modal-title');
+    const msgEl = document.getElementById('modal-message');
+
+    if (overlay && titleEl && msgEl) {
+        titleEl.innerText = title;
+        msgEl.innerText = message;
+        overlay.style.display = 'flex'; // Shows the modal
+    }
+}
+
+function closeGameModal() {
+    const overlay = document.getElementById('game-modal-overlay');
+    if (overlay) {
+        overlay.style.display = 'none';
+    }
+}
+
+// --- UPDATED BUTTON LOGIC ---
 const goldenBtn = document.getElementById("golden-thumb-btn");
 const goldenState = document.getElementById("golden-state");
 const goldenCount = document.getElementById("golden-count");
@@ -344,13 +365,11 @@ if (goldenBtn) {
         const userEmail = localStorage.getItem("user_email");
 
         if (!userEmail) {
-            // Instead of alert, we show it on the button
-            goldenState.innerText = "Login first!";
-            setTimeout(() => { goldenState.innerText = "Ready"; }, 3000);
+            showGameModal("Login Required", "You must be logged in to claim rewards!");
             return;
         }
 
-        goldenState.innerText = "Claiming...";
+        if (goldenState) goldenState.innerText = "Claiming...";
         goldenBtn.disabled = true;
 
         try {
@@ -363,30 +382,28 @@ if (goldenBtn) {
             const data = await res.json();
 
             if (data.success) {
-                // Update the balance and show success message
-                goldenCount.innerText = data.new_balance;
+                // Success!
+                if (goldenCount) goldenCount.innerText = data.new_balance;
                 localStorage.setItem('golden_balance', data.new_balance);
                 
-                goldenState.innerText = "+1 G-Buck! ✨";
-                goldenState.style.color = "#ffd700"; // Gold color
+                if (goldenState) goldenState.innerText = "Claimed!";
                 
-                setTimeout(() => { 
-                    goldenState.innerText = "Ready"; 
-                    goldenState.style.color = ""; 
-                }, 5000);
+                // Show Center Pop-up for Success
+                showGameModal("Reward Claimed! 💎", "You earned 1 G-Buck! Come back tomorrow for more.");
+                
+                setTimeout(() => { if (goldenState) goldenState.innerText = "Done"; }, 3000);
             } else {
-                // This shows the "Already claimed! Come back in X hours" message in-game
-                goldenState.innerText = "Wait ⏳";
+                // Failure (Time limit)
+                if (goldenState) goldenState.innerText = "Wait ⏳";
                 
-                // Optional: Create a temporary floating notification
-                showInGameNotification(data.message);
-                
-                setTimeout(() => { goldenState.innerText = "Ready"; }, 3000);
+                // Show Center Pop-up for Wait Time
+                showGameModal("Too Soon!", data.message); 
             }
 
         } catch (err) {
             console.error(err);
-            goldenState.innerText = "Error ❌";
+            if (goldenState) goldenState.innerText = "Error ❌";
+            showGameModal("System Error", "Something went wrong. Please check your connection.");
         } finally {
             goldenBtn.disabled = false;
         }
