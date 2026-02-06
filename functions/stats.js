@@ -7,6 +7,9 @@ export async function onRequest(context) {
   
   const ip = request.headers.get("CF-Connecting-IP") || "anonymous";
 
+  let globalCount = await env.LIKES_STORAGE.get("global_golden_count");
+  globalCount = parseInt(globalCount) || 0;
+
   try {
     // --- IP LOCK LOGIC (FOR BOTH LIKES AND VIEWS) ---
     // Views lock for 30 mins (1800s), Likes lock for 24h (86400s)
