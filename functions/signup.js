@@ -14,7 +14,7 @@ export async function onRequest(context) {
     // --- NEW LOGIC: RATE LIMITING ---
     // Identify the user by their IP address
     const clientIP = request.headers.get("CF-Connecting-IP") || "anonymous";
-    const limitKey = `limit:${clientIP}`;
+    const limitKey = `limit_v2:${clientIP}`;
 
     // Check if this IP has signed up in the last hour
     const hasSignedUpRecently = await env.LIKES_STORAGE.get(limitKey);
