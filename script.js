@@ -236,7 +236,7 @@ function handleLogout() {
     if (personalDisplay) personalDisplay.innerText = "0";
     document.getElementById('golden-state').innerText = "Ready";
     
-    updateStats(false); // <--- Refresh stats to guest view
+    updateStats(); // <--- Refresh stats to guest view
 }
 
 // --- REWARD LOGIC ---
