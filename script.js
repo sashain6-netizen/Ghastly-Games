@@ -185,6 +185,50 @@ function resetForm() {
     ['signup-msg', 'login-msg'].forEach(id => document.getElementById(id).innerText = '');
 }
 
+async function handleSignup() {
+    const email = document.getElementById('reg-email').value;
+    const password = document.getElementById('reg-password').value;
+    const messageBox = document.getElementById('signup-msg');
+
+    // 1. Email Validation (Check for @ and then a .)
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        messageBox.innerText = "Invalid email. Must contain @ and a dot (e.g., user@site.com)";
+        messageBox.style.color = "red";
+        return;
+    }
+
+    // 2. Password Validation (At least 8 characters)
+    if (password.length < 8) {
+        messageBox.innerText = "Password must be at least 8 characters long.";
+        messageBox.style.color = "red";
+        return;
+    }
+
+    messageBox.innerText = "Creating account...";
+    messageBox.style.color = "#bc6ff1";
+
+    try {
+        const response = await fetch('/signup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+        const result = await response.json();
+        if (response.ok) {
+            messageBox.style.color = "lightgreen";
+            messageBox.innerText = "Account created! You can now login.";
+            setTimeout(() => openAuth('login'), 2000);
+        } else {
+            messageBox.style.color = "red";
+            messageBox.innerText = result.error || "Signup failed.";
+        }
+    } catch (error) {
+        messageBox.style.color = "red";
+        messageBox.innerText = "Server error.";
+    }
+}
+
 async function handleLogin() {
     const email = document.getElementById('login-email').value;
     const password = document.getElementById('login-password').value;
