@@ -16,19 +16,50 @@ if (searchInput) {
 
 // --- 2. GAME MODAL FUNCTIONS ---
 // These are global so HTML onclick can see them
-function openGame(title, gameUrl) {
+// Variable to store what the user actually owns
+let ownedGames = []; 
+
+// Variable to track what we are currently trying to buy
+let pendingPurchase = null;
+
+async function openGame(title, gameUrl, gameId, price = 50) {
+    // 1. Check if user owns it
+    if (!ownedGames.includes(gameId)) {
+        showPurchaseModal(title, gameId, price);
+        return;
+    }
+
+    // 2. Normal open logic
     const modal = document.getElementById('gameModal');
     const modalTitle = document.getElementById('modalTitle');
     const gameFrameContainer = document.getElementById('gameFrameContainer');
     
     if (modal) {
         modal.style.display = 'flex';
-        if (modalTitle) modalTitle.textContent = title;
-        if (gameFrameContainer) {
-            gameFrameContainer.innerHTML = `<iframe src="${gameUrl}" width="100%" height="100%" style="border:0;" allowfullscreen></iframe>`;
-        }
+        modalTitle.textContent = title;
+        gameFrameContainer.innerHTML = `<iframe src="${gameUrl}" width="100%" height="100%" style="border:0;" allowfullscreen></iframe>`;
     }
 }
+
+function showPurchaseModal(title, gameId, price) {
+    const pModal = document.getElementById('purchaseModal');
+    document.getElementById('purchaseTitle').innerText = `Unlock ${title}`;
+    document.getElementById('purchaseMessage').innerText = `Would you like to unlock this game permanently for ${price} 💎?`;
+    
+    // Set the click action for the confirm button
+    document.getElementById('confirmPurchaseBtn').onclick = async () => {
+        await buyGame(gameId, price);
+        closePurchaseModal();
+    };
+
+    pModal.style.display = 'flex';
+}
+
+function closePurchaseModal() {
+    document.getElementById('purchaseModal').style.display = 'none';
+}
+
+
 
 function closeGame() {
     const modal = document.getElementById('gameModal');
@@ -158,3 +189,51 @@ async function updateGameStats() {
         console.error("G-Bucks sync failed in /games/:", err);
     }
 }
+
+async function buyGame(gameId, price) {
+    const email = localStorage.getItem('user_email');
+    
+    // 1. Swap alert with Custom Auth Modal
+    if (!email) {
+        showAuthWarning();
+        return;
+    }
+
+    // (Note: The "Confirm" part is now handled by showPurchaseModal clicking this function)
+
+    try {
+        const res = await fetch(`/stats?email=${encodeURIComponent(email)}&action=purchase&gameId=${gameId}&price=${price}`, {
+            method: 'POST'
+        });
+
+        const result = await res.json();
+
+        if (res.ok) {
+            // 2. Success Feedback (Update the modal text instead of an alert)
+            const msgEl = document.getElementById('purchaseMessage');
+            if (msgEl) msgEl.innerText = "Success! You now own this game.";
+            
+            updateGameStats(); // Refresh balance
+            
+            // Auto-close the purchase modal after 1.5 seconds
+            setTimeout(closePurchaseModal, 1500);
+        } else {
+            // 3. Error Feedback
+            alert(result.error || "Purchase failed."); // You can also put this in purchaseMessage
+        }
+    } catch (err) {
+        console.error("Purchase error:", err);
+        showAuthWarning(); // Or a general error modal
+    }
+}
+
+// Add these to the bottom of script.js if they aren't there
+function showAuthWarning() {
+    document.getElementById('authWarningModal').style.display = 'flex';
+}
+
+function closeAuthWarning() {
+    document.getElementById('authWarningModal').style.display = 'none';
+}
+
+

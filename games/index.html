@@ -9,6 +9,27 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- Custom Purchase Modal -->
+    <div id="purchaseModal" class="modal" style="display:none; align-items: center; justify-content: center; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8);">
+        <div class="modal-content" style="max-width: 400px; text-align: center; padding: 20px; border: 2px solid #bc6ff1;">
+            <h2 id="purchaseTitle">Unlock Game</h2>
+            <p id="purchaseMessage">Would you like to unlock this game?</p>
+            <div style="display: flex; justify-content: center; gap: 15px; margin-top: 20px;">
+                <button id="confirmPurchaseBtn" class="currency-container" style="background: #bc6ff1; cursor: pointer;">Confirm Purchase</button>
+                <button onclick="closePurchaseModal()" class="currency-container" style="background: #444; cursor: pointer;">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <div id="authWarningModal" class="modal" style="display:none; align-items: center; justify-content: center; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9);">
+        <div class="modal-content" style="max-width: 400px; text-align: center; padding: 30px; border: 2px solid #ff4444;">
+            <h2 style="color: #ff4444;">Access Denied</h2>
+            <p>You must be logged in to your dashboard to purchase or play games.</p>
+            <div style="margin-top: 20px;">
+                <button onclick="window.location.href='/'" class="currency-container" style="background: #bc6ff1; cursor: pointer;">Go to Login</button>
+                <button onclick="closeAuthWarning()" class="currency-container" style="background: #444; cursor: pointer; margin-left: 10px;">Close</button>
+            </div>
+        </div>
+    </div>
     <header>
         <div class="logo">Game<span class="highlight">Zone</span></div>
         <div class="search-bar">
@@ -25,13 +46,13 @@
         
         <div class="game-container" id="gameContainer">
             
-            <div class="game-card" data-title="Nael's Adventure" onclick="openGame('Nael\'s Adventure', 'resources/module1/index.html')">
+            <div class="game-card" data-title="Nael's Adventure" onclick="openGame('Nael\'s Adventure', 'resources/module1/index.html', 'nael_adv', '1')">
                 <div class="game-thumb" style="background-color: #3b82f6;"></div>
                 <div class="game-info">
                     <h3>Nael's Adventure</h3>
                     <p>Adventure</p>
                 </div>
-            </div> <div class="game-card" data-title="Johnny Trigger" onclick="openGame('Johnny Trigger', '')">
+            </div> <div class="game-card" data-title="Johnny Trigger" onclick="openGame('Johnny Trigger', '', 'jonny_trigger', '1')">
                 <div class="game-thumb" style="background-color: #ff0000;"></div>
                 <div class="game-info">
                     <h3>Johnny Trigger</h3>
