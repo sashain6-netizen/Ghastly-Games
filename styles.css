@@ -685,7 +685,8 @@ body {
 .currency-container {
     background-color: #38cff1;
     font-weight: bold;
-    margin-right: 70%;
+    margin-right: 80%;
+    margin-bottom: 5%;
     border-radius: 12px;
     box-shadow: none;
     padding: 10px 20px;
