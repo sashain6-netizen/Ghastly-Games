@@ -367,3 +367,11 @@ document.addEventListener("DOMContentLoaded", function() {
         updateUIState(savedEmail, savedBalance || 0);
     }
 });
+
+function togglePassword(inputId) {
+    const passwordInput = document.getElementById(inputId);
+    if (passwordInput) {
+        // Switch between 'password' (hidden) and 'text' (visible)
+        passwordInput.type = passwordInput.type === "password" ? "text" : "password";
+    }
+}
