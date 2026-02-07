@@ -45,7 +45,10 @@ if (hasSignedUpRecently) {
       email: email.toLowerCase().trim(),
       password: hashedPassword,
       created_at: new Date().toISOString(),
-      xp: 0
+      xp: 0,
+      g_bucks: 0,
+      last_daily_claim: 0,
+      owned_games: []
     };
 
     // Save the User
