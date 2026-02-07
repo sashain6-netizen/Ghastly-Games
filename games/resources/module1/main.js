@@ -4,13 +4,53 @@ import {InputHandler} from './input.js'
 import {Platform} from './platform.js'
 import {Enemy} from './enemy.js'
 
+// 1. Define your domains. Put your primary site first!
 const allowedDomains = ["yourwebsite.com", "www.yourwebsite.com", "localhost", "127.0.0.1"];
 const currentDomain = window.location.hostname;
 
+// 2. Identify the primary domain for the text and link
+const officialDomain = allowedDomains[0]; 
+
 if (!allowedDomains.some(domain => currentDomain.endsWith(domain))) {
-    document.body.innerHTML = "<div style='text-align:center; margin-top:50px;'><h1>Access Denied</h1><p>This game is only authorized for yourwebsite.com</p></div>";
+    document.body.style.backgroundColor = "black"; 
+    document.body.style.display = "flex";
+    document.body.style.justifyContent = "center";
+    document.body.style.alignItems = "center";
+    document.body.style.height = "100vh";
+    document.body.style.margin = "0";
+
+    // 3. The text and link now use the 'officialDomain' variable
+    document.body.innerHTML = `
+        <div style="color: white; text-align: center; font-family: Helvetica, Arial, sans-serif;">
+            <h1 style="font-size: 3rem; margin-bottom: 10px;">Access Denied</h1>
+            <p style="font-size: 1.2rem; margin-bottom: 30px;">This game is only authorized for ${officialDomain}</p>
+            
+            <a href="https://${officialDomain}" 
+               target="_blank"
+               style="
+                display: inline-block;
+                background-color: #4CAF50;
+                color: white;
+                padding: 15px 30px;
+                text-decoration: none;
+                font-size: 1.2rem;
+                font-weight: bold;
+                border-radius: 5px;
+                transition: background-color 0.3s;
+               "
+               onmouseover="this.style.backgroundColor='#45a049'"
+               onmouseout="this.style.backgroundColor='#4CAF50'">
+               PLAY ON ${officialDomain.toUpperCase()}
+            </a>
+        </div>
+    `;
+
     throw new Error("Unauthorized domain.");
 }
+
+// ... rest of your code
+
+// ... rest of your code (window.addEventListener('load', ...))
 
 window.addEventListener('load', () => {
     const canvas = document.querySelector('#canvas1')
