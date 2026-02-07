@@ -77,7 +77,7 @@ export class Player {
     }
 
     draw(context) {
-    // Draw bullets first so they appear "under" the player if overlapping
+    // Draw bullets first so they appear "under" the player
     this.bullets.forEach(bullet => bullet.draw(context));
 
     context.save();
@@ -85,17 +85,32 @@ export class Player {
     // 1. The Shadow Body
     context.fillStyle = 'black';
     context.shadowBlur = 15;
-    context.shadowColor = 'red'; // Red ghostly aura
+    context.shadowColor = 'red'; 
     context.fillRect(this.x, this.y, this.width, this.height);
 
     // 2. The Glowing Eyes
     context.shadowBlur = 5;
     context.fillStyle = '#ff0000';
     
-    // Left eye (scaled to width)
-    context.fillRect(this.x + (this.width * 0.2), this.y + (this.height * 0.2), 6, 6);
-    // Right eye
-    context.fillRect(this.x + (this.width * 0.6), this.y + (this.height * 0.2), 6, 6);
+    // Determine eye offset based on horizontal velocity (vx)
+    // If vx > 0, eyes shift right. If vx < 0, eyes shift left. Default is center.
+    let eyeShift = 0;
+    if (this.vx > 0) eyeShift = this.width * 0.1; 
+    else if (this.vx < 0) eyeShift = -this.width * 0.1;
+
+    // Left eye (base position + shift)
+    context.fillRect(
+        this.x + (this.width * 0.2) + eyeShift, 
+        this.y + (this.height * 0.2), 
+        6, 6
+    );
+    
+    // Right eye (base position + shift)
+    context.fillRect(
+        this.x + (this.width * 0.6) + eyeShift, 
+        this.y + (this.height * 0.2), 
+        6, 6
+    );
 
     context.restore();
 }
