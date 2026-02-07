@@ -6,7 +6,6 @@ export class Enemy {
         this.height = 240 * this.sizeModifier
         this.x = Math.floor(Math.random() * ((this.game.width-this.width) - 0 + 1)) + 0
         this.y = Math.floor(Math.random() * ((-this.height) - (-this.game.height) + 1)) + (-this.game.height)
-        this.image = document.querySelector('#virus')
         this.vx = this.game.object_vx
         this.audio = new Audio('sound effects/virus.mp3')
         this.audio.loop = true

@@ -13,7 +13,6 @@ export class Player {
         this.max_vy = this.game.platforms[0].height
         this.vy = this.min_vy     
         this.weight = 0.5
-        this.image = document.querySelector('#android')
         this.vx = 0
         this.max_vx = 8
         this.bullets = []

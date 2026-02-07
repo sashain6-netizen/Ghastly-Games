@@ -7,7 +7,6 @@ export class Platform {
         this.x = Math.floor(Math.random() * ((this.game.width-this.width) - 0 + 1)) + 0
         this.y = this.calc_Y(upperY,lowerY)
         this.vx = (this.type=='blue') ? this.game.object_vx : 0
-        this.image = document.querySelector(`#${this.type}_platform`)
         this.markedForDeletion = false
     }
 
