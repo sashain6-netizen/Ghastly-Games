@@ -114,7 +114,7 @@ window.addEventListener('load', () => {
             this.background.draw(context)
 
             if(!this.gameStart){
-                context.font = 'bold 28px "Courier New"'
+                context.font = 'bold 24px "Courier New"'
                 context.fillStyle = "#660000" // Dried blood color
                 context.textAlign = 'center'
                 context.shadowBlur = 10;
