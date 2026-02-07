@@ -25,8 +25,32 @@ export class Platform {
     }
 
     draw(context) {
-        context.drawImage(this.image,this.x,this.y,this.width,this.height)
+    context.save();
+    
+    // Creepy palette based on platform type
+    if (this.type === 'green') {
+        context.fillStyle = '#222';      // Dark grey stone
+        context.strokeStyle = '#444';    // Slightly lighter border
+    } else if (this.type === 'blue') {
+        context.fillStyle = '#000033';   // Deep abyss blue
+        context.strokeStyle = '#0000aa';
+    } else if (this.type === 'white') {
+        context.fillStyle = '#ccc';      // Skeletal bone white
+        context.strokeStyle = '#888';
+    } else if (this.type === 'brown') {
+        context.fillStyle = '#400';      // Dried blood (Broken platforms)
+        context.strokeStyle = '#200';
     }
+
+    // Draw the platform body
+    context.fillRect(this.x, this.y, this.width, this.height);
+    
+    // Add a border so they stay visible against the black background
+    context.lineWidth = 2;
+    context.strokeRect(this.x, this.y, this.width, this.height);
+    
+    context.restore();
+}
 
     calc_Y(upperY,lowerY) {
         if(this.type != 'brown'){
