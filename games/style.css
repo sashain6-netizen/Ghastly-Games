@@ -324,3 +324,22 @@ footer {
     from { transform: translateX(100%); opacity: 0; }
     to { transform: translateX(0); opacity: 1; }
 }
+
+.currency-container {
+    margin-top: 20px;
+    background-color: #38cff1;
+    font-weight: bold;
+    margin-left: 150px;
+    border-radius: 12px;
+    box-shadow: none;
+    padding: 10px 20px;
+    border-style: solid;
+    transition: transform 0.2s;
+    max-width: 150px;
+}
+
+.currency-container:hover {
+    transform: scale(1.05);
+    background: #0950ba;
+    box-shadow: 0 0 20px #0544a1
+}

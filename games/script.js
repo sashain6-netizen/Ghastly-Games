@@ -134,3 +134,26 @@ function closeAd() {
 document.addEventListener("DOMContentLoaded", function() {
     showAdRandomly();
 });
+
+// --- 5. G-BUCKS SYSTEM ---
+async function updateGameStats() {
+    const gBucksSpan = document.getElementById('g-bucks');
+    
+    try {
+        // Get email from localStorage (saved by your main page login)
+        const email = localStorage.getItem('user_email') || ""; 
+
+        // Fetch from the root /stats worker
+        const res = await fetch(`/stats?email=${encodeURIComponent(email)}`);
+        if (!res.ok) return;
+
+        const data = await res.json();
+
+        // Update the G-Bucks span if it exists on this page
+        if (gBucksSpan) {
+            gBucksSpan.innerText = data.gbucks ?? "0";
+        }
+    } catch (err) {
+        console.error("G-Bucks sync failed in /games/:", err);
+    }
+}
