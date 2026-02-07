@@ -170,7 +170,7 @@ window.addEventListener('load', () => {
             }
         }
 
-        add_bouncy_platforms(lowerX, lowerY) {
+        add_bouncy_platforms(lowerX, upperY) {
             let num = Math.floor(Math.random() * 3)
             for(let i = 0; i < num; i++){
                 this.platforms.push(new Platform(this, lowerX, upperY, 'ghostly'))
