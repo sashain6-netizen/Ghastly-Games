@@ -5,7 +5,7 @@ import {Platform} from './platform.js'
 import {Enemy} from './enemy.js'
 
 // 1. Define your domains. Put your primary site first!
-const allowedDomains = ["yourwebsite.com", "www.yourwebsite.com", "localhost", "127.0.0.1"];
+const allowedDomains = ["ghastly-games.pages.dev", "ghastly-games.pages.dev", "localhost", "127.0.0.1"];
 const currentDomain = window.location.hostname;
 
 // 2. Identify the primary domain for the text and link
