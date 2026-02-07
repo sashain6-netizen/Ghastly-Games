@@ -9,7 +9,7 @@ export class Player {
         this.x = this.game.platforms.filter(platform => platform.type=='green').slice(-1)[0].x + 6
         this.y = this.game.platforms.filter(platform => platform.type=='green').slice(-1)[0].y - this.height 
         this.min_y = (this.game.height/2)-30
-        this.min_vy = -30
+        this.min_vy = -50
         this.max_vy = this.game.platforms[0].height
         this.vy = this.min_vy     
         this.weight = 0.5
