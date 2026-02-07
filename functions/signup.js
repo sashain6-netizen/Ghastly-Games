@@ -51,7 +51,7 @@ if (hasSignedUpRecently) {
     // Save the User
     await env.LIKES_STORAGE.put(userKey, JSON.stringify(userData));
 
-    await env.LIKES_STORAGE.put(limitKey, "true", { expirationTtl: 3600 });
+    await env.LIKES_STORAGE.put(limitKey, "true", { expirationTtl: 60 });
 
     return new Response(JSON.stringify({ success: true, message: "Account created!" }), {
       status: 201,
