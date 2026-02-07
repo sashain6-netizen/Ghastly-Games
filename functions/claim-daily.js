@@ -47,17 +47,22 @@ export async function onRequest(context) {
     await env.LIKES_STORAGE.put(userKey, JSON.stringify(userData));
 
     // --- 3. UPDATE GLOBAL COUNT (D1 DATABASE) ---
-    // Note: I am assuming your D1 table is named 'DB' and 
-    // you have one row where id = 1.
-    
-    const { results } = await env.DB.prepare(`
-      UPDATE DB 
-      SET global_golden_thumbs = global_golden_thumbs + 1 
-      WHERE id = 1
-      RETURNING global_golden_thumbs
-    `).run();
+    // --- 3. UPDATE GLOBAL COUNT (D1 DATABASE) ---
+// 1. Update the count in the 'stats' table
+await env.DB.prepare(`
+  UPDATE stats 
+  SET count = count + 1 
+  WHERE id = 'global_golden_thumbs'
+`).run();
 
-    const newGlobalCount = results[0]?.global_golden_thumbs || 0;
+// 2. Fetch the new total to send back to the UI
+const goldenRow = await env.DB.prepare(`
+  SELECT count FROM stats WHERE id = 'global_golden_thumbs'
+`).first();
+
+ newGlobalCount = goldenRow?.count || 0;
+
+     newGlobalCount = results[0]?.global_golden_thumbs || 0;
 
     return new Response(JSON.stringify({
       success: true,
