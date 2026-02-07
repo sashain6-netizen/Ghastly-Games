@@ -89,8 +89,10 @@ window.addEventListener('load', () => {
             
             this.add_platforms(0, this.height - 15)
             this.add_broken_platforms(0, this.height - 15)
+            this.add_bouncy_platforms(0, this.height - 15)
             this.add_platforms(-this.height, -15)
             this.add_broken_platforms(-this.height, -15)
+            this.add_bouncy_platforms(-this.height, -15)
             this.player = new Player(this)
         }
 
@@ -165,6 +167,13 @@ window.addEventListener('load', () => {
             let num = Math.floor(Math.random() * 6)
             for(let i = 0; i < num; i++){
                 this.platforms.push(new Platform(this, lowerY, upperY, 'brown'))
+            }
+        }
+
+        add_bouncy_platforms(lowerX, lowerY) {
+            let num = Math.floor(Math.random() * 3)
+            for(let i = 0; i < num; i++){
+                this.platforms.push(new BouncyPlatform(this, lowerX, lowerY))
             }
         }
 

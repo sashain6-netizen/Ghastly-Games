@@ -39,6 +39,9 @@ export class Platform {
     } else if (this.type === 'brown') {
         context.fillStyle = '#400';      // Dried blood (Broken platforms)
         context.strokeStyle = '#200';
+    } else if (this.type === 'ghostly') {
+        context.fillStyle = '#47a003';    
+        context.strokeStyle = '#0f7607';    
     }
 
     // Draw the platform body
