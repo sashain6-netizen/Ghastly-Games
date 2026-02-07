@@ -11,19 +11,19 @@ export async function onRequest(context) {
   try {
     const { email, password } = await request.json();
 
-    // --- NEW LOGIC: RATE LIMITING ---
-    // Identify the user by their IP address
-    const clientIP = request.headers.get("CF-Connecting-IP") || "anonymous";
-    const limitKey = `limit_v2:${clientIP}`;
+    // --- UPDATED LOGIC: RATE LIMITING BY EMAIL ---
+// We use the email to create a unique key for the rate limit
+const emailKey = email.toLowerCase().trim();
+const limitKey = `limit_v2:${emailKey}`;
 
-    // Check if this IP has signed up in the last hour
-    const hasSignedUpRecently = await env.LIKES_STORAGE.get(limitKey);
-    if (hasSignedUpRecently) {
-      return new Response(JSON.stringify({ 
-        error: "Too many accounts. Please wait 1 hour before signing up again." 
-      }), { status: 429 });
-    }
-    // --- END NEW LOGIC ---
+// Check if THIS specific email has tried to sign up in the last minute
+const hasSignedUpRecently = await env.LIKES_STORAGE.get(limitKey);
+if (hasSignedUpRecently) {
+  return new Response(JSON.stringify({ 
+    error: "Please wait a moment before trying to register this email again." 
+  }), { status: 429 });
+}
+// --- END UPDATED LOGIC ---
 
     if (!email || !password || password.length < 8) {
       return new Response(JSON.stringify({ error: "Password must be at least 8 characters." }), { status: 400 });
@@ -51,7 +51,7 @@ export async function onRequest(context) {
     // Save the User
     await env.LIKES_STORAGE.put(userKey, JSON.stringify(userData));
 
-    await env.LIKES_STORAGE.put(limitKey, "true", { expirationTtl: 60 });
+    await env.LIKES_STORAGE.put(limitKey, "true", { expirationTtl: 3600 });
 
     return new Response(JSON.stringify({ success: true, message: "Account created!" }), {
       status: 201,
