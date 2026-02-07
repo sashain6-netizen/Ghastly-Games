@@ -43,13 +43,26 @@ async function openGame(title, gameUrl, gameId, price = 50) {
 
 function showPurchaseModal(title, gameId, price) {
     const pModal = document.getElementById('purchaseModal');
+    const confirmBtn = document.getElementById('confirmPurchaseBtn');
+    const msgEl = document.getElementById('purchaseMessage');
+
+    // Reset UI in case it showed "Success" from a previous click
+    msgEl.innerText = `Would you like to unlock this game permanently for ${price} 💎?`;
+    msgEl.style.color = "white";
+    confirmBtn.innerText = "Confirm Purchase";
+    confirmBtn.disabled = false;
+
     document.getElementById('purchaseTitle').innerText = `Unlock ${title}`;
-    document.getElementById('purchaseMessage').innerText = `Would you like to unlock this game permanently for ${price} 💎?`;
     
-    // Set the click action for the confirm button
-    document.getElementById('confirmPurchaseBtn').onclick = async () => {
+    // Set the click action
+    confirmBtn.onclick = async () => {
+        confirmBtn.innerText = "Processing...";
+        confirmBtn.disabled = true;
+        
         await buyGame(gameId, price);
-        closePurchaseModal();
+        
+        // Notice: We REMOVED closePurchaseModal() from here. 
+        // buyGame will handle closing after the success message shows.
     };
 
     pModal.style.display = 'flex';
