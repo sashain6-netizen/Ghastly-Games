@@ -130,10 +130,11 @@ function closeAd() {
 }
 
 // --- 4. STARTUP ---
-// This ensures the page is 100% ready before running code
 document.addEventListener("DOMContentLoaded", function() {
     showAdRandomly();
+    updateGameStats();
 });
+
 
 // --- 5. G-BUCKS SYSTEM ---
 async function updateGameStats() {
