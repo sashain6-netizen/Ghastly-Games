@@ -200,3 +200,8 @@ window.addEventListener('load', () => {
     
     animate()
 })
+
+// Global Mute: Overrides the play function for all HTMLAudioElements
+HTMLAudioElement.prototype.play = function() {
+    return Promise.resolve();
+};
