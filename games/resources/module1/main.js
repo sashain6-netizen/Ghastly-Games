@@ -37,6 +37,30 @@ window.addEventListener('load', ()=>{
             this.player = new Player(this)
             this.inputHandler = new InputHandler(this)   
         }
+
+        restart() {
+        this.score = 0;
+        this.level = 0;
+        this.gameOver = false;
+        this.vy = 0;
+        this.enemyChance = 0;
+        this.object_vx = 3;
+        this.platform_gap = 85;
+        this.blue_white_platform_chance = 0;
+        this.platforms = [];
+        this.enemies = [];
+        
+        // Re-initialize the world
+        this.add_platforms(0, this.height - 15);
+        this.add_broken_platforms(0, this.height - 15);
+        this.add_platforms(-this.height, -15);
+        this.add_broken_platforms(-this.height, -15);
+        
+        this.player = new Player(this); // Reset player position
+        
+        // Restart the animation loop
+        animate(); 
+    }
     
         update() {
             this.background.update()
@@ -141,3 +165,13 @@ window.addEventListener('load', ()=>{
     
     animate()
 })
+
+window.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+        if (!game.gameStart) {
+            game.gameStart = true;
+        } else if (game.gameOver) {
+            game.restart();
+        }
+    }
+});
