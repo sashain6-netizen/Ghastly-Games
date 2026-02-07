@@ -700,3 +700,23 @@ body {
     box-shadow: 0 0 20px #0544a1
 }
 
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.show-pw {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.8rem;
+    color: #ccc;
+    margin-bottom: 10px;
+}
+
+.show-pw input {
+    cursor: pointer;
+    accent-color: #bc6ff1; /* This makes the checkbox purple! */
+}
+
