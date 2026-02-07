@@ -131,6 +131,10 @@ async function updateStats(isClick = false) {
 
     try {
         const email = localStorage.getItem('user_email') || ""; 
+        // If no one is logged in, reset the G-Bucks display immediately
+        if (!email && gBucksSpan) {
+            gBucksSpan.innerText = "0";
+        }
         const method = isClick ? 'POST' : 'GET';
         const res = await fetch(`/stats?email=${encodeURIComponent(email)}`, { method });
         if (!res.ok) return; 
@@ -226,17 +230,28 @@ function updateUIState(email, balance) {
 }
 
 function handleLogout() {
+    // 1. Clear Storage
     localStorage.removeItem('user_email');
     localStorage.removeItem('golden_balance');
+
+    // 2. Reset UI Elements
     document.getElementById('logged-out-box').style.display = 'flex';
     document.getElementById('logged-in-box').style.display = 'none';
     document.getElementById('user-display').innerText = "";
     
+    // 3. Clear G-Bucks displays (Both the sidebar and any balance spans)
     const personalDisplay = document.getElementById('personal-balance');
+    const gBucksSpan = document.getElementById('g-bucks'); // The sidebar counter
+    const email = localStorage.getItem('user_email') || "";
     if (personalDisplay) personalDisplay.innerText = "0";
-    document.getElementById('golden-state').innerText = "Ready";
+    if (gBucksSpan) gBucksSpan.innerText = "0"; // Force reset to 0
     
-    updateStats(); // <--- Refresh stats to guest view
+    if (document.getElementById('golden-state')) {
+        document.getElementById('golden-state').innerText = "Ready";
+    }
+    
+    // 4. Final sync to get guest likes/views
+    updateStats(false); 
 }
 
 // --- REWARD LOGIC ---
