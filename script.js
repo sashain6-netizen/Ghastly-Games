@@ -33,6 +33,26 @@ sites.forEach(site => {
     grid.appendChild(card);
 });
 
+function showGameModal(title, message) {
+    const overlay = document.getElementById('game-modal-overlay');
+    const titleEl = document.getElementById('modal-title');
+    const msgEl = document.getElementById('modal-message');
+
+    if (overlay && titleEl && msgEl) {
+        titleEl.innerText = title;
+        msgEl.innerText = message;
+        overlay.style.display = 'flex'; 
+    } else {
+        // Fallback if your HTML doesn't have the modal elements yet
+        alert(title + ": " + message);
+    }
+}
+
+function closeGameModal() {
+    const overlay = document.getElementById('game-modal-overlay');
+    if (overlay) overlay.style.display = 'none';
+}
+
 function showAdRandomly() {
     const adPopup = document.getElementById('adPopup');
     const adImage = document.getElementById('adImage');
