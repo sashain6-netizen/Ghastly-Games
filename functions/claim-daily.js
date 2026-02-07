@@ -60,7 +60,7 @@ const goldenRow = await env.DB.prepare(`
   SELECT count FROM stats WHERE id = 'global_golden_thumbs'
 `).first();
 
- newGlobalCount = goldenRow?.count || 0;
+ const newGlobalCount = goldenRow?.count || 0;
 
     return new Response(JSON.stringify({
       success: true,
