@@ -66,6 +66,26 @@ function showPurchaseModal(title, gameId, price) {
     };
 
     pModal.style.display = 'flex';
+}async function updateGameStats() {
+    const gBucksSpan = document.getElementById('g-bucks');
+    const email = localStorage.getItem('user_email') || ""; 
+
+    try {
+        const res = await fetch(`/stats?email=${encodeURIComponent(email)}`);
+        if (!res.ok) return;
+
+        const data = await res.json();
+
+        if (gBucksSpan) {
+            gBucksSpan.innerText = data.gbucks ?? "...";
+        }
+
+        // --- IMPORTANT: Update the ownedGames list ---
+        ownedGames = data.owned_games || []; 
+
+    } catch (err) {
+        console.error("G-Bucks sync failed:", err);
+    }
 }
 
 function closePurchaseModal() {
@@ -183,36 +203,35 @@ document.addEventListener("DOMContentLoaded", function() {
 // --- 5. G-BUCKS SYSTEM ---
 async function updateGameStats() {
     const gBucksSpan = document.getElementById('g-bucks');
-    
-    try {
-        // Get email from localStorage (saved by your main page login)
-        const email = localStorage.getItem('user_email') || ""; 
+    const email = localStorage.getItem('user_email') || ""; 
 
-        // Fetch from the root /stats worker
+    try {
         const res = await fetch(`/stats?email=${encodeURIComponent(email)}`);
         if (!res.ok) return;
 
         const data = await res.json();
 
-        // Update the G-Bucks span if it exists on this page
         if (gBucksSpan) {
             gBucksSpan.innerText = data.gbucks ?? "...";
         }
+
+        // --- IMPORTANT: Update the ownedGames list ---
+        ownedGames = data.owned_games || []; 
+
     } catch (err) {
-        console.error("G-Bucks sync failed in /games/:", err);
+        console.error("G-Bucks sync failed:", err);
     }
 }
 
+
 async function buyGame(gameId, price) {
     const email = localStorage.getItem('user_email');
+    const msgEl = document.getElementById('purchaseMessage');
     
-    // 1. Swap alert with Custom Auth Modal
     if (!email) {
         showAuthWarning();
         return;
     }
-
-    // (Note: The "Confirm" part is now handled by showPurchaseModal clicking this function)
 
     try {
         const res = await fetch(`/stats?email=${encodeURIComponent(email)}&action=purchase&gameId=${gameId}&price=${price}`, {
@@ -222,23 +241,25 @@ async function buyGame(gameId, price) {
         const result = await res.json();
 
         if (res.ok) {
-            // 2. Success Feedback (Update the modal text instead of an alert)
-            const msgEl = document.getElementById('purchaseMessage');
-            if (msgEl) msgEl.innerText = "Success! You now own this game.";
+            msgEl.innerText = "✅ Success! You now own this game.";
+            msgEl.style.color = "#4ecca3"; 
             
-            updateGameStats(); // Refresh balance
+            await updateGameStats(); // Wait for stats to sync
             
-            // Auto-close the purchase modal after 1.5 seconds
-            setTimeout(closePurchaseModal, 1500);
+            // Wait 2 seconds so they can see the success message
+            setTimeout(closePurchaseModal, 2000);
         } else {
-            // 3. Error Feedback
-            alert(result.error || "Purchase failed."); // You can also put this in purchaseMessage
+            msgEl.innerText = "❌ " + (result.error || "Purchase failed.");
+            msgEl.style.color = "#ff4444";
+            document.getElementById('confirmPurchaseBtn').disabled = false;
+            document.getElementById('confirmPurchaseBtn').innerText = "Try Again";
         }
     } catch (err) {
         console.error("Purchase error:", err);
-        showAuthWarning(); // Or a general error modal
+        msgEl.innerText = "❌ Server error. Try again later.";
     }
 }
+
 
 // Add these to the bottom of script.js if they aren't there
 function showAuthWarning() {
