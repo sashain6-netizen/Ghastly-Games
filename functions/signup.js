@@ -45,7 +45,7 @@ export async function onRequest(context) {
       email: email.toLowerCase().trim(),
       password: hashedPassword,
       created_at: new Date().toISOString(),
-      xp: 0 
+      xp: 0
     };
 
     // Save the User
