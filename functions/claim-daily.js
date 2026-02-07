@@ -62,8 +62,6 @@ const goldenRow = await env.DB.prepare(`
 
  newGlobalCount = goldenRow?.count || 0;
 
-     newGlobalCount = results[0]?.global_golden_thumbs || 0;
-
     return new Response(JSON.stringify({
       success: true,
       new_balance: userData.g_bucks,
