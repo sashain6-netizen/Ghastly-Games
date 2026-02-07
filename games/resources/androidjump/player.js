@@ -78,6 +78,7 @@ export class Player {
     }
 
     draw(context) {
+    this.bullets.forEach(bullet => bullet.draw(context))
     context.save();
 
     // 1. Draw the "Shadow" (The Body)
