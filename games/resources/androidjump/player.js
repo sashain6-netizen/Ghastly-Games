@@ -107,8 +107,8 @@ export class Player {
     
     // Right eye (base position + shift)
     context.fillRect(
-        this.x + (this.width * 0.6) + eyeShift, 
-        this.y + (this.height * 0.2), 
+        this.x + (this.width * 0.7) + eyeShift, 
+        this.y + (this.height * 0.3), 
         6, 6
     );
 
