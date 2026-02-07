@@ -4,8 +4,6 @@ import {InputHandler} from './input.js'
 import {Platform} from './platform.js'
 import {Enemy} from './enemy.js'
 
-if (window.top !== window.self) { window.top.location = window.self.location; }
-
 // 1. Define your domains. Put your primary site first!
 const allowedDomains = ["ghastly-games.pages.dev", "ghastly-games.pages.dev", "localhost", "127.0.0.1"];
 const currentDomain = window.location.hostname;
