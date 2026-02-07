@@ -485,8 +485,9 @@ body {
 }
 
 /* The dark background behind the popup */
+/* The dark background behind the popup */
 #auth-overlay {
-    display: none; /* Hidden until button is clicked */
+    display: none; /* Keep this as NONE so it doesn't block buttons */
     position: fixed;
     top: 0;
     left: 0;
@@ -496,8 +497,10 @@ body {
     z-index: 9999;
     justify-content: center;
     align-items: center;
+    padding: 20px; /* Simplified padding */
 }
 
+/* This container only needs to be styled, not given a separate display property here */
 #ghastly-auth-system {
     position: relative;
     background: #1a0b2e;

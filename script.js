@@ -168,6 +168,7 @@ async function updateStats(isClick = false) {
 // ==========================================
 
 function openAuth(type) {
+    closeAllMenus();
     document.getElementById('auth-overlay').style.display = 'flex';
     document.getElementById('signup-form-container').style.display = 'none';
     document.getElementById('login-form-container').style.display = 'none';
