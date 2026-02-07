@@ -682,3 +682,20 @@ body {
     to { transform: scale(1); opacity: 1; }
 }
 
+.currency-container {
+    background-color: #38cff1;
+    font-weight: bold;
+    margin-right: 1200px;
+    border-radius: 12px;
+    box-shadow: none;
+    padding: 10px 20px;
+    border-style: solid;
+    transition: transform 0.2s;
+}
+
+.currency-container:hover {
+    transform: scale(1.05);
+    background: #0950ba;
+    box-shadow: 0 0 20px #0544a1
+}
+

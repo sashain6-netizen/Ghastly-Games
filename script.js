@@ -137,23 +137,34 @@ async function updateStats(isClick = false) {
     const likeDisplay = document.getElementById('likes'); 
     const viewDisplay = document.getElementById('views');
     const goldenCountSpan = document.getElementById('golden-count');
+    const gBucksSpan = document.getElementById('g-bucks'); 
     const likeBtn = document.getElementById('like-btn');
 
     try {
+        // --- FIXED: Changed 'userEmail' to 'user_email' to match your login function ---
+        const email = localStorage.getItem('user_email') || ""; 
+
         const method = isClick ? 'POST' : 'GET';
-        const res = await fetch('/stats', { method });
+        
+        // --- Pass the email to the worker ---
+        const res = await fetch(`/stats?email=${encodeURIComponent(email)}`, { method });
         if (!res.ok) return; 
 
         const data = await res.json();
 
-        // 1. Update the numbers
+        // --- Update the UI ---
         if (likeDisplay) likeDisplay.innerText = data.likes ?? "0";
         if (viewDisplay) viewDisplay.innerText = data.views ?? "0";
         if (goldenCountSpan) goldenCountSpan.innerText = data.global_total ?? "0";
+        
+        // Update G-Bucks!
+        if (gBucksSpan) {
+            // Note: Make sure your Worker returns 'gbucks' (no hyphen) 
+            // or 'g-bucks' (with hyphen). Use data['g-bucks'] if the worker has a hyphen.
+            gBucksSpan.innerText = data.gbucks ?? "0";
+        }
 
-        // 2. Handle Like Button Logic
         if (likeBtn) {
-            // If we just clicked OR if we already liked it in the past
             if (isClick || localStorage.getItem('hasLiked') === 'true') {
                 likeBtn.disabled = true;
                 likeBtn.style.opacity = "0.7";
@@ -165,6 +176,8 @@ async function updateStats(isClick = false) {
         console.error("Sync failed:", err);
     }
 }
+
+
 
 // Account creation and login
 // ==========================================
@@ -270,6 +283,8 @@ async function handleLogin() {
             // Update UI
             updateUIState(result.user.email, result.user.g_bucks || 0);
 
+            updateStats();
+
             setTimeout(() => {
                 closeAuth();
             }, 1000);
@@ -373,6 +388,8 @@ if (goldenBtn) {
                 showGameModal("Reward Claimed! 💎", "You earned 1 G-Buck! Come back tomorrow for more.");
                 
                 setTimeout(() => { if (goldenState) goldenState.innerText = "Done"; }, 3000);
+
+                updateStats();
             } else {
                 if (goldenState) goldenState.innerText = "Wait ⏳";
                 showGameModal("Too Soon!", data.message); 
@@ -423,3 +440,23 @@ document.addEventListener("DOMContentLoaded", function() {
         updateUIState(savedEmail, savedBalance || 0);
     }
 });
+
+async function loadPlayerData() {
+    try {
+      const response = await fetch('/stats'); // Path to your stats.js
+      const data = await response.json();
+      
+      // Update the G-Bucks span in your button
+      const gbucksSpan = document.getElementById('g-bucks');
+      if (gbucksSpan) {
+        gbucksSpan.innerText = data.gbucks.toLocaleString();
+      }
+    } catch (err) {
+      console.error("Error loading currency:", err);
+    }
+  }
+
+  // Load data as soon as the page opens
+  window.addEventListener('DOMContentLoaded', loadPlayerData);
+
+updateStats();
