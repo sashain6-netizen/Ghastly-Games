@@ -4,6 +4,14 @@ import {InputHandler} from './input.js'
 import {Platform} from './platform.js'
 import {Enemy} from './enemy.js'
 
+const allowedDomains = ["yourwebsite.com", "www.yourwebsite.com", "localhost", "127.0.0.1"];
+const currentDomain = window.location.hostname;
+
+if (!allowedDomains.some(domain => currentDomain.endsWith(domain))) {
+    document.body.innerHTML = "<div style='text-align:center; margin-top:50px;'><h1>Access Denied</h1><p>This game is only authorized for yourwebsite.com</p></div>";
+    throw new Error("Unauthorized domain.");
+}
+
 window.addEventListener('load', () => {
     const canvas = document.querySelector('#canvas1')
     const ctx = canvas.getContext('2d')
