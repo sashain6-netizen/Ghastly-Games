@@ -33,14 +33,28 @@ export class Player {
         if(this.x < -this.width/2) this.x = this.game.width - (this.width/2)
         if(this.x + (this.width/2) > this.game.width) this.x = - this.width/2
 
-        // vertical movement
+        // --- UPDATED VERTICAL MOVEMENT ---
         if(this.vy > this.weight){  
             let platformType = this.onPlatform()
-            if(platformType=='white' || platformType=='blue' || platformType=='green') this.vy = this.min_vy 
-
-            if(platformType=='white') new Audio('sound effects/single_jump.mp3').play()
-            else if(platformType=='blue' || platformType=='green') new Audio('sound effects/jump.wav').play()
-            else if(platformType=='brown') new Audio('sound effects/no_jump.mp3').play()
+            
+            if(platformType) {
+                // If it's a bouncy ghostly platform, double the jump height
+                if (platformType === 'ghostly') {
+                    this.vy = this.min_vy * 2; // Extra bounce!
+                    new Audio('sound effects/jump.wav').play(); 
+                } 
+                // Standard jump for normal platforms
+                else if (platformType === 'white' || platformType === 'blue' || platformType === 'green') {
+                    this.vy = this.min_vy;
+                    
+                    if(platformType == 'white') new Audio('sound effects/single_jump.mp3').play()
+                    else new Audio('sound effects/jump.wav').play()
+                } 
+                // Just sound for broken platforms (no jump)
+                else if (platformType === 'brown') {
+                    new Audio('sound effects/no_jump.mp3').play()
+                }
+            }
         }
 
         if(this.vy < this.max_vy) this.vy += this.weight
@@ -77,43 +91,23 @@ export class Player {
     }
 
     draw(context) {
-    // Draw bullets first so they appear "under" the player
-    this.bullets.forEach(bullet => bullet.draw(context));
+        this.bullets.forEach(bullet => bullet.draw(context));
+        context.save();
+        context.fillStyle = 'black';
+        context.shadowBlur = 15;
+        context.shadowColor = 'red'; 
+        context.fillRect(this.x, this.y, this.width, this.height);
+        context.shadowBlur = 5;
+        context.fillStyle = '#ff0000';
+        
+        let eyeShift = 0;
+        if (this.vx > 0) eyeShift = this.width * 0.1; 
+        else if (this.vx < 0) eyeShift = -this.width * 0.1;
 
-    context.save();
-    
-    // 1. The Shadow Body
-    context.fillStyle = 'black';
-    context.shadowBlur = 15;
-    context.shadowColor = 'red'; 
-    context.fillRect(this.x, this.y, this.width, this.height);
-
-    // 2. The Glowing Eyes
-    context.shadowBlur = 5;
-    context.fillStyle = '#ff0000';
-    
-    // Determine eye offset based on horizontal velocity (vx)
-    // If vx > 0, eyes shift right. If vx < 0, eyes shift left. Default is center.
-    let eyeShift = 0;
-    if (this.vx > 0) eyeShift = this.width * 0.1; 
-    else if (this.vx < 0) eyeShift = -this.width * 0.1;
-
-    // Left eye (base position + shift)
-    context.fillRect(
-        this.x + (this.width * 0.25) + eyeShift, 
-        this.y + (this.height * 0.2), 
-        6, 6
-    );
-    
-    // Right eye (base position + shift)
-    context.fillRect(
-        this.x + (this.width * 0.65) + eyeShift, 
-        this.y + (this.height * 0.2), 
-        6, 6
-    );
-
-    context.restore();
-}
+        context.fillRect(this.x + (this.width * 0.25) + eyeShift, this.y + (this.height * 0.2), 6, 6);
+        context.fillRect(this.x + (this.width * 0.65) + eyeShift, this.y + (this.height * 0.2), 6, 6);
+        context.restore();
+    }
 
     collision(){
         let result = false
@@ -126,6 +120,7 @@ export class Player {
         return result
     }
 
+    // --- UPDATED PLATFORM DETECTION ---
     onPlatform(){
         let type = null
         let playerHitBox = {x:this.x+15, y:this.y, width:this.width-30, height:this.height}
@@ -136,6 +131,7 @@ export class Player {
 
             if(X_test && Y_test){
                 type = platform.type
+                // Ensure ghostly platforms are NOT deleted when touched
                 platform.markedForDeletion = (type == 'brown' || type == 'white') ? true : false
             }
         })
