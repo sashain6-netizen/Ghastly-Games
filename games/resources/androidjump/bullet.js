@@ -20,7 +20,30 @@ export class Bullet {
         }
     }
 
-    draw(context) {              
-        context.drawImage(this.image,this.x,this.y,this.width,this.height)
-    }
+    draw(context) {
+    context.save();
+
+    // Make the bullet a sharp, glowing diamond shape
+    context.fillStyle = 'black';
+    context.strokeStyle = '#bc6ff1'; // Ghostly purple border
+    context.lineWidth = 2;
+    context.shadowBlur = 10;
+    context.shadowColor = '#bc6ff1';
+
+    context.beginPath();
+    // Start at top center of the bullet
+    context.moveTo(this.x + this.width / 2, this.y); 
+    // Right side
+    context.lineTo(this.x + this.width, this.y + this.height / 2);
+    // Bottom
+    context.lineTo(this.x + this.width / 2, this.y + this.height);
+    // Left side
+    context.lineTo(this.x, this.y + this.height / 2);
+    context.closePath();
+    
+    context.fill();
+    context.stroke();
+
+    context.restore();
+}
 }

@@ -78,31 +78,25 @@ export class Player {
     }
 
     draw(context) {
-    this.bullets.forEach(bullet => bullet.draw(context))
-    context.save();
+    // Draw bullets first so they appear "under" the player if overlapping
+    this.bullets.forEach(bullet => bullet.draw(context));
 
-    // 1. Draw the "Shadow" (The Body)
-    // We use a shadow blur to make it look like smoke/mist
+    context.save();
+    
+    // 1. The Shadow Body
     context.fillStyle = 'black';
     context.shadowBlur = 15;
-    context.shadowColor = 'red'; 
-    
-    // This draws a tall, thin creepy rectangle
+    context.shadowColor = 'red'; // Red ghostly aura
     context.fillRect(this.x, this.y, this.width, this.height);
 
-    // 2. Draw the "Gaze" (The Eyes)
-    context.shadowBlur = 0; // Turn off blur for sharp eyes
-    context.fillStyle = '#ff0000'; // Pure blood red
+    // 2. The Glowing Eyes
+    context.shadowBlur = 5;
+    context.fillStyle = '#ff0000';
     
-    // Left eye (scaled to your character's width)
-    context.beginPath();
-    context.arc(this.x + (this.width * 0.3), this.y + (this.height * 0.2), 4, 0, Math.PI * 2);
-    context.fill();
-
+    // Left eye (scaled to width)
+    context.fillRect(this.x + (this.width * 0.2), this.y + (this.height * 0.2), 6, 6);
     // Right eye
-    context.beginPath();
-    context.arc(this.x + (this.width * 0.7), this.y + (this.height * 0.2), 4, 0, Math.PI * 2);
-    context.fill();
+    context.fillRect(this.x + (this.width * 0.6), this.y + (this.height * 0.2), 6, 6);
 
     context.restore();
 }
