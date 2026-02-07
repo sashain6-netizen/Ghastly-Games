@@ -152,7 +152,7 @@ async function updateGameStats() {
 
         // Update the G-Bucks span if it exists on this page
         if (gBucksSpan) {
-            gBucksSpan.innerText = data.gbucks ?? "0";
+            gBucksSpan.innerText = data.gbucks ?? "...";
         }
     } catch (err) {
         console.error("G-Bucks sync failed in /games/:", err);
