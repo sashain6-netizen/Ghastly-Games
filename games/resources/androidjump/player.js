@@ -40,7 +40,7 @@ export class Player {
             if(platformType) {
                 // If it's a bouncy ghostly platform, double the jump height
                 if (platformType === 'ghostly') {
-                    this.vy = this.min_vy * 2; // Extra bounce!
+                    this.vy = this.min_vy * 1.5; // Extra bounce!
                     new Audio('sound effects/jump.wav').play(); 
                 } 
                 // Standard jump for normal platforms
