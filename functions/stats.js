@@ -20,7 +20,7 @@ export async function onRequest(context) {
       if (userDataRaw) {
         const userData = JSON.parse(userDataRaw);
         // Using bracket notation for the hyphenated key 'g-bucks'
-        playerGBucks = userData['g-bucks'] || 0;
+        playerGBucks = userData['g_bucks'] || 0;
       }
     }
 
