@@ -114,28 +114,37 @@ window.addEventListener('load', () => {
             this.background.draw(context)
 
             if(!this.gameStart){
-                context.font = 'bold 25px Helvetica'
-                context.fillStyle = "black"
+                context.font = 'bold 28px "Courier New"'
+                context.fillStyle = "#660000" // Dried blood color
                 context.textAlign = 'center'
-                context.fillText(`PRESS ENTER TO START`, this.width * 0.5, this.height * 0.5)
+                context.shadowBlur = 10;
+                context.shadowColor = "black";
+                context.fillText(`PRESS ENTER TO BEGIN THE NIGHTMARE`, this.width * 0.5, this.height * 0.5)
+                context.shadowBlur = 0; // Reset shadow
             } else {
                 this.platforms.forEach(platform => platform.draw(context))
                 this.player.draw(context)
                 this.enemies.forEach(enemy => enemy.draw(context))
 
-                context.fillStyle = "black"
-                context.font = '20px Arial'
+                // Score display
+                context.fillStyle = "#8a0303" 
+                context.font = 'bold 22px "Courier New"'
                 context.textAlign = 'start'
-                context.fillText(`Score: ${this.score}`, 20, 40) 
+                context.fillText(`Souls: ${this.score}`, 20, 40) 
 
                 if(this.gameOver){
-                    context.font = 'bold 25px Helvetica'
-                    context.fillStyle = "red"
+                    // Dark Overlay
+                    context.fillStyle = "rgba(0, 0, 0, 0.7)";
+                    context.fillRect(0, 0, this.width, this.height);
+
+                    context.font = 'bold 40px "Courier New"'
+                    context.fillStyle = "#ff0000"
                     context.textAlign = 'center'
-                    context.fillText(`GAME OVER`, this.width * 0.5, this.height * 0.5)
-                    context.fillStyle = "black"
-                    context.font = '18px Helvetica'
-                    context.fillText(`PRESS ENTER TO RESTART`, this.width * 0.5, this.height * 0.5 + 40)
+                    context.fillText(`YOU DIED`, this.width * 0.5, this.height * 0.5)
+                    
+                    context.fillStyle = "#cccccc"
+                    context.font = '16px "Courier New"'
+                    context.fillText(`PRESS ENTER TO TRY AGAIN... IF YOU DARE`, this.width * 0.5, this.height * 0.5 + 50)
                 }
             }
         }
