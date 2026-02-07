@@ -140,28 +140,31 @@ async function updateStats(isClick = false) {
     const gBucksSpan = document.getElementById('g-bucks'); 
     const likeBtn = document.getElementById('like-btn');
 
-    try {
-        // --- FIXED: Changed 'userEmail' to 'user_email' to match your login function ---
-        const email = localStorage.getItem('user_email') || ""; 
+    // 1. STOPS THE FLASH: Show the cached balance immediately if we have it
+    const cachedBalance = localStorage.getItem('golden_balance');
+    if (cachedBalance !== null && gBucksSpan) {
+        gBucksSpan.innerText = cachedBalance;
+    }
 
+    try {
+        const email = localStorage.getItem('user_email') || ""; 
         const method = isClick ? 'POST' : 'GET';
         
-        // --- Pass the email to the worker ---
+        // 2. Fetch fresh data
         const res = await fetch(`/stats?email=${encodeURIComponent(email)}`, { method });
         if (!res.ok) return; 
 
         const data = await res.json();
 
-        // --- Update the UI ---
+        // 3. Update the UI with fresh data
         if (likeDisplay) likeDisplay.innerText = data.likes ?? "0";
         if (viewDisplay) viewDisplay.innerText = data.views ?? "0";
         if (goldenCountSpan) goldenCountSpan.innerText = data.global_total ?? "0";
         
-        // Update G-Bucks!
-        if (gBucksSpan) {
-            // Note: Make sure your Worker returns 'gbucks' (no hyphen) 
-            // or 'g-bucks' (with hyphen). Use data['g-bucks'] if the worker has a hyphen.
-            gBucksSpan.innerText = data.gbucks ?? "0";
+        if (gBucksSpan && data.gbucks !== null) {
+            gBucksSpan.innerText = data.gbucks;
+            // Update cache for next time
+            localStorage.setItem('golden_balance', data.gbucks);
         }
 
         if (likeBtn) {
@@ -440,23 +443,5 @@ document.addEventListener("DOMContentLoaded", function() {
         updateUIState(savedEmail, savedBalance || 0);
     }
 });
-
-async function loadPlayerData() {
-    try {
-      const response = await fetch('/stats'); // Path to your stats.js
-      const data = await response.json();
-      
-      // Update the G-Bucks span in your button
-      const gbucksSpan = document.getElementById('g-bucks');
-      if (gbucksSpan) {
-        gbucksSpan.innerText = data.gbucks.toLocaleString();
-      }
-    } catch (err) {
-      console.error("Error loading currency:", err);
-    }
-  }
-
-  // Load data as soon as the page opens
-  window.addEventListener('DOMContentLoaded', loadPlayerData);
 
 updateStats();

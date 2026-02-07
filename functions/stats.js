@@ -5,7 +5,7 @@ export async function onRequest(context) {
   const ip = request.headers.get("CF-Connecting-IP") || "anonymous";
   const userEmail = url.searchParams.get("email");
 
-  let playerGBucks = 0;
+  let playerGBucks = null;
   let ownedGames = [];
 
   try {
@@ -86,6 +86,6 @@ export async function onRequest(context) {
     }), { headers: { "Content-Type": "application/json" } });
 
   } catch (err) {
-    return new Response(JSON.stringify({ error: err.message, gbucks: 0 }), { status: 500 });
+    return new Response(JSON.stringify({ error: err.message }), { status: 500 });
   }
 }
