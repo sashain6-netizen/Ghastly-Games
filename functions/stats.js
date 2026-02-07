@@ -9,7 +9,7 @@ export async function onRequest(context) {
   let ownedGames = [];
 
   try {
-    // --- 1. IDENTIFY & FETCH PLAYER DATA ---
+    // --- 1. FETCH PLAYER DATA ---
     let userKey = "";
     let userData = null;
 
@@ -23,47 +23,45 @@ export async function onRequest(context) {
       }
     }
 
-    // --- 2. NEW: PURCHASE LOGIC (POST action=purchase) ---
+    // --- 2. PURCHASE LOGIC ---
     if (isPost && url.searchParams.get("action") === "purchase") {
       const gameId = url.searchParams.get("gameId");
       const price = parseInt(url.searchParams.get("price") || "0");
 
       if (!userData) {
-        return new Response(JSON.stringify({ error: "User not found" }), { status: 404 });
+        return new Response(JSON.stringify({ error: "User not logged in" }), { status: 401 });
       }
-
       if (ownedGames.includes(gameId)) {
-        return new Response(JSON.stringify({ error: "Already owned!" }), { status: 400 });
+        return new Response(JSON.stringify({ error: "You already own this game!" }), { status: 400 });
       }
-
       if (playerGBucks < price) {
         return new Response(JSON.stringify({ error: "Insufficient G-Bucks!" }), { status: 400 });
       }
 
-      // Update the data
+      // Deduct and add to inventory
       userData['g_bucks'] = playerGBucks - price;
       userData.owned_games = [...ownedGames, gameId];
 
-      // SAVE TO KV (Crucial: Use await)
       await env.LIKES_STORAGE.put(userKey, JSON.stringify(userData));
 
-      // Update local variables for the final response
+      // Refresh local variables for final JSON response
       playerGBucks = userData['g_bucks'];
       ownedGames = userData.owned_games;
     }
 
-    // --- 3. HANDLE VIEWS (Your existing logic) ---
+    // --- 3. HANDLE VIEWS (Lock for 30 mins) ---
     if (!isPost) {
       const viewLockKey = `view_lock:${ip}`;
       const hasViewedRecently = await env.LIKES_STORAGE.get(viewLockKey);
       if (!hasViewedRecently) {
         await env.DB.prepare(`UPDATE stats SET count = count + 1 WHERE id = 'total_views'`).run();
+        // TTL cleans up your KV automatically
         await env.LIKES_STORAGE.put(viewLockKey, "true", { expirationTtl: 1800 });
       }
     }
 
-    // --- 4. HANDLE LIKES (Your existing logic) ---
-    if (isPost && !url.searchParams.get("action")) { // Only run if it's a standard like
+    // --- 4. HANDLE LIKES (Lock for 24 hours) ---
+    if (isPost && !url.searchParams.get("action")) {
       const likeLockKey = `like_lock:${ip}`;
       const locked = await env.LIKES_STORAGE.get(likeLockKey);
       if (!locked) {
@@ -72,20 +70,24 @@ export async function onRequest(context) {
       }
     }
 
-    // --- 5. FETCH GLOBAL STATS & RETURN ---
+    // --- 5. FETCH GLOBAL STATS ---
     const likesRow = await env.DB.prepare(`SELECT count FROM stats WHERE id = 'total_likes'`).first();
     const viewsRow = await env.DB.prepare(`SELECT count FROM stats WHERE id = 'total_views'`).first();
-    const goldenRow = await env.DB.prepare(`SELECT count FROM stats WHERE id = 'global_golde_thumbs'`).first();
+    // Fixed typo from 'global_golde_thumbs'
+    const goldenRow = await env.DB.prepare(`SELECT count FROM stats WHERE id = 'global_golden_thumbs'`).first();
 
     return new Response(JSON.stringify({
-      likes: likesRow ? likesRow.count : 0,
-      views: viewsRow ? viewsRow.count : 0,
-      global_total: goldenRow ? goldenRow.count : 0,
+      likes: likesRow?.count || 0,
+      views: viewsRow?.count || 0,
+      global_total: goldenRow?.count || 0,
       gbucks: playerGBucks,
-      owned_games: ownedGames // Make sure this is sent back!
+      owned_games: ownedGames 
     }), { headers: { "Content-Type": "application/json" } });
 
   } catch (err) {
-    return new Response(JSON.stringify({ error: err.message }), { status: 500 });
+    return new Response(JSON.stringify({ error: err.message }), { 
+      status: 500,
+      headers: { "Content-Type": "application/json" }
+    });
   }
 }

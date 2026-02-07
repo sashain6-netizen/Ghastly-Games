@@ -366,6 +366,7 @@ if (goldenBtn) {
             return;
         }
 
+        // UI Feedback
         if (goldenState) goldenState.innerText = "Claiming...";
         goldenBtn.disabled = true;
 
@@ -379,23 +380,24 @@ if (goldenBtn) {
             const data = await res.json();
 
             if (data.success) {
-                // ✅ SUCCESS: Update the HTML "golden-count" with the GLOBAL total
-                // (assuming data.global_total is the KV variable from backend)
+                // SUCCESS logic
                 if (goldenCountDisplay) goldenCountDisplay.innerText = data.global_total;
-                
-                // Save personal balance
                 localStorage.setItem('golden_balance', data.new_balance);
                 
+                // Update the personal balance display on the UI immediately
+                updateUIState(userEmail, data.new_balance);
+
                 if (goldenState) goldenState.innerText = "Claimed!";
-                
                 showGameModal("Reward Claimed! 💎", "You earned 1 G-Buck! Come back tomorrow for more.");
                 
                 setTimeout(() => { if (goldenState) goldenState.innerText = "Done"; }, 3000);
-
-                updateStats();
             } else {
+                // FAILURE logic (The "Too Soon" part)
                 if (goldenState) goldenState.innerText = "Wait ⏳";
-                showGameModal("Too Soon!", data.message); 
+                
+                // FIX: Check both error and message to avoid "undefined"
+                const errorMsg = data.error || data.message || "Try again later";
+                showGameModal("Too Soon!", errorMsg); 
             }
 
         } catch (err) {
@@ -443,5 +445,3 @@ document.addEventListener("DOMContentLoaded", function() {
         updateUIState(savedEmail, savedBalance || 0);
     }
 });
-
-updateStats();
