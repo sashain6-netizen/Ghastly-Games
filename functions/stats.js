@@ -15,6 +15,7 @@ export async function onRequest(context) {
 
     if (userEmail) {
       userKey = `user:${userEmail.toLowerCase().trim()}`;
+      // Matches your Variable Name: LIKES_STORAGE
       const userDataRaw = await env.LIKES_STORAGE.get(userKey);
       if (userDataRaw) {
         userData = JSON.parse(userDataRaw);
@@ -28,39 +29,30 @@ export async function onRequest(context) {
       const gameId = url.searchParams.get("gameId");
       const price = parseInt(url.searchParams.get("price") || "0");
 
-      if (!userData) {
-        return new Response(JSON.stringify({ error: "User not logged in" }), { status: 401 });
-      }
-      if (ownedGames.includes(gameId)) {
-        return new Response(JSON.stringify({ error: "You already own this game!" }), { status: 400 });
-      }
-      if (playerGBucks < price) {
-        return new Response(JSON.stringify({ error: "Insufficient G-Bucks!" }), { status: 400 });
-      }
+      if (!userData) return new Response(JSON.stringify({ error: "User not logged in" }), { status: 401 });
+      if (ownedGames.includes(gameId)) return new Response(JSON.stringify({ error: "Already owned!" }), { status: 400 });
+      if (playerGBucks < price) return new Response(JSON.stringify({ error: "Insufficient G-Bucks!" }), { status: 400 });
 
-      // Deduct and add to inventory
       userData['g_bucks'] = playerGBucks - price;
       userData.owned_games = [...ownedGames, gameId];
 
       await env.LIKES_STORAGE.put(userKey, JSON.stringify(userData));
-
-      // Refresh local variables for final JSON response
       playerGBucks = userData['g_bucks'];
       ownedGames = userData.owned_games;
     }
 
-    // --- 3. HANDLE VIEWS (Lock for 30 mins) ---
+    // --- 3. HANDLE VIEWS ---
     if (!isPost) {
       const viewLockKey = `view_lock:${ip}`;
       const hasViewedRecently = await env.LIKES_STORAGE.get(viewLockKey);
       if (!hasViewedRecently) {
+        // SQL FIX: Make sure your D1 table is just 'stats'
         await env.DB.prepare(`UPDATE stats SET count = count + 1 WHERE id = 'total_views'`).run();
-        // TTL cleans up your KV automatically
         await env.LIKES_STORAGE.put(viewLockKey, "true", { expirationTtl: 1800 });
       }
     }
 
-    // --- 4. HANDLE LIKES (Lock for 24 hours) ---
+    // --- 4. HANDLE LIKES ---
     if (isPost && !url.searchParams.get("action")) {
       const likeLockKey = `like_lock:${ip}`;
       const locked = await env.LIKES_STORAGE.get(likeLockKey);
@@ -73,7 +65,6 @@ export async function onRequest(context) {
     // --- 5. FETCH GLOBAL STATS ---
     const likesRow = await env.DB.prepare(`SELECT count FROM stats WHERE id = 'total_likes'`).first();
     const viewsRow = await env.DB.prepare(`SELECT count FROM stats WHERE id = 'total_views'`).first();
-    // Fixed typo from 'global_golde_thumbs'
     const goldenRow = await env.DB.prepare(`SELECT count FROM stats WHERE id = 'global_golden_thumbs'`).first();
 
     return new Response(JSON.stringify({
