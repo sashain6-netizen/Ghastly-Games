@@ -77,10 +77,34 @@ export class Player {
         this.bullets = this.bullets.filter(bullet => !bullet.markedForDeletion)
     }
 
-    draw(context) {        
-        this.bullets.forEach(bullet => bullet.draw(context))
-        context.drawImage(this.image,this.x,this.y,this.width,this.height)
-    }
+    draw(context) {
+    context.save();
+
+    // 1. Draw the "Shadow" (The Body)
+    // We use a shadow blur to make it look like smoke/mist
+    context.fillStyle = 'black';
+    context.shadowBlur = 15;
+    context.shadowColor = 'red'; 
+    
+    // This draws a tall, thin creepy rectangle
+    context.fillRect(this.x, this.y, this.width, this.height);
+
+    // 2. Draw the "Gaze" (The Eyes)
+    context.shadowBlur = 0; // Turn off blur for sharp eyes
+    context.fillStyle = '#ff0000'; // Pure blood red
+    
+    // Left eye (scaled to your character's width)
+    context.beginPath();
+    context.arc(this.x + (this.width * 0.3), this.y + (this.height * 0.2), 4, 0, Math.PI * 2);
+    context.fill();
+
+    // Right eye
+    context.beginPath();
+    context.arc(this.x + (this.width * 0.7), this.y + (this.height * 0.2), 4, 0, Math.PI * 2);
+    context.fill();
+
+    context.restore();
+}
 
     collision(){
         let result = false

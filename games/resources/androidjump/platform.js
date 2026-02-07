@@ -35,7 +35,7 @@ export class Platform {
         context.fillStyle = '#000033';   // Deep abyss blue
         context.strokeStyle = '#0000aa';
     } else if (this.type === 'white') {
-        context.fillStyle = '#ccc';      // Skeletal bone white
+        context.fillStyle = '#ecaaaa';      // Skeletal bone white
         context.strokeStyle = '#888';
     } else if (this.type === 'brown') {
         context.fillStyle = '#400';      // Dried blood (Broken platforms)
