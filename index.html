@@ -31,8 +31,11 @@
                 <h2>Join Ghastly Games</h2>
                 <input type="email" id="reg-email" placeholder="Email">
                 <input type="password" id="reg-password" placeholder="Min 8 characters">
-                <div class="show-pw">
-                    <input type="checkbox" onclick="togglePassword('reg-password')"> <span>Show Password</span>
+                <div class="show-pw-container">
+                    <label class="switch">
+                        <input type="checkbox" onclick="togglePassword('reg-password')"> <span class="slider"></span>
+                    </label>
+                    <span class="switch-label">Show Password</span>
                 </div>
                 <button onclick="handleSignup()">Create Account</button>
                 <p id="signup-msg"></p>
@@ -42,8 +45,11 @@
                 <h2>Ghastly Login</h2>
                 <input type="email" id="login-email" placeholder="Email">
                 <input type="password" id="login-password" placeholder="Password">
-                <div class="show-pw">
-                    <input type="checkbox" onclick="togglePassword('login-password')"> <span>Show Password</span>
+                <div class="show-pw-container">
+                    <label class="switch">
+                        <input type="checkbox" onclick="togglePassword('reg-password')"> <span class="slider"></span>
+                    </label>
+                    <span class="switch-label">Show Password</span>
                 </div>
                 <button onclick="handleLogin()">Login</button>
                 <p id="login-msg"></p>
