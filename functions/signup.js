@@ -51,7 +51,7 @@ export async function onRequest(context) {
     // Save the User
     await env.LIKES_STORAGE.put(userKey, JSON.stringify(userData));
 
-    await env.LIKES_STORAGE.put(limitKey, "true", { expirationTtl: 86400 });
+    await env.LIKES_STORAGE.put(limitKey, "true", { expirationTtl: 1 });
 
     return new Response(JSON.stringify({ success: true, message: "Account created!" }), {
       status: 201,
