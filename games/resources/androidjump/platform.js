@@ -55,7 +55,7 @@ export class Platform {
 }
 
     calc_Y(upperY,lowerY) {
-        if(this.type != 'brown'){
+        if(this.type != 'brown' && this.type != 'ghostly'){
             if(!this.game.platforms.length){
                 return Math.floor(Math.random() * (upperY - (upperY-100) + 1)) + (upperY-100)
             } 
