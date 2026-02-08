@@ -332,7 +332,7 @@ async function awardPassiveXP() {
     const email = localStorage.getItem('user_email');
     if (!email || ownedGames.length === 0) return;
 
-    const xpGain = 15 + 3 * ownedGames.length; 
+    const xpGain = 40 + 4 * ownedGames.length; 
 
     try {
         // Add a random 'nonce' or timestamp to the URL to bypass Cloudflare's cache
