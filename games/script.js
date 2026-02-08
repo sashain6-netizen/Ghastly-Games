@@ -351,7 +351,7 @@ async function awardPassiveXP() {
 }
 
 // --- TIMER LOGIC ---
-let xpSecondsLeft = 600; // 10 minutes in seconds
+let xpSecondsLeft = 60; // 10 minutes in seconds
 
 function updateXPTimerUI() {
     const timerSpan = document.getElementById('xp-timer');
