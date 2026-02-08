@@ -328,36 +328,53 @@ function closeAuthWarning() {
 }
 
 // --- 6. PASSIVE XP SYSTEM ---
+// --- 6. PASSIVE XP SYSTEM (Cloudflare Optimized) ---
 async function awardPassiveXP() {
     const email = localStorage.getItem('user_email');
     if (!email || ownedGames.length === 0) return;
 
     const xpGain = 40 + 4 * ownedGames.length; 
 
-    try {
-        // Add a random 'nonce' or timestamp to the URL to bypass Cloudflare's cache
-        const res = await fetch(`/stats?email=${encodeURIComponent(email)}&action=addXP&amount=${xpGain}&t=${Date.now()}`, {
-            method: 'POST'
-        });
+    // 1. UI PREDICTION: Update the numbers immediately so the user sees progress
+    const ratioSpan = document.getElementById('xp-ratio');
+    const barFill = document.getElementById('xp-bar-fill');
+    
+    if (ratioSpan) {
+        let parts = ratioSpan.innerText.split('/');
+        let currentXP = parseInt(parts[0]) || 0;
+        let nextXP = parseInt(parts[1]) || 100;
+        let newXP = currentXP + xpGain;
 
-        if (res.ok) {
-            console.log(`Earned ${xpGain} XP!`);
-            
-            // OPTIONAL: Instead of fetching stats again, just update the text 
-            // visually so the user thinks it updated instantly.
-            const ratioSpan = document.getElementById('xp-ratio');
-            if (ratioSpan) {
-                // This is a "silent" update. The real data will sync 
-                // when the user refreshes or buys a game.
-                ratioSpan.style.color = "#4ecca3"; // Turn green briefly to show it worked
-                setTimeout(() => ratioSpan.style.color = "white", 2000);
-            }
+        // Visually update text and bar
+        ratioSpan.innerText = `${newXP}/${nextXP}`;
+        if (barFill) {
+            barFill.style.width = Math.min((newXP / nextXP) * 100, 100) + "%";
         }
-    } catch (err) {
-        if (err.status === 429) {
-            console.warn("Cloudflare is rate-limiting you. Try a longer timer.");
-        }
+        
+        // Visual feedback (Flash green)
+        ratioSpan.style.color = "#4ecca3";
+        setTimeout(() => ratioSpan.style.color = "white", 2000);
     }
+
+    // 2. SERVER SYNC: Send the data with a "Jitter" delay to look less like a bot
+    const jitter = Math.floor(Math.random() * 5000);
+    
+    setTimeout(async () => {
+        try {
+            const res = await fetch(`/stats?email=${encodeURIComponent(email)}&action=addXP&amount=${xpGain}&t=${Date.now()}`, {
+                method: 'POST',
+                headers: { 'Cache-Control': 'no-cache' }
+            });
+
+            if (res.ok) {
+                console.log(`Server Synced: +${xpGain} XP`);
+            } else if (res.status === 429) {
+                console.warn("Cloudflare rate limit hit. UI updated locally, but server sync failed.");
+            }
+        } catch (err) {
+            console.error("XP sync failed:", err);
+        }
+    }, jitter);
 }
 
 // --- TIMER LOGIC ---
