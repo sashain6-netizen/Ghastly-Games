@@ -36,7 +36,7 @@ async function openGame(title, gameUrl, gameId, price = 50, requiredLevel = 1) {
     const currentLevel = parseInt(document.getElementById('player-level').innerText) || 1;
 
     if (currentLevel < requiredLevel) {
-        alert(`🔒 This game requires Level ${requiredLevel}! You are currently Level ${currentLevel}.`);
+        showToast(`🔒 Level ${requiredLevel} Required! <br> <span style="color:#aaa; font-size:0.8rem;">You are currently Level ${currentLevel}</span>`);
         return;
     }
 
@@ -373,4 +373,16 @@ function updateXPTimerUI() {
 // Start the clock ticking every 1 second
 setInterval(updateXPTimerUI, 1000);
 
+function showToast(message) {
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    toast.className = 'toast-msg';
+    toast.innerHTML = message;
 
+    container.appendChild(toast);
+
+    // Automatically remove the element from the code after the animation finishes
+    setTimeout(() => {
+        toast.remove();
+    }, 3000);
+}

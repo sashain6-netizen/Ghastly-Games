@@ -484,3 +484,21 @@ footer {
     text-shadow: 1px 1px 2px rgba(0,0,0,0.8); /* Makes text readable against the green */
     pointer-events: none; /* Allows clicks to pass through if needed */
 }
+
+.toast-msg {
+    background: #1e293b;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 10px;
+    border-left: 4px solid #bc6ff1; /* Your purple theme color */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    font-size: 0.9rem;
+    font-weight: 600;
+    min-width: 250px;
+    animation: slideInRight 0.4s ease-out, fadeOut 0.5s ease-in 2.5s forwards;
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; transform: translateX(0); }
+    to { opacity: 0; transform: translateX(20px); }
+}
