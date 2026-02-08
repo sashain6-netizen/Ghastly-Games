@@ -327,6 +327,7 @@ footer {
 
 .currency-container {
     margin-top: 20px;
+    margin: 20px;
     background-color: #38cff1;
     font-weight: bold;
     border-radius: 12px;
