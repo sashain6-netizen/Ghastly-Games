@@ -111,62 +111,39 @@ async function updateGameStats() {
     const barFill = document.getElementById('xp-bar-fill');
     const email = localStorage.getItem('user_email') || ""; 
 
-    // 1. DETERMINE CURRENT LEVEL (Default to 1 if guest)
-    let currentLevel = 1;
-    let currentXP = 0;
-    let info = getLevelInfo(0);
-
-    // 2. RUN THE LOCK VISUALS FOR EVERYONE (Guests and Users)
-    // This prevents the level text from "jumping" or disappearing
-    const gameCards = document.querySelectorAll('.game-card');
-    gameCards.forEach(card => {
-        const reqLevel = parseInt(card.getAttribute('data-level')) || 1;
-        const badge = card.querySelector('.level-badge');
-        
-        // Use a temporary level check based on whether we have a real level yet
-        if (currentLevel < reqLevel) {
-            card.classList.add('locked');
-            if (badge) badge.innerHTML = `🔒 Lv. ${reqLevel}`;
-        } else {
-            card.classList.remove('locked');
-            if (badge) badge.innerHTML = `Lv. ${reqLevel}+`;
-        }
-    });
-
-    // 3. EXIT IF NOT LOGGED IN (Hide stats but keep the locks visible)
+    // 1. EXIT IF NOT LOGGED IN
     if (!email) {
-        if (document.querySelector('.level-container')) {
-            document.querySelector('.level-container').style.display = 'none';
-        }
-        if (document.getElementById('gbucks-container')) {
-            document.getElementById('gbucks-container').style.display = 'none';
-        }
+        if (document.querySelector('.level-container')) document.querySelector('.level-container').style.display = 'none';
+        if (document.getElementById('gbucks-container')) document.getElementById('gbucks-container').style.display = 'none';
         return; 
     }
 
-    // 4. IF LOGGED IN, FETCH REAL DATA AND UPDATE AGAIN
     try {
+        // 2. FETCH REAL DATA FIRST
         const res = await fetch(`/stats?email=${encodeURIComponent(email)}`);
         if (!res.ok) return;
         const data = await res.json();
 
-        currentXP = data.xp || 0;
-        info = getLevelInfo(currentXP);
+        // 3. CALCULATE EVERYTHING
+        const currentXP = data.xp || 0;
+        const info = getLevelInfo(currentXP);
         const realLevel = info.level;
+        ownedGames = data.owned_games || []; 
 
-        // Update Text & Bar
-        if (levelSpan) levelSpan.innerText = info.level;
+        // 4. UPDATE THE UI TEXT & BAR
+        if (levelSpan) levelSpan.innerText = realLevel;
         if (ratioSpan) ratioSpan.innerText = `${currentXP}/${info.nextXP}`;
         if (barFill) barFill.style.width = info.percent + "%";
         if (document.getElementById('g-bucks')) {
             document.getElementById('g-bucks').innerText = data.gbucks ?? "0";
         }
-        ownedGames = data.owned_games || []; 
 
-        // Final pass: Update locks with the REAL level
+        // 5. UPDATE LOCK VISUALS (Only once, using realLevel)
+        const gameCards = document.querySelectorAll('.game-card');
         gameCards.forEach(card => {
             const reqLevel = parseInt(card.getAttribute('data-level')) || 1;
             const badge = card.querySelector('.level-badge');
+            
             if (realLevel < reqLevel) {
                 card.classList.add('locked');
                 if (badge) badge.innerHTML = `🔒 Lv. ${reqLevel}`;
