@@ -332,7 +332,7 @@ async function awardPassiveXP() {
     const email = localStorage.getItem('user_email');
     if (!email || ownedGames.length === 0) return;
 
-    const xpGain = 5 + ownedGames.length; 
+    const xpGain = 15 + 3 * ownedGames.length; 
 
     try {
         // Add a random 'nonce' or timestamp to the URL to bypass Cloudflare's cache
@@ -361,7 +361,7 @@ async function awardPassiveXP() {
 }
 
 // --- TIMER LOGIC ---
-let xpSecondsLeft = 60; // 10 minutes in seconds
+let xpSecondsLeft = 180; // 10 minutes in seconds
 
 function updateXPTimerUI() {
     const timerSpan = document.getElementById('xp-timer');
@@ -375,7 +375,7 @@ function updateXPTimerUI() {
     if (xpSecondsLeft <= 0) {
         // --- THE FIX IS HERE ---
         awardPassiveXP();    // Actually give the XP to the player
-        xpSecondsLeft = 60;  // Reset the clock
+        xpSecondsLeft = 180;  // Reset the clock
     } else {
         xpSecondsLeft--;
     }
