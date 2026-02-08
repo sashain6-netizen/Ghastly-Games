@@ -22,14 +22,31 @@ let ownedGames = [];
 // Variable to track what we are currently trying to buy
 let pendingPurchase = null;
 
-async function openGame(title, gameUrl, gameId, price = 50) {
-    // 1. Check if user owns it
+async function openGame(title, gameUrl, gameId, price = 50, requiredLevel = 1) {
+    const email = localStorage.getItem('user_email');
+    
+    // 1. Check if logged in first
+    if (!email) {
+        showAuthWarning();
+        return;
+    }
+
+    // 2. Level Requirement Check
+    // We fetch the current level from the UI or calculate it from data
+    const currentLevel = parseInt(document.getElementById('player-level').innerText) || 1;
+
+    if (currentLevel < requiredLevel) {
+        alert(`🔒 This game requires Level ${requiredLevel}! You are currently Level ${currentLevel}.`);
+        return;
+    }
+
+    // 3. Ownership Check (Existing logic)
     if (!ownedGames.includes(gameId)) {
         showPurchaseModal(title, gameId, price);
         return;
     }
 
-    // 2. Normal open logic
+    // 4. Open the game (Existing logic)
     const modal = document.getElementById('gameModal');
     const modalTitle = document.getElementById('modalTitle');
     const gameFrameContainer = document.getElementById('gameFrameContainer');
@@ -107,6 +124,23 @@ async function updateGameStats() {
 
         const currentXP = data.xp || 0;
         const info = getLevelInfo(currentXP);
+        const currentLevel = info.level;
+
+        const gameCards = document.querySelectorAll('.game-card');
+        gameCards.forEach(card => {
+            const reqLevel = parseInt(card.getAttribute('data-level')) || 1;
+            
+            if (currentLevel < reqLevel) {
+                card.classList.add('locked');
+                // Optional: Change badge text to show it's locked
+                const badge = card.querySelector('.level-badge');
+                if (badge) badge.innerHTML = `🔒 Lv. ${reqLevel}`;
+            } else {
+                card.classList.remove('locked');
+                const badge = card.querySelector('.level-badge');
+                if (badge) badge.innerHTML = `Lv. ${reqLevel}+`;
+            }
+        });
 
         // Update Text
         if (levelSpan) levelSpan.innerText = info.level;
