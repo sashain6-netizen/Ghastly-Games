@@ -333,52 +333,57 @@ async function awardPassiveXP() {
     const email = localStorage.getItem('user_email');
     if (!email || ownedGames.length === 0) return;
 
+    // Calculate gain: 40 base + 4 per game
     const xpGain = 40 + 4 * ownedGames.length; 
 
-    // 1. UI PREDICTION: Update the numbers immediately so the user sees progress
+    // --- 1. SMART UI UPDATE (Handles Overflow) ---
     const ratioSpan = document.getElementById('xp-ratio');
+    const levelSpan = document.getElementById('player-level');
     const barFill = document.getElementById('xp-bar-fill');
-    
-    if (ratioSpan) {
-        let parts = ratioSpan.innerText.split('/');
-        let currentXP = parseInt(parts[0]) || 0;
-        let nextXP = parseInt(parts[1]) || 100;
-        let newXP = currentXP + xpGain;
 
-        // Visually update text and bar
-        ratioSpan.innerText = `${newXP}/${nextXP}`;
+    if (ratioSpan) {
+        // Get current XP from the UI text (e.g., "70/100" -> 70)
+        let currentXP = parseInt(ratioSpan.innerText.split('/')[0]) || 0;
+        let newTotalXP = currentXP + xpGain;
+
+        // Use your existing math function to get the new level data
+        const info = getLevelInfo(newTotalXP);
+
+        // Update the Level Number
+        if (levelSpan) levelSpan.innerText = info.level;
+
+        // Update the Ratio (e.g., "118/400" if level increased)
+        ratioSpan.innerText = `${newTotalXP}/${info.nextXP}`;
+
+        // Update the Bar Fill %
         if (barFill) {
-            barFill.style.width = Math.min((newXP / nextXP) * 100, 100) + "%";
+            barFill.style.width = info.percent + "%";
         }
-        
-        // Visual feedback (Flash green)
+
+        // Visual feedback
         ratioSpan.style.color = "#4ecca3";
         setTimeout(() => ratioSpan.style.color = "white", 2000);
+
+        if (newTotalXP >= info.nextXP) {
+            showToast("🎉 Level Up!");
+        }
     }
 
-    // 2. SERVER SYNC: Send the data with a "Jitter" delay to look less like a bot
-    const jitter = Math.floor(Math.random() * 5000);
-    
-    setTimeout(async () => {
-        try {
-            const res = await fetch(`/stats?email=${encodeURIComponent(email)}&action=addXP&amount=${xpGain}&t=${Date.now()}`, {
-                method: 'POST',
-                headers: { 'Cache-Control': 'no-cache' }
-            });
-
-            if (res.ok) {
-                console.log(`Server Synced: +${xpGain} XP`);
-            } else if (res.status === 429) {
-                console.warn("Cloudflare rate limit hit. UI updated locally, but server sync failed.");
-            }
-        } catch (err) {
-            console.error("XP sync failed:", err);
+    // --- 2. SERVER SYNC ---
+    try {
+        const res = await fetch(`/stats?email=${encodeURIComponent(email)}&action=addXP&amount=${xpGain}&t=${Date.now()}`, {
+            method: 'POST'
+        });
+        if (res.ok) {
+            console.log("XP Synced with server.");
         }
-    }, jitter);
+    } catch (err) {
+        console.error("Server sync failed, but UI updated locally.");
+    }
 }
 
 // --- TIMER LOGIC ---
-let xpSecondsLeft = 180; // 10 minutes in seconds
+let xpSecondsLeft = 600; // 10 minutes in seconds
 
 function updateXPTimerUI() {
     const timerSpan = document.getElementById('xp-timer');
@@ -392,7 +397,7 @@ function updateXPTimerUI() {
     if (xpSecondsLeft <= 0) {
         // --- THE FIX IS HERE ---
         awardPassiveXP();    // Actually give the XP to the player
-        xpSecondsLeft = 180;  // Reset the clock
+        xpSecondsLeft = 600;  // Reset the clock
     } else {
         xpSecondsLeft--;
     }
