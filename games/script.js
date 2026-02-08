@@ -111,26 +111,32 @@ async function updateGameStats() {
     const barFill = document.getElementById('xp-bar-fill');
     const email = localStorage.getItem('user_email') || ""; 
 
-    // 1. EXIT IF NOT LOGGED IN
+    // 1. IF GUEST: Show everything as Level 1/Locked so they can see the requirements
     if (!email) {
         if (document.querySelector('.level-container')) document.querySelector('.level-container').style.display = 'none';
-        if (document.getElementById('gbucks-container')) document.getElementById('gbucks-container').style.display = 'none';
+        
+        const gameCards = document.querySelectorAll('.game-card');
+        gameCards.forEach(card => {
+            const reqLevel = parseInt(card.getAttribute('data-level')) || 1;
+            const badge = card.querySelector('.level-badge');
+            card.classList.add('locked'); // Guests are effectively Lv 0/1
+            if (badge) badge.innerHTML = `🔒 Lv. ${reqLevel}`;
+        });
         return; 
     }
 
     try {
-        // 2. FETCH REAL DATA FIRST
+        // 2. FETCH REAL DATA
         const res = await fetch(`/stats?email=${encodeURIComponent(email)}`);
         if (!res.ok) return;
         const data = await res.json();
 
-        // 3. CALCULATE EVERYTHING
         const currentXP = data.xp || 0;
         const info = getLevelInfo(currentXP);
         const realLevel = info.level;
         ownedGames = data.owned_games || []; 
 
-        // 4. UPDATE THE UI TEXT & BAR
+        // 3. UPDATE UI
         if (levelSpan) levelSpan.innerText = realLevel;
         if (ratioSpan) ratioSpan.innerText = `${currentXP}/${info.nextXP}`;
         if (barFill) barFill.style.width = info.percent + "%";
@@ -138,17 +144,20 @@ async function updateGameStats() {
             document.getElementById('g-bucks').innerText = data.gbucks ?? "0";
         }
 
-        // 5. UPDATE LOCK VISUALS (Only once, using realLevel)
+        // 4. THE FIX: Apply classes to reveal the badges
         const gameCards = document.querySelectorAll('.game-card');
         gameCards.forEach(card => {
             const reqLevel = parseInt(card.getAttribute('data-level')) || 1;
             const badge = card.querySelector('.level-badge');
             
+            // Clean slate
+            card.classList.remove('locked', 'unlocked');
+
             if (realLevel < reqLevel) {
                 card.classList.add('locked');
                 if (badge) badge.innerHTML = `🔒 Lv. ${reqLevel}`;
             } else {
-                card.classList.remove('locked');
+                card.classList.add('unlocked'); // This triggers 'opacity: 1' in your CSS
                 if (badge) badge.innerHTML = `Lv. ${reqLevel}+`;
             }
         });
