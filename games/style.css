@@ -427,3 +427,13 @@ footer {
     color: white;
     border-color: white;
 }
+
+/* Keep badges invisible until the script gives them a class */
+.level-badge {
+    visibility: hidden;
+}
+/* Show them only once the script has processed the card */
+.game-card.locked .level-badge, 
+.game-card:not(.locked) .level-badge {
+    visibility: visible;
+}
