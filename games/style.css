@@ -327,7 +327,6 @@ footer {
 
 .currency-container {
     margin-top: 20px;
-    margin: 20px;
     background-color: #38cff1;
     font-weight: bold;
     border-radius: 12px;
@@ -502,15 +501,4 @@ footer {
 @keyframes fadeOut {
     from { opacity: 1; transform: translateX(0); }
     to { opacity: 0; transform: translateX(20px); }
-}
-
-.level-container {
-    margin: 20px; 
-
-    padding: 10px; 
-}
-
-
-#xp-bar-container {
-    margin-top: 15px; 
 }
