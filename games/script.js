@@ -304,7 +304,27 @@ async function awardPassiveXP() {
     }
 }
 
-// Start the timer: 600,000ms = 10 minutes
-setInterval(awardPassiveXP, 600000);
+// --- TIMER LOGIC ---
+let xpSecondsLeft = 600; // 10 minutes in seconds
+
+function updateXPTimerUI() {
+    const timerSpan = document.getElementById('xp-timer');
+    if (!timerSpan) return;
+
+    const mins = Math.floor(xpSecondsLeft / 60);
+    const secs = xpSecondsLeft % 60;
+
+    // Updates the text to 9:59, 9:58, etc.
+    timerSpan.innerText = `${mins}:${secs.toString().padStart(2, '0')}`;
+
+    if (xpSecondsLeft <= 0) {
+        xpSecondsLeft = 600; // Reset the clock
+    } else {
+        xpSecondsLeft--;
+    }
+}
+
+// Start the clock ticking every 1 second
+setInterval(updateXPTimerUI, 1000);
 
 
