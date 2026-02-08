@@ -364,7 +364,7 @@ function updateXPTimerUI() {
     timerSpan.innerText = `${mins}:${secs.toString().padStart(2, '0')}`;
 
     if (xpSecondsLeft <= 0) {
-        xpSecondsLeft = 600; // Reset the clock
+        xpSecondsLeft = 60; // Reset the clock
     } else {
         xpSecondsLeft--;
     }
