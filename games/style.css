@@ -502,3 +502,18 @@ footer {
     from { opacity: 1; transform: translateX(0); }
     to { opacity: 0; transform: translateX(20px); }
 }
+
+/* Target the container holding your level, bar, and timer */
+.level-container {
+    margin: 20px auto;      /* Adds 20px of space outside the top/bottom and centers it */
+    padding: 15px 25px;     /* Adds space inside the container so text isn't touching the border */
+    max-width: 600px;       /* Prevents the bar from stretching too wide on big screens */
+    background: rgba(255, 255, 255, 0.05); /* Optional: subtle background to define the area */
+    border-radius: 12px;    /* Smooths the corners */
+}
+
+/* Ensure the XP bar has its own internal spacing */
+#xp-bar-container {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
