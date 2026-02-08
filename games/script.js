@@ -95,6 +95,11 @@ async function updateGameStats() {
     const barFill = document.getElementById('xp-bar-fill');
     const email = localStorage.getItem('user_email') || ""; 
 
+    if (!email) {
+    document.querySelector('.level-container').style.display = 'none';
+    return; // Stop the function here
+}
+
     try {
         const res = await fetch(`/stats?email=${encodeURIComponent(email)}`);
         if (!res.ok) return;
