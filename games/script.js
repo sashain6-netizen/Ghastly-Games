@@ -66,25 +66,58 @@ function showPurchaseModal(title, gameId, price) {
     };
 
     pModal.style.display = 'flex';
-}async function updateGameStats() {
-    const gBucksSpan = document.getElementById('g-bucks');
+}
+function getLevelInfo(xp) {
+    // Current Level
+    const level = Math.floor(Math.sqrt(xp / 100)) + 1;
+    
+    // XP needed for THIS level: (Level - 1)^2 * 100
+    // XP needed for NEXT level: (Level)^2 * 100
+    const currentLevelThreshold = Math.pow(level - 1, 2) * 100;
+    const nextLevelThreshold = Math.pow(level, 2) * 100;
+    
+    // Progress within the current level
+    const xpInThisLevel = xp - currentLevelThreshold;
+    const xpRequiredForNext = nextLevelThreshold - currentLevelThreshold;
+    const percent = (xpInThisLevel / xpRequiredForNext) * 100;
+
+    return {
+        level: level,
+        nextXP: nextLevelThreshold,
+        percent: Math.min(percent, 100) // Caps at 100%
+    };
+}
+
+async function updateGameStats() {
+    // ... your existing variables (gBucksSpan, etc.)
+    const levelSpan = document.getElementById('player-level');
+    const ratioSpan = document.getElementById('xp-ratio');
+    const barFill = document.getElementById('xp-bar-fill');
     const email = localStorage.getItem('user_email') || ""; 
 
     try {
         const res = await fetch(`/stats?email=${encodeURIComponent(email)}`);
         if (!res.ok) return;
-
         const data = await res.json();
 
-        if (gBucksSpan) {
-            gBucksSpan.innerText = data.gbucks ?? "...";
-        }
+        const currentXP = data.xp || 0;
+        const info = getLevelInfo(currentXP);
 
-        // --- IMPORTANT: Update the ownedGames list ---
+        // Update Text
+        if (levelSpan) levelSpan.innerText = info.level;
+        if (ratioSpan) ratioSpan.innerText = `${currentXP}/${info.nextXP}`;
+        
+        // Update Bar Width
+        if (barFill) barFill.style.width = info.percent + "%";
+
+        // Update G-Bucks and ownedGames as before...
+        if (document.getElementById('g-bucks')) {
+            document.getElementById('g-bucks').innerText = data.gbucks ?? "0";
+        }
         ownedGames = data.owned_games || []; 
 
     } catch (err) {
-        console.error("G-Bucks sync failed:", err);
+        console.error("Stats sync failed:", err);
     }
 }
 
@@ -201,28 +234,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 // --- 5. G-BUCKS SYSTEM ---
-async function updateGameStats() {
-    const gBucksSpan = document.getElementById('g-bucks');
-    const email = localStorage.getItem('user_email') || ""; 
-
-    try {
-        const res = await fetch(`/stats?email=${encodeURIComponent(email)}`);
-        if (!res.ok) return;
-
-        const data = await res.json();
-
-        if (gBucksSpan) {
-            gBucksSpan.innerText = data.gbucks ?? "...";
-        }
-
-        // --- IMPORTANT: Update the ownedGames list ---
-        ownedGames = data.owned_games || []; 
-
-    } catch (err) {
-        console.error("G-Bucks sync failed:", err);
-    }
-}
-
 
 async function buyGame(gameId, price) {
     const email = localStorage.getItem('user_email');
@@ -269,5 +280,31 @@ function showAuthWarning() {
 function closeAuthWarning() {
     document.getElementById('authWarningModal').style.display = 'none';
 }
+
+// --- 6. PASSIVE XP SYSTEM ---
+async function awardPassiveXP() {
+    const email = localStorage.getItem('user_email');
+    if (!email || ownedGames.length === 0) return;
+
+    // Calculate XP: 1 XP per game owned (or change the multiplier here)
+    const xpGain = 5 + ownedGames.length; 
+
+    try {
+        const res = await fetch(`/stats?email=${encodeURIComponent(email)}&action=addXP&amount=${xpGain}`, {
+            method: 'POST'
+        });
+
+        if (res.ok) {
+            console.log(`Earned ${xpGain} XP for owning ${ownedGames.length} games!`);
+            // Optional: Update the UI if you have an XP display
+            await updateGameStats(); 
+        }
+    } catch (err) {
+        console.error("XP sync failed:", err);
+    }
+}
+
+// Start the timer: 600,000ms = 10 minutes
+setInterval(awardPassiveXP, 600000);
 
 
