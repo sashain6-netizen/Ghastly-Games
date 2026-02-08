@@ -332,21 +332,31 @@ async function awardPassiveXP() {
     const email = localStorage.getItem('user_email');
     if (!email || ownedGames.length === 0) return;
 
-    // Calculate XP: 1 XP per game owned (or change the multiplier here)
     const xpGain = 5 + ownedGames.length; 
 
     try {
-        const res = await fetch(`/stats?email=${encodeURIComponent(email)}&action=addXP&amount=${xpGain}`, {
+        // Add a random 'nonce' or timestamp to the URL to bypass Cloudflare's cache
+        const res = await fetch(`/stats?email=${encodeURIComponent(email)}&action=addXP&amount=${xpGain}&t=${Date.now()}`, {
             method: 'POST'
         });
 
         if (res.ok) {
-            console.log(`Earned ${xpGain} XP for owning ${ownedGames.length} games!`);
-            // Optional: Update the UI if you have an XP display
-            await updateGameStats(); 
+            console.log(`Earned ${xpGain} XP!`);
+            
+            // OPTIONAL: Instead of fetching stats again, just update the text 
+            // visually so the user thinks it updated instantly.
+            const ratioSpan = document.getElementById('xp-ratio');
+            if (ratioSpan) {
+                // This is a "silent" update. The real data will sync 
+                // when the user refreshes or buys a game.
+                ratioSpan.style.color = "#4ecca3"; // Turn green briefly to show it worked
+                setTimeout(() => ratioSpan.style.color = "white", 2000);
+            }
         }
     } catch (err) {
-        console.error("XP sync failed:", err);
+        if (err.status === 429) {
+            console.warn("Cloudflare is rate-limiting you. Try a longer timer.");
+        }
     }
 }
 
