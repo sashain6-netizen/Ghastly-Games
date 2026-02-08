@@ -85,23 +85,27 @@ function showPurchaseModal(title, gameId, price) {
     pModal.style.display = 'flex';
 }
 function getLevelInfo(xp) {
-    // Current Level
-    const level = Math.floor(Math.sqrt(xp / 100)) + 1;
+    // Each level requires 100 XP more than the last
+    // Level 1: 0, Level 2: 100, Level 3: 250, Level 4: 450...
     
-    // XP needed for THIS level: (Level - 1)^2 * 100
-    // XP needed for NEXT level: (Level)^2 * 100
-    const currentLevelThreshold = Math.pow(level - 1, 2) * 100;
-    const nextLevelThreshold = Math.pow(level, 2) * 100;
-    
-    // Progress within the current level
-    const xpInThisLevel = xp - currentLevelThreshold;
-    const xpRequiredForNext = nextLevelThreshold - currentLevelThreshold;
+    let level = 1;
+    let threshold = 100;
+    let cumulativeXP = 0;
+
+    while (xp >= cumulativeXP + (level * 100)) {
+        cumulativeXP += (level * 100);
+        level++;
+    }
+
+    const nextLevelThreshold = cumulativeXP + (level * 100);
+    const xpInThisLevel = xp - cumulativeXP;
+    const xpRequiredForNext = nextLevelThreshold - cumulativeXP;
     const percent = (xpInThisLevel / xpRequiredForNext) * 100;
 
     return {
         level: level,
         nextXP: nextLevelThreshold,
-        percent: Math.min(percent, 100) // Caps at 100%
+        percent: Math.min(percent, 100)
     };
 }
 
