@@ -360,11 +360,12 @@ function updateXPTimerUI() {
     const mins = Math.floor(xpSecondsLeft / 60);
     const secs = xpSecondsLeft % 60;
 
-    // Updates the text to 9:59, 9:58, etc.
     timerSpan.innerText = `${mins}:${secs.toString().padStart(2, '0')}`;
 
     if (xpSecondsLeft <= 0) {
-        xpSecondsLeft = 60; // Reset the clock
+        // --- THE FIX IS HERE ---
+        awardPassiveXP();    // Actually give the XP to the player
+        xpSecondsLeft = 60;  // Reset the clock
     } else {
         xpSecondsLeft--;
     }
