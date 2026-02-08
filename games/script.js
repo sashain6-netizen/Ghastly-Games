@@ -106,54 +106,75 @@ function getLevelInfo(xp) {
 }
 
 async function updateGameStats() {
-    // ... your existing variables (gBucksSpan, etc.)
     const levelSpan = document.getElementById('player-level');
     const ratioSpan = document.getElementById('xp-ratio');
     const barFill = document.getElementById('xp-bar-fill');
     const email = localStorage.getItem('user_email') || ""; 
 
-    if (!email) {
-    document.querySelector('.level-container').style.display = 'none';
-    return; // Stop the function here
-}
+    // 1. DETERMINE CURRENT LEVEL (Default to 1 if guest)
+    let currentLevel = 1;
+    let currentXP = 0;
+    let info = getLevelInfo(0);
 
+    // 2. RUN THE LOCK VISUALS FOR EVERYONE (Guests and Users)
+    // This prevents the level text from "jumping" or disappearing
+    const gameCards = document.querySelectorAll('.game-card');
+    gameCards.forEach(card => {
+        const reqLevel = parseInt(card.getAttribute('data-level')) || 1;
+        const badge = card.querySelector('.level-badge');
+        
+        // Use a temporary level check based on whether we have a real level yet
+        if (currentLevel < reqLevel) {
+            card.classList.add('locked');
+            if (badge) badge.innerHTML = `🔒 Lv. ${reqLevel}`;
+        } else {
+            card.classList.remove('locked');
+            if (badge) badge.innerHTML = `Lv. ${reqLevel}+`;
+        }
+    });
+
+    // 3. EXIT IF NOT LOGGED IN (Hide stats but keep the locks visible)
+    if (!email) {
+        if (document.querySelector('.level-container')) {
+            document.querySelector('.level-container').style.display = 'none';
+        }
+        if (document.getElementById('gbucks-container')) {
+            document.getElementById('gbucks-container').style.display = 'none';
+        }
+        return; 
+    }
+
+    // 4. IF LOGGED IN, FETCH REAL DATA AND UPDATE AGAIN
     try {
         const res = await fetch(`/stats?email=${encodeURIComponent(email)}`);
         if (!res.ok) return;
         const data = await res.json();
 
-        const currentXP = data.xp || 0;
-        const info = getLevelInfo(currentXP);
-        const currentLevel = info.level;
+        currentXP = data.xp || 0;
+        info = getLevelInfo(currentXP);
+        const realLevel = info.level;
 
-        const gameCards = document.querySelectorAll('.game-card');
-        gameCards.forEach(card => {
-            const reqLevel = parseInt(card.getAttribute('data-level')) || 1;
-            
-            if (currentLevel < reqLevel) {
-                card.classList.add('locked');
-                // Optional: Change badge text to show it's locked
-                const badge = card.querySelector('.level-badge');
-                if (badge) badge.innerHTML = `🔒 Lv. ${reqLevel}`;
-            } else {
-                card.classList.remove('locked');
-                const badge = card.querySelector('.level-badge');
-                if (badge) badge.innerHTML = `Lv. ${reqLevel}+`;
-            }
-        });
-
-        // Update Text
+        // Update Text & Bar
         if (levelSpan) levelSpan.innerText = info.level;
         if (ratioSpan) ratioSpan.innerText = `${currentXP}/${info.nextXP}`;
-        
-        // Update Bar Width
         if (barFill) barFill.style.width = info.percent + "%";
-
-        // Update G-Bucks and ownedGames as before...
         if (document.getElementById('g-bucks')) {
             document.getElementById('g-bucks').innerText = data.gbucks ?? "0";
         }
         ownedGames = data.owned_games || []; 
+
+        // Final pass: Update locks with the REAL level
+        gameCards.forEach(card => {
+            const reqLevel = parseInt(card.getAttribute('data-level')) || 1;
+            const badge = card.querySelector('.level-badge');
+            if (realLevel < reqLevel) {
+                card.classList.add('locked');
+                if (badge) badge.innerHTML = `🔒 Lv. ${reqLevel}`;
+            } else {
+                card.classList.remove('locked');
+                if (badge) badge.innerHTML = `Lv. ${reqLevel}+`;
+            }
+        });
 
     } catch (err) {
         console.error("Stats sync failed:", err);
