@@ -2,6 +2,11 @@ import {Bullet} from './bullet.js'
 
 export class Player {
     constructor(game) {
+        this.image = new Image()
+        this.image.src = 'nael.png'
+        this.sizeModifier = 0.2
+        this.width = 395 * this.sizeModifier
+        this.height = 488 * this.sizeModifier
         this.game = game
         this.sizeModifier = 0.2
         this.width = 395 * this.sizeModifier
@@ -91,22 +96,7 @@ export class Player {
     }
 
     draw(context) {
-        this.bullets.forEach(bullet => bullet.draw(context));
-        context.save();
-        context.fillStyle = 'black';
-        context.shadowBlur = 15;
-        context.shadowColor = 'red'; 
-        context.fillRect(this.x, this.y, this.width, this.height);
-        context.shadowBlur = 5;
-        context.fillStyle = '#ff0000';
-        
-        let eyeShift = 0;
-        if (this.vx > 0) eyeShift = this.width * 0.1; 
-        else if (this.vx < 0) eyeShift = -this.width * 0.1;
-
-        context.fillRect(this.x + (this.width * 0.25) + eyeShift, this.y + (this.height * 0.2), 6, 6);
-        context.fillRect(this.x + (this.width * 0.65) + eyeShift, this.y + (this.height * 0.2), 6, 6);
-        context.restore();
+        context.drawImage(this.image, this.x, this.y, this.width, this.height);
     }
 
     collision(){
