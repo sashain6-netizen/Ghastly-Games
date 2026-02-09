@@ -85,26 +85,23 @@ function showPurchaseModal(title, gameId, price) {
     pModal.style.display = 'flex';
 }
 function getLevelInfo(xp) {
-    // Each level requires 100 XP more than the last
-    // Level 1: 0, Level 2: 100, Level 3: 250, Level 4: 450...
-    
     let level = 1;
-    let threshold = 100;
     let cumulativeXP = 0;
 
+    // Calculate level based on your formula: Level 1: 100, Level 2: 200, etc.
     while (xp >= cumulativeXP + (level * 100)) {
         cumulativeXP += (level * 100);
         level++;
     }
 
-    const nextLevelThreshold = cumulativeXP + (level * 100);
     const xpInThisLevel = xp - cumulativeXP;
-    const xpRequiredForNext = nextLevelThreshold - cumulativeXP;
-    const percent = (xpInThisLevel / xpRequiredForNext) * 100;
+    const xpRequiredForThisLevel = level * 100; // The "size" of the current level progress bar
+    const percent = (xpInThisLevel / xpRequiredForThisLevel) * 100;
 
     return {
         level: level,
-        nextXP: nextLevelThreshold,
+        xpInThisLevel: xpInThisLevel,
+        xpRequiredForThisLevel: xpRequiredForThisLevel,
         percent: Math.min(percent, 100)
     };
 }
@@ -142,7 +139,7 @@ async function updateGameStats() {
 
         // 3. UPDATE UI
         if (levelSpan) levelSpan.innerText = realLevel;
-        if (ratioSpan) ratioSpan.innerText = `${currentXP}/${info.nextXP}`;
+        if (ratioSpan) ratioSpan.innerText = `${info.xpInThisLevel}/${info.xpRequiredForThisLevel}`;
         if (barFill) barFill.style.width = info.percent + "%";
         if (document.getElementById('g-bucks')) {
             document.getElementById('g-bucks').innerText = data.gbucks ?? "0";
