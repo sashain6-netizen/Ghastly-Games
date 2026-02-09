@@ -330,33 +330,31 @@ function closeAuthWarning() {
 
 // --- 6. PASSIVE XP SYSTEM ---
 // --- 6. PASSIVE XP SYSTEM (Cloudflare Optimized) ---
+// --- 6. PASSIVE XP SYSTEM (Fixed) ---
 async function awardPassiveXP() {
     const email = localStorage.getItem('user_email');
     if (!email || ownedGames.length === 0) return;
 
-    // Calculate gain: 40 base + 4 per game
     const xpGain = 150 + 8 * ownedGames.length; 
 
-    // --- 1. SMART UI UPDATE (Handles Overflow) ---
     const ratioSpan = document.getElementById('xp-ratio');
     const levelSpan = document.getElementById('player-level');
     const barFill = document.getElementById('xp-bar-fill');
 
     if (ratioSpan) {
-        // Get current XP from the UI text (e.g., "70/100" -> 70)
+        // 1. Get current total XP from the UI
         let currentXP = parseInt(ratioSpan.innerText.split('/')[0]) || 0;
         let newTotalXP = currentXP + xpGain;
 
-        // Use your existing math function to get the new level data
+        // 2. Get the new level data
         const info = getLevelInfo(newTotalXP);
 
-        // Update the Level Number
+        // 3. Update the UI using the correct property names from getLevelInfo
         if (levelSpan) levelSpan.innerText = info.level;
 
-        // Update the Ratio (e.g., "118/400" if level increased)
-        ratioSpan.innerText = `${newTotalXP}/${info.nextXP}`;
+        // FIX: Changed info.nextXP to info.xpRequiredForThisLevel
+        ratioSpan.innerText = `${info.xpInThisLevel}/${info.xpRequiredForThisLevel}`;
 
-        // Update the Bar Fill %
         if (barFill) {
             barFill.style.width = info.percent + "%";
         }
@@ -365,7 +363,9 @@ async function awardPassiveXP() {
         ratioSpan.style.color = "#4ecca3";
         setTimeout(() => ratioSpan.style.color = "white", 2000);
 
-        if (newTotalXP >= info.nextXP) {
+        // FIX: Check if level increased (you can compare old level vs info.level)
+        // Or simply check if current progress is high
+        if (info.percent >= 100) {
             showToast("🎉 Level Up!");
         }
     }
