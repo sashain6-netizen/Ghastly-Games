@@ -136,7 +136,8 @@ async function updateStats(isClick = false) {
             gBucksSpan.innerText = "0";
         }
         const method = isClick ? 'POST' : 'GET';
-        const res = await fetch(`/stats?email=${encodeURIComponent(email)}`, { method });
+        const url = email ? `/stats?email=${encodeURIComponent(email)}` : `/stats`;
+        const res = await fetch(url, { method });
         if (!res.ok) return; 
 
         const data = await res.json();

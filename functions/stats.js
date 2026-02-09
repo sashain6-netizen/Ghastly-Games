@@ -67,13 +67,19 @@ export async function onRequest(context) {
         playerXP = userData['xp'];
       }
 
-      // ACTION: LIKE (No action param - Now correctly accessible by guests!)
+      // ACTION: LIKE (Triggered by POST with no action param)
       else if (!action) {
         const likeLockKey = `like_lock:${ip}`;
         const locked = await env.LIKES_STORAGE.get(likeLockKey);
+        
         if (!locked) {
+          // IMPORTANT: Check if the 'total_likes' row exists in your D1 Database
           await env.DB.prepare(`UPDATE stats SET count = count + 1 WHERE id = 'total_likes'`).run();
+          // Lock the IP for 24 hours
           await env.LIKES_STORAGE.put(likeLockKey, "true", { expirationTtl: 86400 });
+        } else {
+          // Optional: Return a specific status if they already liked
+          return new Response(JSON.stringify({ message: "Already liked" }), { status: 200 });
         }
       }
     }
