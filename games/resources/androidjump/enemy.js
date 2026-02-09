@@ -1,5 +1,9 @@
 export class Enemy {
     constructor(game) {
+        this.image.src = 'Rohit.png'
+        this.sizeModifier = 0.2
+        this.width = 395 * this.sizeModifier
+        this.height = 488 * this.sizeModifier
         this.game = game
         this.sizeModifier = 0.35
         this.width = 238 * this.sizeModifier
@@ -33,23 +37,6 @@ export class Enemy {
     }
 
     draw(context) {
-    context.save();
-    
-    // Shadow body
-    context.fillStyle = 'black';
-    context.shadowBlur = 10;
-    context.shadowColor = '#bc6ff1'; // Ghostly Purple glow
-    context.beginPath();
-    context.arc(this.x + this.width/2, this.y + this.height/2, this.width/2, 0, Math.PI * 2);
-    context.fill();
-
-    // Single glowing purple eye
-    context.shadowBlur = 0;
-    context.fillStyle = '#ff00ff'; 
-    context.beginPath();
-    context.arc(this.x + this.width/2, this.y + this.height/2, 4, 0, Math.PI * 2);
-    context.fill();
-    
-    context.restore();
+        context.drawImage(this.image, this.x, this.y, this.width, this.height);
 }
 }
