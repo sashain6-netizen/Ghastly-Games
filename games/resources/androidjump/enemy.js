@@ -1,5 +1,6 @@
 export class Enemy {
     constructor(game) {
+        this.image = new Image()
         this.image.src = 'Rohit.png'
         this.sizeModifier = 0.2
         this.width = 395 * this.sizeModifier
