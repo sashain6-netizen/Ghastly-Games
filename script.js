@@ -142,9 +142,9 @@ async function updateStats(isClick = false) {
 
         const data = await res.json();
 
-        if (likeDisplay) likeDisplay.innerText = data.likes ?? "0";
-        if (viewDisplay) viewDisplay.innerText = data.views ?? "0";
-        if (goldenCountSpan) goldenCountSpan.innerText = data.global_total ?? "0";
+        if (likeDisplay) likeDisplay.innerText = (data.likes !== undefined) ? data.likes : (document.getElementById('likes')?.innerText || "0");
+        if (viewDisplay) viewDisplay.innerText = (data.views !== undefined) ? data.views : (document.getElementById('views')?.innerText || "0");
+        if (goldenCountSpan) goldenCountSpan.innerText = (data.global_total !== undefined) ? data.global_total : "0";
         
         if (gBucksSpan && data.gbucks !== null) {
             gBucksSpan.innerText = data.gbucks;
