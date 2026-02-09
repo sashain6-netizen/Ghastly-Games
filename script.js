@@ -43,7 +43,7 @@ function showGameModal(title, message) {
         msgEl.innerText = message;
         overlay.style.display = 'flex'; 
     } else {
-        // Fallback if your HTML doesn't have the modal elements yet
+
         alert(title + ": " + message);
     }
 }
@@ -86,10 +86,6 @@ function closeAd() {
     }
 }
 
-// ==========================================
-// MENU SYSTEM
-// ==========================================
-
 const creditsButton = document.getElementById('credits-button');
 const creditsMenu = document.getElementById('credits-menu');
 const logsButton = document.getElementById('logs-button');
@@ -114,8 +110,6 @@ function closeAllMenus() {
     }
 });
 
-// --- STATS SYNC LOGIC ---
-
 async function updateStats(isClick = false) {
     const likeDisplay = document.getElementById('likes'); 
     const viewDisplay = document.getElementById('views');
@@ -123,7 +117,6 @@ async function updateStats(isClick = false) {
     const gBucksSpan = document.getElementById('g-bucks'); 
     const likeBtn = document.getElementById('like-btn');
 
-    // Show cached balance immediately
     const cachedBalance = localStorage.getItem('golden_balance');
     if (cachedBalance !== null && gBucksSpan) {
         gBucksSpan.innerText = cachedBalance;
@@ -131,7 +124,7 @@ async function updateStats(isClick = false) {
 
     try {
         const email = localStorage.getItem('user_email') || ""; 
-        // If no one is logged in, reset the G-Bucks display immediately
+
         if (!email && gBucksSpan) {
             gBucksSpan.innerText = "0";
         }
@@ -145,7 +138,7 @@ async function updateStats(isClick = false) {
         if (likeDisplay) likeDisplay.innerText = (data.likes !== undefined) ? data.likes : (document.getElementById('likes')?.innerText || "0");
         if (viewDisplay) viewDisplay.innerText = (data.views !== undefined) ? data.views : (document.getElementById('views')?.innerText || "0");
         if (goldenCountSpan) goldenCountSpan.innerText = (data.global_total !== undefined) ? data.global_total : "0";
-        
+
         if (gBucksSpan && data.gbucks !== null) {
             gBucksSpan.innerText = data.gbucks;
             localStorage.setItem('golden_balance', data.gbucks);
@@ -163,10 +156,6 @@ async function updateStats(isClick = false) {
         console.error("Sync failed:", err);
     }
 }
-
-// ==========================================
-// ACCOUNT, LOGIN & REWARD LOGIC
-// ==========================================
 
 function openAuth(type) {
     closeAllMenus();
@@ -192,7 +181,6 @@ async function handleSignup() {
     const password = document.getElementById('reg-password').value;
     const messageBox = document.getElementById('signup-msg');
 
-    // 1. Email Validation (Check for @ and then a .)
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
         messageBox.innerText = "Invalid email. Must contain @ and a dot (e.g., user@site.com)";
@@ -200,7 +188,6 @@ async function handleSignup() {
         return;
     }
 
-    // 2. Password Validation (At least 8 characters)
     if (password.length < 8) {
         messageBox.innerText = "Password must be at least 8 characters long.";
         messageBox.style.color = "red";
@@ -254,7 +241,7 @@ async function handleLogin() {
             localStorage.setItem('golden_balance', result.user.g_bucks || 0);
 
             updateUIState(result.user.email, result.user.g_bucks || 0);
-            updateStats(); // <--- Refresh all stats on login
+            updateStats(); 
 
             setTimeout(closeAuth, 1000);
         } else {
@@ -276,31 +263,27 @@ function updateUIState(email, balance) {
 }
 
 function handleLogout() {
-    // 1. Clear Storage
+
     localStorage.removeItem('user_email');
     localStorage.removeItem('golden_balance');
 
-    // 2. Reset UI Elements
     document.getElementById('logged-out-box').style.display = 'flex';
     document.getElementById('logged-in-box').style.display = 'none';
     document.getElementById('user-display').innerText = "";
-    
-    // 3. Clear G-Bucks displays (Both the sidebar and any balance spans)
+
     const personalDisplay = document.getElementById('personal-balance');
-    const gBucksSpan = document.getElementById('g-bucks'); // The sidebar counter
+    const gBucksSpan = document.getElementById('g-bucks'); 
+
     const email = localStorage.getItem('user_email') || "";
     if (personalDisplay) personalDisplay.innerText = "0";
-    if (gBucksSpan) gBucksSpan.innerText = "0"; // Force reset to 0
-    
+    if (gBucksSpan) gBucksSpan.innerText = "0"; 
+
     if (document.getElementById('golden-state')) {
         document.getElementById('golden-state').innerText = "Ready";
     }
-    
-    // 4. Final sync to get guest likes/views
+
     updateStats(false); 
 }
-
-// --- REWARD LOGIC ---
 
 const goldenBtn = document.getElementById("golden-thumb-btn");
 const goldenState = document.getElementById("golden-state");
@@ -325,10 +308,10 @@ if (goldenBtn) {
             const data = await res.json();
 
             if (data.success) {
-                // Success: update balance and stats immediately
+
                 localStorage.setItem('golden_balance', data.new_balance);
                 updateUIState(userEmail, data.new_balance);
-                updateStats(); // <--- Full stats refresh
+                updateStats(); 
 
                 if (goldenState) goldenState.innerText = "Claimed!";
                 showGameModal("Reward Claimed! 💎", "You earned 1 G-Buck! Come back tomorrow.");
@@ -347,10 +330,9 @@ if (goldenBtn) {
     });
 }
 
-// --- INITIALIZATION ---
 document.addEventListener("DOMContentLoaded", function() {
     setTimeout(showAdRandomly, 500);
-    
+
     const likeBtn = document.getElementById('like-btn');
     if (likeBtn) {
         if (localStorage.getItem('hasLiked') === 'true') {
@@ -361,7 +343,7 @@ document.addEventListener("DOMContentLoaded", function() {
         likeBtn.addEventListener('click', () => updateStats(true));
     }
 
-    updateStats(false); // Initial load
+    updateStats(false); 
 
     const savedEmail = localStorage.getItem('user_email');
     const savedBalance = localStorage.getItem('golden_balance');
@@ -373,7 +355,7 @@ document.addEventListener("DOMContentLoaded", function() {
 function togglePassword(inputId) {
     const passwordInput = document.getElementById(inputId);
     if (passwordInput) {
-        // Switch between 'password' (hidden) and 'text' (visible)
+
         passwordInput.type = passwordInput.type === "password" ? "text" : "password";
     }
 }

@@ -10,7 +10,7 @@ body {
 
 #link-grid {
     display: grid;
-    /* This creates the 3-column layout */
+
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 20px;
     width: 100%;
@@ -18,7 +18,7 @@ body {
 }
 
 .link-card {
-    /* This creates the rounded rectangle */
+
     background: #1a1a1a;
     border: 1px solid #333;
     border-radius: 12px;
@@ -40,16 +40,15 @@ body {
 
 .ad-popup {
     position: fixed;
-    /* JS will set top/left/bottom/right */
+
     bottom: 20px; 
     left: 20px;
     width: 300px; 
     z-index: 900; 
     display: block; 
-    /* NOTE: I removed the nested animation classes from inside here */
+
 }
 
-/* These classes must be OUTSIDE .ad-popup so the JS can apply them */
 .slide-in-top { 
     animation: slideInTop 0.8s ease-out forwards; 
 }
@@ -66,19 +65,18 @@ body {
     animation: slideInRight 0.8s ease-out forwards; 
 }
 
-/* Image styling */
 .ad-popup {
     position: fixed;
-    width: 300px; /* This keeps the width consistent */
+    width: 300px; 
     z-index: 900; 
     display: none; 
-    overflow: visible; /* Allows the close button to hang off the edge */
+    overflow: visible; 
 }
 
 .ad-popup img {
     width: 100%;
-    max-height: 200px; /* Add this to prevent massive height */
-    object-fit: cover;  /* This crops the image to fit the box instead of stretching it */
+    max-height: 200px; 
+    object-fit: cover;  
     border-radius: 10px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
     border: 2px solid transparent; 
@@ -86,12 +84,10 @@ body {
     transition: border-color 0.3s ease;
 }
 
-/* Hover state for the blue edge */
 .ad-popup:hover img {
     border-color: #3b82f6;
 }
 
-/* Close Button styling */
 .ad-close-btn {
     position: absolute;
     top: -10px;
@@ -107,14 +103,13 @@ body {
     font-weight: bold;
     box-shadow: 0 2px 5px rgba(0,0,0,0.3);
     border: 2px solid white;
-    z-index: 901; /* Ensure button is above the image */
+    z-index: 901; 
 }
 
 .ad-close-btn:hover {
     background-color: #d90e0e;
 }
 
-/* --- ANIMATION KEYFRAMES --- */
 @keyframes slideInTop {
     from { transform: translateY(-100%); opacity: 0; }
     to { transform: translateY(0); opacity: 1; }
@@ -132,19 +127,18 @@ body {
     to { transform: translateX(0); opacity: 1; }
 }
 
-/* --- BUTTON STYLES --- */
 #credits-button, #logs-button, #info-button {
-    background-color: #1a1a1a;  /* Dark grey match */
-    color: #00d4ff;             /* Neon blue text */
-    border: 1px solid #333;     /* Subtle border */
-    border-radius: 8px;         /* Rounded corners */
-    padding: 12px 25px;         /* Make them bigger/easier to click */
+    background-color: #1a1a1a;  
+    color: #00d4ff;             
+    border: 1px solid #333;     
+    border-radius: 8px;         
+    padding: 12px 25px;         
     font-size: 16px;
     font-weight: bold;
-    cursor: pointer;            /* Changes cursor to pointer hand */
-    transition: all 0.3s ease;  /* Smooth animation */
-    margin: 10px;               /* Space around the buttons */
-    font-family: sans-serif;    /* Ensure font matches body */
+    cursor: pointer;            
+    transition: all 0.3s ease;  
+    margin: 10px;               
+    font-family: sans-serif;    
 }
 
 #credits-button:hover, #logs-button:hover, #info-button:hover {
@@ -183,26 +177,24 @@ body {
 }
 
 .credits-box {
-  /* Layout & Spacing */
+
   display: flex;
-  flex-direction: column; /* Stacked for better mobile reading */
+  flex-direction: column; 
   align-items: flex-start;
   padding: 15px 20px;
   margin: 15px 0;
-  
-  /* Matches your dark theme */
+
   background: #1a1a1a; 
-  border-left: 4px solid #00d4ff; /* Neon Blue instead of Pink */
+  border-left: 4px solid #00d4ff; 
   border-radius: 8px;
-  
-  /* Shadow & Transition */
+
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
   transition: all 0.3s ease;
-  text-align: left; /* Keeps text readable */
+  text-align: left; 
 }
 
 .credits-box strong {
-  color: #00d4ff; /* Neon Blue */
+  color: #00d4ff; 
   text-transform: uppercase;
   letter-spacing: 1px;
   font-size: 0.75rem;
@@ -222,26 +214,24 @@ body {
 }
 
 .logs-box {
-  /* Layout & Spacing */
+
   display: flex;
-  flex-direction: column; /* Stacked for better mobile reading */
+  flex-direction: column; 
   align-items: flex-start;
   padding: 15px 20px;
   margin: 15px 0;
-  
-  /* Matches your dark theme */
+
   background: #1a1a1a; 
-  border-left: 4px solid #37ff00; /* Neon Blue instead of Pink */
+  border-left: 4px solid #37ff00; 
   border-radius: 8px;
-  
-  /* Shadow & Transition */
+
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
   transition: all 0.3s ease;
-  text-align: left; /* Keeps text readable */
+  text-align: left; 
 }
 
 .logs-box strong {
-  color: #37ff00; /* Neon Blue */
+  color: #37ff00; 
   text-transform: uppercase;
   letter-spacing: 1px;
   font-size: 0.75rem;
@@ -261,26 +251,24 @@ body {
 }
 
 .info-box {
-  /* Layout & Spacing */
+
   display: flex;
-  flex-direction: column; /* Stacked for better mobile reading */
+  flex-direction: column; 
   align-items: flex-start;
   padding: 15px 20px;
   margin: 15px 0;
-  
-  /* Matches your dark theme */
+
   background: #1a1a1a; 
-  border-left: 4px solid #ff0000; /* Neon Blue instead of Pink */
+  border-left: 4px solid #ff0000; 
   border-radius: 8px;
-  
-  /* Shadow & Transition */
+
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
   transition: all 0.3s ease;
-  text-align: left; /* Keeps text readable */
+  text-align: left; 
 }
 
 .info-box strong {
-  color: #ff0000; /* Neon Blue */
+  color: #ff0000; 
   text-transform: uppercase;
   letter-spacing: 1px;
   font-size: 0.75rem;
@@ -310,7 +298,7 @@ body {
 }
 
 .thumb-btn {
-    background-color: #007bff; /* Blue like Facebook/Cloudflare colors */
+    background-color: #007bff; 
     color: white;
     border: none;
     padding: 10px 20px;
@@ -325,17 +313,17 @@ body {
 
 .thumb-btn:hover {
     background-color: #0056b3;
-    transform: scale(1.05); /* Slight pop out effect */
+    transform: scale(1.05); 
 }
 
 .thumb-btn:disabled {
-    background-color: #6c757d; /* Grey when already liked */
+    background-color: #6c757d; 
     cursor: not-allowed;
     transform: none;
 }
 
 .thumb-btn {
-    min-width: 120px; /* Ensures the button doesn't jump in size when loading */
+    min-width: 120px; 
     font-weight: bold;
 }
 
@@ -345,7 +333,7 @@ body {
 }
 
 .golden-btn {
-    background-color: #ffea00; /* Blue like Facebook/Cloudflare colors */
+    background-color: #ffea00; 
     color: white;
     border: none;
     padding: 10px 20px;
@@ -360,17 +348,17 @@ body {
 
 .golden-btn:hover {
     background-color: #b5b319;
-    transform: scale(1.05); /* Slight pop out effect */
+    transform: scale(1.05); 
 }
 
 .golden-btn:disabled {
-    background-color: #6c757d; /* Grey when already liked */
+    background-color: #6c757d; 
     cursor: not-allowed;
     transform: none;
 }
 
 .golden-btn {
-    min-width: 120px; /* Ensures the button doesn't jump in size when loading */
+    min-width: 120px; 
     font-weight: bold;
 }
 
@@ -385,7 +373,7 @@ body {
 }
 
 .view-count {
-    background-color: #00ff0d; /* Blue like Facebook/Cloudflare colors */
+    background-color: #00ff0d; 
     color: white;
     border: none;
     padding: 10px 20px;
@@ -400,7 +388,7 @@ body {
 
 .view-count:hover {
     background-color: #0a680f;
-    transform: scale(1.05); /* Slight pop out effect */
+    transform: scale(1.05); 
 }
 
 .view-count {
@@ -409,13 +397,13 @@ body {
 }
 
 .stats-row {
-    display: flex;             /* Lines them up horizontally */
-    justify-content: center;   /* Centers them in the middle of the screen */
-    align-items: center;       /* Aligns them vertically */
-    gap: 15px;                 /* Adds 15px of space between the two buttons */
-    margin-bottom: 20px;       /* Adds space below them before the header starts */
-    width: 100%;               /* Ensures the container spans the full width */
-    flex-wrap: wrap;           /* Allows them to stack on very small mobile screens */
+    display: flex;             
+    justify-content: center;   
+    align-items: center;       
+    gap: 15px;                 
+    margin-bottom: 20px;       
+    width: 100%;               
+    flex-wrap: wrap;           
 }
 
 #ghastly-auth-system {
@@ -433,7 +421,7 @@ body {
     width: 100%;
     max-width: 400px;
     text-align: center;
-    font-family: 'Segoe UI', sans-serif; /* Keeps font local to this box */
+    font-family: 'Segoe UI', sans-serif; 
 }
 
 #ghastly-auth-system h2 {
@@ -452,7 +440,7 @@ body {
     border-radius: 8px;
     color: #fff;
     font-size: 16px;
-    display: block; /* Ensures they stack even if your old CSS floats things */
+    display: block; 
 }
 
 #ghastly-auth-system input:focus {
@@ -484,10 +472,8 @@ body {
     margin-top: 15px;
 }
 
-/* The dark background behind the popup */
-/* The dark background behind the popup */
 #auth-overlay {
-    display: none; /* Keep this as NONE so it doesn't block buttons */
+    display: none; 
     position: fixed;
     top: 0;
     left: 0;
@@ -497,10 +483,9 @@ body {
     z-index: 9999;
     justify-content: center;
     align-items: center;
-    padding: 20px; /* Simplified padding */
+    padding: 20px; 
 }
 
-/* This container only needs to be styled, not given a separate display property here */
 #ghastly-auth-system {
     position: relative;
     background: #1a0b2e;
@@ -516,16 +501,15 @@ body {
     max-width: 20%;
     top: 12px;
     right: 12px;
-    background: rgba(255, 255, 255, 0.05); /* Very subtle circle background */
+    background: rgba(255, 255, 255, 0.05); 
     border: none;
     color: #bc6ff1;
-    
-    /* Precise Sizing */
+
     width: 30px;
     height: 30px;
-    font-size: 20px; /* Controlled text size */
-    line-height: 1; /* Prevents the 'x' from drifting down */
-    
+    font-size: 20px; 
+    line-height: 1; 
+
     border-radius: 50%;
     cursor: pointer;
     display: flex;
@@ -537,20 +521,19 @@ body {
 #close-btn:hover {
     background: rgba(188, 111, 241, 0.2);
     color: #fff;
-    transform: rotate(90deg); /* Ghostly spin effect */
+    transform: rotate(90deg); 
 }
 
 #close-btn:hover {
     background: rgba(188, 111, 241, 0.2);
     color: #fff;
-    transform: rotate(90deg); /* Ghostly spin effect */
+    transform: rotate(90deg); 
 }
 
 .auth-form {
-    display: none; /* Hidden until toggled */
+    display: none; 
 }
 
-/* Auth buttons styling */
 #auth-buttons button {
     background: #bc6ff1;
     color: white;
@@ -563,11 +546,10 @@ body {
 }
 
 #ghastly-auth-system h2 {
-    margin-top: 50px; /* Gives the X button some breathing room */
-    padding-right: 30px; /* Ensures text doesn't overlap the X on small screens */
+    margin-top: 50px; 
+    padding-right: 30px; 
 }
 
-/* Positions the whole group to the top right */
 #ghastly-header-right {
     position: absolute;
     top: 20px;
@@ -575,40 +557,36 @@ body {
     z-index: 100;
 }
 
-/* The box surrounding the buttons */
 .auth-box-container {
-    
-    /* THE SMART WIDTH FIX */
-    width: fit-content;       /* Shrinks to fit content */
-    max-width: 900px;        /* The absolute widest it can ever get */
-    min-width: 150px;        /* Prevents it from looking like a tiny sliver */
-    
+
+    width: fit-content;       
+    max-width: 900px;        
+    min-width: 150px;        
+
     height: 55px;
-    padding: 0 25px;         /* Horizontal breathing room */
+    padding: 0 25px;         
     border-radius: 12px;
-    
+
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 20px;               /* Keeps a consistent gap between name and button */
-    white-space: nowrap;     /* Keeps everything on one clean line */
+    gap: 20px;               
+    white-space: nowrap;     
 }
 
-/* Making the buttons bigger and styled */
 .auth-btn {
-    all: unset; /* Clears default button styling */
+    all: unset; 
     cursor: pointer;
     font-family: 'Segoe UI', sans-serif;
     font-weight: bold;
-    font-size: 1.1rem; /* Bigger text */
-    padding: 12px 24px; /* More clickable area */
+    font-size: 1.1rem; 
+    padding: 12px 24px; 
     border-radius: 8px;
     transition: all 0.3s ease;
     text-transform: uppercase;
     letter-spacing: 1px;
 }
 
-/* Specific style for Sign Up (The "Glow" button) */
 .auth-btn.signup {
     background: #bc6ff1;
     color: #0d0216;
@@ -620,7 +598,6 @@ body {
     transform: scale(1.05);
 }
 
-/* Specific style for Login (The "Outline" button) */
 .auth-btn.login {
     color: #bc6ff1;
     border: 1px solid #bc6ff1;
@@ -632,25 +609,23 @@ body {
     border-color: #fff;
 }
 
-/* The dark background behind the popup */
 .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.7); /* Dark semi-transparent background */
-    z-index: 10000; /* On top of everything */
+    background: rgba(0, 0, 0, 0.7); 
+    z-index: 10000; 
     display: flex;
-    align-items: center; /* Center Vertically */
-    justify-content: center; /* Center Horizontally */
-    backdrop-filter: blur(3px); /* Cool blur effect */
+    align-items: center; 
+    justify-content: center; 
+    backdrop-filter: blur(3px); 
 }
 
-/* The actual popup box */
 .modal-box {
-    background: #1e1e24; /* Dark grey */
-    border: 2px solid #bc6ff1; /* Ghastly Purple border */
+    background: #1e1e24; 
+    border: 2px solid #bc6ff1; 
     border-radius: 12px;
     padding: 30px;
     width: 90%;
@@ -661,7 +636,6 @@ body {
     animation: popIn 0.3s ease-out;
 }
 
-/* The OK button */
 .modal-btn {
     background: #bc6ff1;
     color: white;
@@ -679,7 +653,6 @@ body {
     background: #a555db;
 }
 
-/* Animation for popping in */
 @keyframes popIn {
     from { transform: scale(0.8); opacity: 0; }
     to { transform: scale(1); opacity: 1; }
@@ -720,19 +693,17 @@ body {
 
 .show-pw input {
     cursor: pointer;
-    accent-color: #bc6ff1; /* This makes the checkbox purple! */
+    accent-color: #bc6ff1; 
 }
 
-/* Container for the toggle and text */
 .show-pw-container {
     display: flex;
     align-items: center;
     gap: 12px;
     margin: 10px 0;
-    user-select: none; /* Prevents the annoying blue highlight/streak text selection */
+    user-select: none; 
 }
 
-/* The actual switch area */
 .switch {
     position: relative;
     display: inline-block;
@@ -740,14 +711,12 @@ body {
     height: 20px;
 }
 
-/* Hide the default checkbox */
 .switch input {
     opacity: 0;
     width: 0;
     height: 0;
 }
 
-/* The slider track */
 .slider {
     position: absolute;
     cursor: pointer;
@@ -758,7 +727,6 @@ body {
     border: 1px solid #bc6ff1;
 }
 
-/* The white circle inside the slider */
 .slider:before {
     position: absolute;
     content: "";
@@ -771,21 +739,17 @@ body {
     border-radius: 50%;
 }
 
-/* When the checkbox is clicked (The "On" state) */
 input:checked + .slider {
     background-color: #bc6ff1;
-    box-shadow: 0 0 10px #bc6ff1; /* Purple glow */
+    box-shadow: 0 0 10px #bc6ff1; 
 }
 
 input:checked + .slider:before {
     transform: translateX(20px);
 }
 
-/* Label text styling */
 .switch-label {
     color: #ccc;
     font-size: 0.9rem;
     font-family: inherit;
 }
-
-
