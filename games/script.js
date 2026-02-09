@@ -336,10 +336,8 @@ async function awardPassiveXP() {
     const email = localStorage.getItem('user_email');
     if (!email || ownedGames.length === 0) return;
 
-    // Calculate gain
     const xpGain = 150 + 8 * ownedGames.length; 
 
-    // --- 1. SERVER SYNC FIRST ---
     try {
         const res = await fetch(`/stats?email=${encodeURIComponent(email)}&action=addXP&amount=${xpGain}&t=${Date.now()}`, {
             method: 'POST'
@@ -347,9 +345,11 @@ async function awardPassiveXP() {
         
         if (res.ok) {
             console.log("XP Synced with server.");
-            // --- 2. REFRESH UI FROM SERVER DATA ---
-            // This ensures the level and bar are 100% accurate to the database
-            await updateGameStats(); 
+            
+            // Wait 500ms for the database to catch up before refreshing UI
+            setTimeout(async () => {
+                await updateGameStats(); 
+            }, 500);
             
             // Visual feedback
             const ratioSpan = document.getElementById('xp-ratio');
