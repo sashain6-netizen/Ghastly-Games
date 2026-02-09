@@ -86,16 +86,17 @@ function showPurchaseModal(title, gameId, price) {
 }
 function getLevelInfo(xp) {
     let level = 1;
-    let cumulativeXP = 0;
+    let xpForNextLevel = 100; // Requirement for Level 1 -> 2
+    let cumulativeXPToReachLevel = 0;
 
-    // Calculate level based on your formula: Level 1: 100, Level 2: 200, etc.
-    while (xp >= cumulativeXP + (level * 100)) {
-        cumulativeXP += (level * 100);
+    // While we have more XP than needed to reach the NEXT level
+    while (xp >= cumulativeXPToReachLevel + (level * 100)) {
+        cumulativeXPToReachLevel += (level * 100);
         level++;
     }
 
-    const xpInThisLevel = xp - cumulativeXP;
-    const xpRequiredForThisLevel = level * 100; // The "size" of the current level progress bar
+    const xpRequiredForThisLevel = level * 100; // How much XP is needed to clear the current level
+    const xpInThisLevel = xp - cumulativeXPToReachLevel;
     const percent = (xpInThisLevel / xpRequiredForThisLevel) * 100;
 
     return {
