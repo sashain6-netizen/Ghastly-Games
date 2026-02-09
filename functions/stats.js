@@ -28,10 +28,11 @@ export async function onRequest(context) {
 
     // --- 2. LOGIC BRANCHES ---
     if (isPost) {
-      if (!userData) return new Response(JSON.stringify({ error: "User not logged in" }), { status: 401 });
-
+      
       // ACTION: PURCHASE GAME
       if (action === "purchase") {
+        if (!userData) return new Response(JSON.stringify({ error: "User not logged in" }), { status: 401 });
+        
         const gameId = url.searchParams.get("gameId");
         const price = parseInt(url.searchParams.get("price") || "0");
 
@@ -46,20 +47,18 @@ export async function onRequest(context) {
         ownedGames = userData.owned_games;
       }
 
-      // ACTION: ADD PASSIVE XP (Every 10 mins)
+      // ACTION: ADD PASSIVE XP
       else if (action === "addXP") {
+        if (!userData) return new Response(JSON.stringify({ error: "User not logged in" }), { status: 401 });
+        
         const amount = parseInt(url.searchParams.get("amount") || "0");
         const xpLockKey = `xp_lock:${userEmail.toLowerCase().trim()}`;
         
-        // Rate limit: Only allow XP claim once every 9.5 minutes (to be safe)
         const isLocked = await env.LIKES_STORAGE.get(xpLockKey);
-        if (isLocked) {
-          return new Response(JSON.stringify({ error: "XP already claimed too recently." }), { status: 429 });
-        }
+        if (isLocked) return new Response(JSON.stringify({ error: "XP already claimed." }), { status: 429 });
 
         userData['xp'] = (userData['xp'] || 0) + amount;
         
-        // Save user data and set a 10-minute cooldown
         await Promise.all([
           env.LIKES_STORAGE.put(userKey, JSON.stringify(userData)),
           env.LIKES_STORAGE.put(xpLockKey, "true", { expirationTtl: 570 }) 
@@ -68,7 +67,7 @@ export async function onRequest(context) {
         playerXP = userData['xp'];
       }
 
-      // ACTION: LIKE (No action param)
+      // ACTION: LIKE (No action param - Now correctly accessible by guests!)
       else if (!action) {
         const likeLockKey = `like_lock:${ip}`;
         const locked = await env.LIKES_STORAGE.get(likeLockKey);
@@ -98,7 +97,7 @@ export async function onRequest(context) {
       views: stats.total_views || 0,
       global_total: stats.global_golden_thumbs || 0,
       gbucks: playerGBucks,
-      xp: playerXP, // Now returning XP in the response
+      xp: playerXP,
       owned_games: ownedGames 
     }), { headers: { "Content-Type": "application/json" } });
 
