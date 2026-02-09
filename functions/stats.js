@@ -20,66 +20,51 @@ export async function onRequest(context) {
       const userDataRaw = await env.LIKES_STORAGE.get(userKey);
       if (userDataRaw) {
         userData = JSON.parse(userDataRaw);
-        playerGBucks = userData['g_bucks'] || 0;
-        playerXP = userData['xp'] || 0;
-        ownedGames = userData.owned_games || [];
+        playerGBucks = userData['g_bucks'] ?? 0;
+        playerXP = userData['xp'] ?? 0;
+        ownedGames = userData.owned_games ?? [];
       }
     }
 
     // --- 2. LOGIC BRANCHES ---
     if (isPost) {
-      
       // ACTION: PURCHASE GAME
       if (action === "purchase") {
         if (!userData) return new Response(JSON.stringify({ error: "User not logged in" }), { status: 401 });
-        
         const gameId = url.searchParams.get("gameId");
         const price = parseInt(url.searchParams.get("price") || "0");
-
         if (ownedGames.includes(gameId)) return new Response(JSON.stringify({ error: "Already owned!" }), { status: 400 });
         if (playerGBucks < price) return new Response(JSON.stringify({ error: "Insufficient G-Bucks!" }), { status: 400 });
 
         userData['g_bucks'] = playerGBucks - price;
         userData.owned_games = [...ownedGames, gameId];
-
         await env.LIKES_STORAGE.put(userKey, JSON.stringify(userData));
         playerGBucks = userData['g_bucks'];
         ownedGames = userData.owned_games;
       }
-
       // ACTION: ADD PASSIVE XP
       else if (action === "addXP") {
         if (!userData) return new Response(JSON.stringify({ error: "User not logged in" }), { status: 401 });
-        
         const amount = parseInt(url.searchParams.get("amount") || "0");
         const xpLockKey = `xp_lock:${userEmail.toLowerCase().trim()}`;
-        
         const isLocked = await env.LIKES_STORAGE.get(xpLockKey);
         if (isLocked) return new Response(JSON.stringify({ error: "XP already claimed." }), { status: 429 });
 
         userData['xp'] = (userData['xp'] || 0) + amount;
-        
         await Promise.all([
           env.LIKES_STORAGE.put(userKey, JSON.stringify(userData)),
-          env.LIKES_STORAGE.put(xpLockKey, "true", { expirationTtl: 570 }) 
+          env.LIKES_STORAGE.put(xpLockKey, "true", { expirationTtl: 570 })
         ]);
-
         playerXP = userData['xp'];
       }
-
-      // ACTION: LIKE (Triggered by POST with no action param)
+      // ACTION: LIKE
       else if (!action) {
         const likeLockKey = `like_lock:${ip}`;
         const locked = await env.LIKES_STORAGE.get(likeLockKey);
-        
         if (!locked) {
-          // IMPORTANT: Check if the 'total_likes' row exists in your D1 Database
+          // This UPDATE will only work if the row 'total_likes' already exists in D1
           await env.DB.prepare(`UPDATE stats SET count = count + 1 WHERE id = 'total_likes'`).run();
-          // Lock the IP for 24 hours
           await env.LIKES_STORAGE.put(likeLockKey, "true", { expirationTtl: 86400 });
-        } else {
-          // Optional: Return a specific status if they already liked
-          return new Response(JSON.stringify({ message: "Already liked" }), { status: 200 });
         }
       }
     }
@@ -95,13 +80,14 @@ export async function onRequest(context) {
     }
 
     // --- 4. FETCH GLOBAL STATS & RESPOND ---
-    const statsQuery = await env.DB.prepare(`SELECT id, count FROM stats`).all();
-    const stats = Object.fromEntries(statsQuery.results.map(r => [r.id, r.count]));
+    const { results } = await env.DB.prepare(`SELECT id, count FROM stats`).all();
+    const stats = Object.fromEntries(results.map(r => [r.id, r.count]));
 
+    // We use ?? 0 to ensure that if a row is missing, we send 0 instead of undefined
     return new Response(JSON.stringify({
-      likes: stats.total_likes || 0,
-      views: stats.total_views || 0,
-      global_total: stats.global_golden_thumbs || 0,
+      likes: stats.total_likes ?? 0,
+      views: stats.total_views ?? 0,
+      global_total: stats.global_golden_thumbs ?? 0,
       gbucks: playerGBucks,
       xp: playerXP,
       owned_games: ownedGames 
