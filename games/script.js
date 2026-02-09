@@ -335,7 +335,7 @@ async function awardPassiveXP() {
     if (!email || ownedGames.length === 0) return;
 
     // Calculate gain: 40 base + 4 per game
-    const xpGain = 40 + 4 * ownedGames.length; 
+    const xpGain = 150 + 8 * ownedGames.length; 
 
     // --- 1. SMART UI UPDATE (Handles Overflow) ---
     const ratioSpan = document.getElementById('xp-ratio');
