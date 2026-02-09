@@ -335,51 +335,30 @@ async function awardPassiveXP() {
     const email = localStorage.getItem('user_email');
     if (!email || ownedGames.length === 0) return;
 
+    // Calculate gain
     const xpGain = 150 + 8 * ownedGames.length; 
 
-    const ratioSpan = document.getElementById('xp-ratio');
-    const levelSpan = document.getElementById('player-level');
-    const barFill = document.getElementById('xp-bar-fill');
-
-    if (ratioSpan) {
-        // 1. Get current total XP from the UI
-        let currentXP = parseInt(ratioSpan.innerText.split('/')[0]) || 0;
-        let newTotalXP = currentXP + xpGain;
-
-        // 2. Get the new level data
-        const info = getLevelInfo(newTotalXP);
-
-        // 3. Update the UI using the correct property names from getLevelInfo
-        if (levelSpan) levelSpan.innerText = info.level;
-
-        // FIX: Changed info.nextXP to info.xpRequiredForThisLevel
-        ratioSpan.innerText = `${info.xpInThisLevel}/${info.xpRequiredForThisLevel}`;
-
-        if (barFill) {
-            barFill.style.width = info.percent + "%";
-        }
-
-        // Visual feedback
-        ratioSpan.style.color = "#4ecca3";
-        setTimeout(() => ratioSpan.style.color = "white", 2000);
-
-        // FIX: Check if level increased (you can compare old level vs info.level)
-        // Or simply check if current progress is high
-        if (info.percent >= 100) {
-            showToast("🎉 Level Up!");
-        }
-    }
-
-    // --- 2. SERVER SYNC ---
+    // --- 1. SERVER SYNC FIRST ---
     try {
         const res = await fetch(`/stats?email=${encodeURIComponent(email)}&action=addXP&amount=${xpGain}&t=${Date.now()}`, {
             method: 'POST'
         });
+        
         if (res.ok) {
             console.log("XP Synced with server.");
+            // --- 2. REFRESH UI FROM SERVER DATA ---
+            // This ensures the level and bar are 100% accurate to the database
+            await updateGameStats(); 
+            
+            // Visual feedback
+            const ratioSpan = document.getElementById('xp-ratio');
+            if (ratioSpan) {
+                ratioSpan.style.color = "#4ecca3";
+                setTimeout(() => ratioSpan.style.color = "white", 2000);
+            }
         }
     } catch (err) {
-        console.error("Server sync failed, but UI updated locally.");
+        console.error("Server sync failed:", err);
     }
 }
 
