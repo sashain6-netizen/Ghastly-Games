@@ -37,6 +37,8 @@ export class Enemy {
     }
 
     draw(context) {
+        context.save();
         context.drawImage(this.image, this.x, this.y, this.width, this.height);
+        context.restore();
 }
 }
