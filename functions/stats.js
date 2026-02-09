@@ -11,6 +11,13 @@ export async function onRequest(context) {
   let ownedGames = [];
 
   try {
+
+    return new Response(JSON.stringify({
+      likes: stats.total_likes ?? 0,
+      views: stats.total_views ?? 0,
+      is_locked: !!locked, // Tells the frontend if this IP is already locked
+      // ... rest of your data
+    }), { headers: { "Content-Type": "application/json" } });
     // --- 1. FETCH PLAYER DATA ---
     let userKey = "";
     let userData = null;
