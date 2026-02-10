@@ -14,16 +14,28 @@ let game = {
     score: 0,
     totalScore: 0, // Lifetime earnings (for prestige)
     prestigeLevel: 0,
-    inventory: {} // { 'auto1': 5, 'auto2': 10 }
+    inventory: {} 
 };
 
 // Initialize Inventory
-upgrades.forEach(u => game.inventory[u.id] = 0);
+upgrades.forEach(u => {
+    // If the item doesn't exist in inventory (new update or fresh save), set to 0
+    if(typeof game.inventory[u.id] === 'undefined') {
+        game.inventory[u.id] = 0;
+    }
+});
 
 /* --- LOAD SAVE --- */
 if(localStorage.getItem('anthonyUltimate')) {
     let saved = JSON.parse(localStorage.getItem('anthonyUltimate'));
-    game = { ...game, ...saved }; // Merge to keep compatibility
+    game = { ...game, ...saved };
+    
+    // Safety check: ensure any new upgrades added to code exist in the loaded save
+    upgrades.forEach(u => {
+        if(typeof game.inventory[u.id] === 'undefined') {
+            game.inventory[u.id] = 0;
+        }
+    });
 }
 
 /* --- DOM ELEMENTS --- */
@@ -42,18 +54,16 @@ const els = {
 
 /* --- CORE LOGIC --- */
 
-// Calculate Cost: Base * 1.15^Count
 const getCost = (id) => {
     const u = upgrades.find(x => x.id === id);
     return Math.floor(u.baseCost * Math.pow(1.15, game.inventory[id]));
 };
 
-// Calculate Power: Base * Multipliers * Prestige
 const getPower = (id) => {
     const u = upgrades.find(x => x.id === id);
     const count = game.inventory[id];
     
-    // Milestone Bonus: Every 25 levels, power doubles
+    // Milestone Bonus: Power doubles every 25 levels
     const multiplier = Math.pow(2, Math.floor(count / 25));
     
     // Prestige Bonus: +10% per prestige level
@@ -63,7 +73,7 @@ const getPower = (id) => {
 };
 
 const getClickPower = () => {
-    let base = 1 + (game.inventory['click'] * getPower('click')); // Base 1 click
+    let base = 1 + (game.inventory['click'] * getPower('click'));
     return base;
 };
 
@@ -86,25 +96,29 @@ els.anthony.addEventListener('mousedown', (e) => {
     
     // Visuals
     els.bgPulse.classList.remove('pulse-anim');
-    void els.bgPulse.offsetWidth; // reset animation
+    void els.bgPulse.offsetWidth; // Force reflow
     els.bgPulse.classList.add('pulse-anim');
 });
 
 function addScore(amount) {
     game.score += amount;
     game.totalScore += amount;
-    updateUI();
+    // We do NOT call updateUI here constantly to save performance.
+    // The loop handles the UI.
 }
 
 // Main Loop (10 ticks per second)
 setInterval(() => {
     const auto = getAutoProduction();
     if(auto > 0) {
-        addScore(auto / 10);
+        // Add 1/10th of per-second production
+        game.score += (auto / 10);
+        game.totalScore += (auto / 10);
     }
+    updateUI(); // Updates the text and button colors
 }, 100);
 
-// Auto-Save Loop
+// Auto-Save Loop (Every 10 seconds)
 setInterval(() => saveGame(false), 10000); 
 
 /* --- SHOP SYSTEM --- */
@@ -112,7 +126,7 @@ setInterval(() => saveGame(false), 10000);
 function renderShop() {
     els.shop.innerHTML = '';
     
-    upgrades.forEach(u => {
+    upgrades.forEach((u, index) => {
         const cost = getCost(u.id);
         const count = game.inventory[u.id];
         const power = getPower(u.id);
@@ -121,6 +135,8 @@ function renderShop() {
         const progress = (count % 25) / 25 * 100;
         
         const card = document.createElement('div');
+        // We add an ID to the card so we can find it later easily
+        card.id = `card-${index}`;
         card.className = `upgrade-card ${game.score >= cost ? 'affordable' : 'too-expensive'}`;
         
         card.innerHTML = `
@@ -136,21 +152,80 @@ function renderShop() {
             </div>
         `;
         
-        card.onclick = () => buyUpgrade(u.id);
+        // Pass the event so we can shake the specific card
+        card.onclick = (e) => buyUpgrade(u.id, e);
         els.shop.appendChild(card);
     });
 }
 
-function buyUpgrade(id) {
+function buyUpgrade(id, event) {
     const cost = getCost(id);
     if(game.score >= cost) {
         game.score -= cost;
         game.inventory[id]++;
-        updateUI(); // Re-render to update costs and affordability
+        
+        // Re-render shop because costs and levels changed
+        renderShop();
+        updateUI();
+
+        // Visual Feedback: Shake the card that was clicked
+        if(event && event.currentTarget) {
+            const card = event.currentTarget;
+            card.style.transform = "scale(0.95)";
+            setTimeout(() => card.style.transform = "scale(1)", 100);
+        }
     }
 }
 
-/* --- PRESTIGE SYSTEM --- */
+/* --- VISUALS & UTILS --- */
+
+function updateUI() {
+    // 1. Update Texts
+    els.score.innerText = format(game.score);
+    els.perSec.innerText = format(getAutoProduction());
+    
+    // 2. Prestige Button Logic
+    if(game.totalScore > 500000) {
+        els.ascendBtn.style.display = 'block';
+        if(game.score >= 1000000) {
+            els.ascendBtn.classList.remove('locked');
+            els.ascendBtn.innerText = "🌀 ASCEND NOW!";
+        } else {
+            els.ascendBtn.classList.add('locked');
+            els.ascendBtn.innerText = "🌀 ASCEND (Req: 1M)";
+        }
+    } else {
+        els.ascendBtn.style.display = 'none';
+    }
+
+    // 3. Prestige Badge
+    if(game.prestigeLevel > 0) {
+        els.prestigeBadge.style.display = 'block';
+        els.prestigeLvl.innerText = game.prestigeLevel;
+        els.prestigeBoost.innerText = (game.prestigeLevel * 10);
+    }
+
+    // 4. Update Shop Colors (Lightweight)
+    updateShopVisuals();
+}
+
+// Optimized: Only toggles classes, doesn't rebuild HTML
+function updateShopVisuals() {
+    upgrades.forEach((u, index) => {
+        const card = document.getElementById(`card-${index}`);
+        if(!card) return;
+        
+        const cost = getCost(u.id);
+        if(game.score >= cost) {
+            card.classList.add('affordable');
+            card.classList.remove('too-expensive');
+        } else {
+            card.classList.remove('affordable');
+            card.classList.add('too-expensive');
+        }
+    });
+}
+
 function triggerAscension() {
     if(game.score < 1000000) return;
     
@@ -164,45 +239,13 @@ function triggerAscension() {
     }
 }
 
-/* --- VISUALS & UTILS --- */
-
-function updateUI() {
-    els.score.innerText = format(game.score);
-    els.perSec.innerText = format(getAutoProduction());
-    
-    // Prestige Button
-    if(game.totalScore > 500000) { // Show button when close
-        els.ascendBtn.style.display = 'block';
-        if(game.score >= 1000000) {
-            els.ascendBtn.classList.remove('locked');
-            els.ascendBtn.innerText = "🌀 ASCEND NOW!";
-        } else {
-            els.ascendBtn.classList.add('locked');
-        }
-    } else {
-        els.ascendBtn.style.display = 'none';
-    }
-
-    // Prestige Badge
-    if(game.prestigeLevel > 0) {
-        els.prestigeBadge.style.display = 'block';
-        els.prestigeLvl.innerText = game.prestigeLevel;
-        els.prestigeBoost.innerText = (game.prestigeLevel * 10);
-    }
-
-    // Only re-render shop if interaction happened (optimization)
-    // For simplicity in this script, we just re-render class status
-    // A full React/Vue app would do this better, but here we just re-render:
-    renderShop(); 
-}
-
 function spawnFloater(x, y, text) {
     const el = document.createElement('div');
     el.className = 'floater';
     el.innerText = text;
     el.style.left = `${x}px`;
     el.style.top = `${y - 50}px`;
-    el.style.color = `hsl(${Math.random() * 360}, 100%, 70%)`; // Rainbow colors
+    el.style.color = `hsl(${Math.random() * 360}, 100%, 70%)`; 
     els.particles.appendChild(el);
     setTimeout(() => el.remove(), 1000);
 }
@@ -230,5 +273,6 @@ function hardReset() {
     }
 }
 
-// Initial Kickoff
+// Initial Render
+renderShop();
 updateUI();

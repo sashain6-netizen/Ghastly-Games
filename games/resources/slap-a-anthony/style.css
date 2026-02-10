@@ -154,3 +154,76 @@ body {
     font-weight: bold; opacity: 1; transition: opacity 0.5s; z-index: 100;
 }
 .hidden { opacity: 0; }
+
+/* --- TAB NAVIGATION & ACTION BUTTONS --- */
+.tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tab {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Specific Styles for each button type */
+
+/* Upgrades (Active Tab Look) */
+.tab:first-child {
+    background: rgba(0, 210, 255, 0.15);
+    color: #00d2ff;
+    border: 1px solid rgba(0, 210, 255, 0.3);
+    box-shadow: 0 0 10px rgba(0, 210, 255, 0.1);
+}
+
+/* Save Button */
+.tab:nth-child(2) {
+    background: rgba(46, 204, 113, 0.1);
+    color: #2ecc71;
+    border: 1px solid rgba(46, 204, 113, 0.2);
+}
+.tab:nth-child(2):hover {
+    background: rgba(46, 204, 113, 0.3);
+    box-shadow: 0 0 15px rgba(46, 204, 113, 0.2);
+    transform: translateY(-2px);
+}
+.tab:nth-child(2):active { transform: scale(0.95); }
+
+/* Wipe Button (Danger) */
+.tab:nth-child(3) {
+    background: rgba(231, 76, 60, 0.1);
+    color: #e74c3c;
+    border: 1px solid rgba(231, 76, 60, 0.2);
+}
+.tab:nth-child(3):hover {
+    background: rgba(231, 76, 60, 0.3);
+    box-shadow: 0 0 15px rgba(231, 76, 60, 0.3);
+    transform: translateY(-2px);
+}
+.tab:nth-child(3):active { transform: scale(0.95); }
+
+/* Scrollbar polish for the shop list */
+.shop-list::-webkit-scrollbar {
+    width: 6px;
+}
+.shop-list::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 3px;
+}
+.shop-list::-webkit-scrollbar-thumb {
+    background: linear-gradient(to bottom, #302b63, #00d2ff);
+    border-radius: 3px;
+}
