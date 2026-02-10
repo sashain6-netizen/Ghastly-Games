@@ -1,36 +1,95 @@
-/* --- CONFIGURATION --- */
+/* --- 1. ADVANCED CONFIGURATION --- */
+// Tweak these numbers to balance your game!
 const upgrades = [
-    { id: 'click', name: 'Click Strength', icon: '👆', baseCost: 15, basePower: 1, type: 'click' },
-    { id: 'auto1', name: 'Little Brother', icon: '👶', baseCost: 50, basePower: 1, type: 'auto' },
-    { id: 'auto2', name: 'Anthony Clone', icon: '👯', baseCost: 500, basePower: 10, type: 'auto' },
-    { id: 'auto3', name: 'Server Farm', icon: '💻', baseCost: 2500, basePower: 50, type: 'auto' },
-    { id: 'auto4', name: 'AI Generator', icon: '🤖', baseCost: 10000, basePower: 200, type: 'auto' },
-    { id: 'auto5', name: 'Quantum Anthony', icon: '⚛️', baseCost: 100000, basePower: 1500, type: 'auto' },
-    { id: 'auto6', name: 'Alien Planet', icon: '🪐', baseCost: 1000000, basePower: 10000, type: 'auto' },
+    { 
+        id: 'click', 
+        name: 'Click Strength', 
+        icon: '👆', 
+        type: 'click',
+        baseCost: 15,       // Starting Price
+        basePower: 1,       // Starting Power
+        costScale: 1.5,     // Cost multiplies by 1.5x each level (Steep!)
+        milestoneStep: 50,  // Every 50 levels...
+        milestoneMult: 2    // ...power doubles (x2)
+    },
+    { 
+        id: 'auto1', 
+        name: 'Little Brother', 
+        icon: '👶', 
+        type: 'auto',
+        baseCost: 50, 
+        basePower: 1, 
+        costScale: 1.15,    // Standard 15% cost growth
+        milestoneStep: 25, 
+        milestoneMult: 2 
+    },
+    { 
+        id: 'auto2', 
+        name: 'Anthony Clone', 
+        icon: '👯', 
+        type: 'auto',
+        baseCost: 500, 
+        basePower: 10, 
+        costScale: 1.15, 
+        milestoneStep: 25, 
+        milestoneMult: 2 
+    },
+    { 
+        id: 'auto3', 
+        name: 'Server Farm', 
+        icon: '💻', 
+        type: 'auto',
+        baseCost: 2500, 
+        basePower: 50, 
+        costScale: 1.20,    // Slightly steeper cost curve
+        milestoneStep: 100, // Harder to reach milestone...
+        milestoneMult: 5    // ...but HUGE x5 reward!
+    },
+    { 
+        id: 'auto4', 
+        name: 'AI Generator', 
+        icon: '🤖', 
+        type: 'auto',
+        baseCost: 10000, 
+        basePower: 200, 
+        costScale: 1.25, 
+        milestoneStep: 25, 
+        milestoneMult: 2 
+    },
+    { 
+        id: 'auto5', 
+        name: 'Alien Tech', 
+        icon: '👽', 
+        type: 'auto',
+        baseCost: 1000000, 
+        basePower: 5000, 
+        costScale: 1.30, 
+        milestoneStep: 10,  // Frequent milestones...
+        milestoneMult: 1.5  // ...but smaller bonuses (x1.5)
+    }
 ];
 
-/* --- GAME STATE --- */
+/* --- 2. GAME STATE --- */
 let game = {
     score: 0,
-    totalScore: 0, // Lifetime earnings (for prestige)
+    totalScore: 0, 
     prestigeLevel: 0,
     inventory: {} 
 };
 
 // Initialize Inventory
 upgrades.forEach(u => {
-    // If the item doesn't exist in inventory (new update or fresh save), set to 0
     if(typeof game.inventory[u.id] === 'undefined') {
         game.inventory[u.id] = 0;
     }
 });
 
-/* --- LOAD SAVE --- */
+/* --- 3. LOAD SAVE --- */
 if(localStorage.getItem('anthonyUltimate')) {
     let saved = JSON.parse(localStorage.getItem('anthonyUltimate'));
     game = { ...game, ...saved };
     
-    // Safety check: ensure any new upgrades added to code exist in the loaded save
+    // Compatibility check for new items
     upgrades.forEach(u => {
         if(typeof game.inventory[u.id] === 'undefined') {
             game.inventory[u.id] = 0;
@@ -38,7 +97,7 @@ if(localStorage.getItem('anthonyUltimate')) {
     });
 }
 
-/* --- DOM ELEMENTS --- */
+/* --- 4. DOM ELEMENTS --- */
 const els = {
     score: document.getElementById('score'),
     perSec: document.getElementById('per-sec'),
@@ -52,76 +111,80 @@ const els = {
     prestigeBoost: document.getElementById('prestige-boost')
 };
 
-/* --- CORE LOGIC --- */
+/* --- 5. MATH LOGIC (THE BRAINS) --- */
 
+// COST = Base * (Scale ^ Count)
 const getCost = (id) => {
     const u = upgrades.find(x => x.id === id);
-    return Math.floor(u.baseCost * Math.pow(1.15, game.inventory[id]));
+    const count = game.inventory[id];
+    return Math.floor(u.baseCost * Math.pow(u.costScale, count));
 };
 
-const getPower = (id) => {
+// POWER PER UNIT = Base * (MilestoneMult ^ MilestonesReached) * Prestige
+const getUnitPower = (id) => {
     const u = upgrades.find(x => x.id === id);
     const count = game.inventory[id];
     
-    // Milestone Bonus: Power doubles every 25 levels
-    const multiplier = Math.pow(2, Math.floor(count / 25));
-    
-    // Prestige Bonus: +10% per prestige level
-    const prestigeMulti = 1 + (game.prestigeLevel * 0.1);
-    
-    return u.basePower * multiplier * prestigeMulti;
+    // 1. Calculate Milestones
+    const milestonesReached = Math.floor(count / u.milestoneStep);
+    const milestoneBonus = Math.pow(u.milestoneMult, milestonesReached);
+
+    // 2. Calculate Prestige
+    const prestigeMulti = 1 + (game.prestigeLevel * 0.1); // +10% per prestige
+
+    return u.basePower * milestoneBonus * prestigeMulti;
 };
 
-const getClickPower = () => {
-    let base = 1 + (game.inventory['click'] * getPower('click'));
-    return base;
+// TOTAL PRODUCTION = UnitPower * Count
+const getProduction = (id) => {
+    return getUnitPower(id) * game.inventory[id];
 };
 
-const getAutoProduction = () => {
+const getGlobalPerSec = () => {
     let total = 0;
     upgrades.forEach(u => {
-        if(u.type === 'auto') {
-            total += game.inventory[u.id] * getPower(u.id);
-        }
+        if(u.type === 'auto') total += getProduction(u.id);
     });
     return total;
 };
 
-/* --- INTERACTION --- */
+const getClickStrength = () => {
+    // Base 1 + Power from click upgrades
+    return 1 + getProduction('click');
+};
+
+/* --- 6. INTERACTION --- */
 
 els.anthony.addEventListener('mousedown', (e) => {
-    const amount = getClickPower();
+    const amount = getClickStrength();
     addScore(amount);
     spawnFloater(e.clientX, e.clientY, `+${format(amount)}`);
     
-    // Visuals
+    // Animation reset trick
     els.bgPulse.classList.remove('pulse-anim');
-    void els.bgPulse.offsetWidth; // Force reflow
+    void els.bgPulse.offsetWidth; 
     els.bgPulse.classList.add('pulse-anim');
 });
 
 function addScore(amount) {
     game.score += amount;
     game.totalScore += amount;
-    // We do NOT call updateUI here constantly to save performance.
-    // The loop handles the UI.
 }
 
-// Main Loop (10 ticks per second)
+// Game Loop (Runs 10 times per second)
 setInterval(() => {
-    const auto = getAutoProduction();
+    const auto = getGlobalPerSec();
     if(auto > 0) {
-        // Add 1/10th of per-second production
         game.score += (auto / 10);
         game.totalScore += (auto / 10);
     }
-    updateUI(); // Updates the text and button colors
+    updateUI(); 
 }, 100);
 
-// Auto-Save Loop (Every 10 seconds)
+// Auto-Save (Every 10 seconds)
 setInterval(() => saveGame(false), 10000); 
 
-/* --- SHOP SYSTEM --- */
+/* --- 7. SHOP SYSTEM --- */
 
 function renderShop() {
     els.shop.innerHTML = '';
@@ -129,13 +192,12 @@ function renderShop() {
     upgrades.forEach((u, index) => {
         const cost = getCost(u.id);
         const count = game.inventory[u.id];
-        const power = getPower(u.id);
+        const power = getUnitPower(u.id); // Power of the NEXT item you buy
         
-        // Milestone progress (0 to 25)
-        const progress = (count % 25) / 25 * 100;
+        // Progress bar for next milestone
+        const progress = (count % u.milestoneStep) / u.milestoneStep * 100;
         
         const card = document.createElement('div');
-        // We add an ID to the card so we can find it later easily
         card.id = `card-${index}`;
         card.className = `upgrade-card ${game.score >= cost ? 'affordable' : 'too-expensive'}`;
         
@@ -143,7 +205,10 @@ function renderShop() {
             <div class="card-icon">${u.icon}</div>
             <div class="card-info">
                 <div class="card-name">${u.name}</div>
-                <div class="card-details">Effect: +${format(power)} ${u.type === 'click' ? '/click' : '/sec'}</div>
+                <div class="card-details">
+                    +${format(power)} ${u.type === 'click' ? '/click' : '/sec'}
+                    <br><span style="font-size:0.75em; opacity:0.7">Next x${u.milestoneMult} at level ${Math.floor(count/u.milestoneStep + 1) * u.milestoneStep}</span>
+                </div>
                 <div class="card-cost">💰 ${format(cost)}</div>
             </div>
             <div class="card-level">${count}</div>
@@ -152,7 +217,6 @@ function renderShop() {
             </div>
         `;
         
-        // Pass the event so we can shake the specific card
         card.onclick = (e) => buyUpgrade(u.id, e);
         els.shop.appendChild(card);
     });
@@ -164,11 +228,10 @@ function buyUpgrade(id, event) {
         game.score -= cost;
         game.inventory[id]++;
         
-        // Re-render shop because costs and levels changed
         renderShop();
         updateUI();
 
-        // Visual Feedback: Shake the card that was clicked
+        // Visual Shake
         if(event && event.currentTarget) {
             const card = event.currentTarget;
             card.style.transform = "scale(0.95)";
@@ -177,14 +240,14 @@ function buyUpgrade(id, event) {
     }
 }
 
-/* --- VISUALS & UTILS --- */
+/* --- 8. UI & VISUALS --- */
 
 function updateUI() {
-    // 1. Update Texts
+    // Score
     els.score.innerText = format(game.score);
-    els.perSec.innerText = format(getAutoProduction());
+    els.perSec.innerText = format(getGlobalPerSec());
     
-    // 2. Prestige Button Logic
+    // Prestige Button
     if(game.totalScore > 500000) {
         els.ascendBtn.style.display = 'block';
         if(game.score >= 1000000) {
@@ -198,19 +261,17 @@ function updateUI() {
         els.ascendBtn.style.display = 'none';
     }
 
-    // 3. Prestige Badge
+    // Badge
     if(game.prestigeLevel > 0) {
         els.prestigeBadge.style.display = 'block';
         els.prestigeLvl.innerText = game.prestigeLevel;
         els.prestigeBoost.innerText = (game.prestigeLevel * 10);
     }
 
-    // 4. Update Shop Colors (Lightweight)
-    updateShopVisuals();
+    updateShopColors();
 }
 
-// Optimized: Only toggles classes, doesn't rebuild HTML
-function updateShopVisuals() {
+function updateShopColors() {
     upgrades.forEach((u, index) => {
         const card = document.getElementById(`card-${index}`);
         if(!card) return;
@@ -229,7 +290,7 @@ function updateShopVisuals() {
 function triggerAscension() {
     if(game.score < 1000000) return;
     
-    if(confirm("ASCEND? You will lose upgrades but gain +10% permanent bonus per level!")) {
+    if(confirm(`ASCEND? \n\nCurrent Bonus: +${game.prestigeLevel * 10}%\nNew Bonus: +${(game.prestigeLevel+1) * 10}%`)) {
         game.prestigeLevel++;
         game.score = 0;
         // Reset inventory
@@ -251,6 +312,7 @@ function spawnFloater(x, y, text) {
 }
 
 function format(num) {
+    if (num >= 1e12) return (num / 1e12).toFixed(2) + 'T';
     if (num >= 1e9) return (num / 1e9).toFixed(2) + 'B';
     if (num >= 1e6) return (num / 1e6).toFixed(2) + 'M';
     if (num >= 1e3) return (num / 1e3).toFixed(1) + 'k';
@@ -273,6 +335,6 @@ function hardReset() {
     }
 }
 
-// Initial Render
+// Start
 renderShop();
 updateUI();
