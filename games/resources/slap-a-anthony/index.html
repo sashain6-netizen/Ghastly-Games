@@ -22,6 +22,34 @@
         </div>
     </div>
 
+    <div id="ascend-modal" class="modal-overlay hidden">
+        <div class="modal-content cosmic-modal">
+            <h3 class="cosmic-title">🌀 COSMIC ASCENSION</h3>
+            <p>Reset your progress to gain a permanent multiplier!</p>
+            
+            <div class="ascend-stats">
+                <div class="stat-row">
+                    <span>Current Bonus:</span>
+                    <span class="stat-val" id="modal-current-bonus">0%</span>
+                </div>
+                <div class="arrow">⬇️</div>
+                <div class="stat-row">
+                    <span>New Bonus:</span>
+                    <span class="stat-val highlight" id="modal-new-bonus">0%</span>
+                </div>
+            </div>
+
+            <p style="font-size: 0.8em; opacity: 0.7; margin-top: 15px;">
+                (You keep your Prestige Level, but lose Upgrades & Score)
+            </p>
+
+            <div class="modal-buttons">
+                <button class="modal-btn cancel" onclick="closeAscendModal()">Cancel</button>
+                <button class="modal-btn ascend-confirm" onclick="confirmAscension()">ASCEND!</button>
+            </div>
+        </div>
+    </div>
+
     <div id="particles"></div>
 
     <div id="toast" class="toast hidden">Game Saved!</div>

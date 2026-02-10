@@ -441,17 +441,50 @@ function updateShopColors() {
     });
 }
 
+/* --- ASCENSION LOGIC --- */
+
 function triggerAscension() {
+    // 1. Check requirement
     if(game.score < 1000000) return;
+
+    // 2. Update Modal Text
+    const currentB = game.prestigeLevel * 10;
+    const newB = (game.prestigeLevel + 1) * 10;
+
+    document.getElementById('modal-current-bonus').innerText = `+${currentB}%`;
+    document.getElementById('modal-new-bonus').innerText = `+${newB}%`;
+
+    // 3. Show Modal
+    document.getElementById('ascend-modal').classList.remove('hidden');
+}
+
+function closeAscendModal() {
+    document.getElementById('ascend-modal').classList.add('hidden');
+}
+
+function confirmAscension() {
+    // 1. Apply Logic
+    game.prestigeLevel++;
+    game.score = 0;
     
-    if(confirm(`ASCEND? \n\nCurrent Bonus: +${game.prestigeLevel * 10}%\nNew Bonus: +${(game.prestigeLevel+1) * 10}%`)) {
-        game.prestigeLevel++;
-        game.score = 0;
-        // Reset inventory
-        for(let key in game.inventory) game.inventory[key] = 0;
-        saveGame(true);
-        location.reload();
+    // Reset inventory
+    for(let key in game.inventory) {
+        game.inventory[key] = 0;
     }
+
+    // 2. Save and Reload
+    saveGame(true);
+    
+    // Optional: Add a small delay for visual effect before reload
+    document.body.innerHTML = `
+        <div style="display:flex;justify-content:center;align-items:center;height:100vh;background:#000;color:#d900ff;font-size:3rem;font-family:sans-serif;flex-direction:column;">
+            <div>🌀 ASCENDING...</div>
+        </div>
+    `;
+    
+    setTimeout(() => {
+        location.reload();
+    }, 1500);
 }
 
 function spawnFloater(x, y, text) {
