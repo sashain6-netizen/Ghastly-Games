@@ -3,58 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anthony Clicker: Ultimate</title>
+    <title>Anthony Clicker: Ascension</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <div id="particles-container"></div>
+    <div id="particles"></div>
 
-    <div class="game-layout">
+    <div id="toast" class="toast hidden">Game Saved!</div>
+
+    <div class="main-layout">
         
-        <div class="click-section">
-            
-            <div class="header-stats">
-                <h1 class="glow-text">Anthony Clicker</h1>
-                <div class="level-container">
-                    <span>Level <span id="level-val">1</span></span>
-                    <div class="progress-bar-bg">
-                        <div id="xp-bar" class="progress-bar-fill"></div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="score-display">
-                <span id="score">0</span>
-                <div class="sub-label">Anthonys Collected</div>
-            </div>
-
-            <div class="image-wrapper">
-                <div id="shockwave"></div>
-                <img src="anthony.png" id="anthony-face" draggable="false">
-            </div>
-
-            <div class="stats-grid">
-                <div class="stat">
-                    <span class="label">Click Power</span>
-                    <span id="stat-click" class="val">1</span>
-                </div>
-                <div class="stat">
-                    <span class="label">Auto/Sec</span>
-                    <span id="stat-auto" class="val">0</span>
-                </div>
-                <div class="stat">
-                    <span class="label">Crit Chance</span>
-                    <span id="stat-crit" class="val">0%</span>
+        <div class="panel left-panel">
+            <div class="header">
+                <h2 class="neon-title">ANTHONY CLICKER</h2>
+                <div class="prestige-badge" id="prestige-badge" style="display:none">
+                    ⭐ Ascension: <span id="prestige-level">0</span> (+<span id="prestige-boost">0</span>%)
                 </div>
             </div>
 
-            <button onclick="resetGame()" class="reset-btn">Reset Save</button>
+            <div class="score-area">
+                <div id="score">0</div>
+                <div class="label">Anthonys</div>
+                <div class="per-sec-label"><span id="per-sec">0</span> / sec</div>
+            </div>
+
+            <div class="click-zone">
+                <div class="ripple-bg"></div>
+                <img src="anthony.png" id="anthony-btn" alt="Click Me">
+            </div>
+
+            <button id="ascend-btn" class="ascend-btn locked" onclick="triggerAscension()">
+                🌀 ASCEND (Req: 1M)
+            </button>
         </div>
 
-        <div class="shop-section">
-            <h2>Anthony's Market</h2>
-            <div id="shop-container" class="shop-list">
+        <div class="panel right-panel">
+            <div class="tabs">
+                <button class="tab active">Upgrades</button>
+                <button class="tab" onclick="saveGame(true)">💾 Save</button>
+                <button class="tab" onclick="hardReset()">❌ Wipe</button>
+            </div>
+            
+            <div id="shop-list" class="shop-list">
                 </div>
         </div>
 

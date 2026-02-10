@@ -1,230 +1,234 @@
-// --- CONFIGURATION ---
-// Add as many upgrades as you want here!
-const upgradeData = [
-    // Click Upgrades (type: 'click')
-    { id: 'u1', name: 'Workout', icon: '💪', baseCost: 15, increase: 1, type: 'click', desc: '+1 Click Power' },
-    { id: 'u2', name: 'Energy Drink', icon: '⚡', baseCost: 100, increase: 5, type: 'click', desc: '+5 Click Power' },
-    { id: 'u3', name: 'Golden Mouse', icon: '🖱️', baseCost: 500, increase: 15, type: 'click', desc: '+15 Click Power' },
-    { id: 'u4', name: 'Cybernetic Arm', icon: '🦾', baseCost: 2000, increase: 50, type: 'click', desc: '+50 Click Power' },
-
-    // Auto Upgrades (type: 'auto')
-    { id: 'a1', name: 'Clone', icon: '👯', baseCost: 50, increase: 1, type: 'auto', desc: '+1 / sec' },
-    { id: 'a2', name: 'Farm', icon: '🚜', baseCost: 350, increase: 5, type: 'auto', desc: '+5 / sec' },
-    { id: 'a3', name: 'Factory', icon: '🏭', baseCost: 1500, increase: 20, type: 'auto', desc: '+20 / sec' },
-    { id: 'a4', name: 'Bank', icon: '🏦', baseCost: 5000, increase: 75, type: 'auto', desc: '+75 / sec' },
-    { id: 'a5', name: 'Temple', icon: '🕌', baseCost: 25000, increase: 200, type: 'auto', desc: '+200 / sec' },
-    
-    // Special Upgrades (type: 'crit')
-    { id: 's1', name: 'Lucky Clover', icon: '🍀', baseCost: 1000, increase: 0.05, type: 'crit', desc: '+5% Crit Chance' },
+/* --- CONFIGURATION --- */
+const upgrades = [
+    { id: 'click', name: 'Click Strength', icon: '👆', baseCost: 15, basePower: 1, type: 'click' },
+    { id: 'auto1', name: 'Little Brother', icon: '👶', baseCost: 50, basePower: 1, type: 'auto' },
+    { id: 'auto2', name: 'Anthony Clone', icon: '👯', baseCost: 500, basePower: 10, type: 'auto' },
+    { id: 'auto3', name: 'Server Farm', icon: '💻', baseCost: 2500, basePower: 50, type: 'auto' },
+    { id: 'auto4', name: 'AI Generator', icon: '🤖', baseCost: 10000, basePower: 200, type: 'auto' },
+    { id: 'auto5', name: 'Quantum Anthony', icon: '⚛️', baseCost: 100000, basePower: 1500, type: 'auto' },
+    { id: 'auto6', name: 'Alien Planet', icon: '🪐', baseCost: 1000000, basePower: 10000, type: 'auto' },
 ];
 
-// --- GAME STATE ---
+/* --- GAME STATE --- */
 let game = {
     score: 0,
-    level: 1,
-    xp: 0,
-    xpToNext: 100,
-    totalClicks: 0,
-    inventory: {} // Stores how many of each upgrade we have: { 'u1': 5, 'a1': 2 }
+    totalScore: 0, // Lifetime earnings (for prestige)
+    prestigeLevel: 0,
+    inventory: {} // { 'auto1': 5, 'auto2': 10 }
 };
 
-// --- INIT ---
-// Initialize inventory count to 0 for all items
-upgradeData.forEach(item => {
-    if (!game.inventory[item.id]) game.inventory[item.id] = 0;
-});
+// Initialize Inventory
+upgrades.forEach(u => game.inventory[u.id] = 0);
 
-// Load Save if exists
-if (localStorage.getItem('anthonySave')) {
-    const saved = JSON.parse(localStorage.getItem('anthonySave'));
-    // Merge save with current structure (prevents errors if you add new items later)
-    game = { ...game, ...saved };
+/* --- LOAD SAVE --- */
+if(localStorage.getItem('anthonyUltimate')) {
+    let saved = JSON.parse(localStorage.getItem('anthonyUltimate'));
+    game = { ...game, ...saved }; // Merge to keep compatibility
 }
 
-// --- DOM ELEMENTS ---
+/* --- DOM ELEMENTS --- */
 const els = {
     score: document.getElementById('score'),
-    anthony: document.getElementById('anthony-face'),
-    shop: document.getElementById('shop-container'),
-    particles: document.getElementById('particles-container'),
-    shockwave: document.getElementById('shockwave'),
-    level: document.getElementById('level-val'),
-    xpBar: document.getElementById('xp-bar'),
-    statClick: document.getElementById('stat-click'),
-    statAuto: document.getElementById('stat-auto'),
-    statCrit: document.getElementById('stat-crit'),
+    perSec: document.getElementById('per-sec'),
+    anthony: document.getElementById('anthony-btn'),
+    shop: document.getElementById('shop-list'),
+    bgPulse: document.querySelector('.ripple-bg'),
+    particles: document.getElementById('particles'),
+    ascendBtn: document.getElementById('ascend-btn'),
+    prestigeBadge: document.getElementById('prestige-badge'),
+    prestigeLvl: document.getElementById('prestige-level'),
+    prestigeBoost: document.getElementById('prestige-boost')
 };
 
-// --- CORE MECHANICS ---
+/* --- CORE LOGIC --- */
 
-function getClickPower() {
-    let power = 1;
-    upgradeData.forEach(u => {
-        if (u.type === 'click') power += (game.inventory[u.id] * u.increase);
+// Calculate Cost: Base * 1.15^Count
+const getCost = (id) => {
+    const u = upgrades.find(x => x.id === id);
+    return Math.floor(u.baseCost * Math.pow(1.15, game.inventory[id]));
+};
+
+// Calculate Power: Base * Multipliers * Prestige
+const getPower = (id) => {
+    const u = upgrades.find(x => x.id === id);
+    const count = game.inventory[id];
+    
+    // Milestone Bonus: Every 25 levels, power doubles
+    const multiplier = Math.pow(2, Math.floor(count / 25));
+    
+    // Prestige Bonus: +10% per prestige level
+    const prestigeMulti = 1 + (game.prestigeLevel * 0.1);
+    
+    return u.basePower * multiplier * prestigeMulti;
+};
+
+const getClickPower = () => {
+    let base = 1 + (game.inventory['click'] * getPower('click')); // Base 1 click
+    return base;
+};
+
+const getAutoProduction = () => {
+    let total = 0;
+    upgrades.forEach(u => {
+        if(u.type === 'auto') {
+            total += game.inventory[u.id] * getPower(u.id);
+        }
     });
-    return power;
-}
+    return total;
+};
 
-function getAutoPerSec() {
-    let auto = 0;
-    upgradeData.forEach(u => {
-        if (u.type === 'auto') auto += (game.inventory[u.id] * u.increase);
-    });
-    return auto;
-}
-
-function getCritChance() {
-    let chance = 0; // 0% base
-    upgradeData.forEach(u => {
-        if (u.type === 'crit') chance += (game.inventory[u.id] * u.increase);
-    });
-    return Math.min(chance, 0.5); // Cap at 50%
-}
-
-function getCost(item) {
-    // Cost increases by 15% per level owned
-    return Math.floor(item.baseCost * Math.pow(1.15, game.inventory[item.id]));
-}
-
-// --- INTERACTION ---
+/* --- INTERACTION --- */
 
 els.anthony.addEventListener('mousedown', (e) => {
-    // 1. Calculate Damage
-    let damage = getClickPower();
-    let isCrit = Math.random() < getCritChance();
+    const amount = getClickPower();
+    addScore(amount);
+    spawnFloater(e.clientX, e.clientY, `+${format(amount)}`);
     
-    if (isCrit) damage *= 10; // Criticals do 10x damage!
-
-    // 2. Add Score
-    addScore(damage);
-    game.totalClicks++;
-
-    // 3. Visuals
-    spawnFloatingText(e.clientX, e.clientY, `+${formatNum(damage)}`, isCrit);
-    triggerShockwave();
+    // Visuals
+    els.bgPulse.classList.remove('pulse-anim');
+    void els.bgPulse.offsetWidth; // reset animation
+    els.bgPulse.classList.add('pulse-anim');
 });
 
 function addScore(amount) {
     game.score += amount;
-    game.xp += amount;
-    
-    // Level Up Logic
-    if (game.xp >= game.xpToNext) {
-        game.level++;
-        game.xp = 0;
-        game.xpToNext = Math.floor(game.xpToNext * 1.5);
-        // Bonus for leveling up
-        spawnFloatingText(window.innerWidth/2, window.innerHeight/2, "LEVEL UP!", true);
-    }
+    game.totalScore += amount;
     updateUI();
 }
 
-// Auto Clicker Loop (Runs 10x a second)
+// Main Loop (10 ticks per second)
 setInterval(() => {
-    const aps = getAutoPerSec();
-    if (aps > 0) {
-        addScore(aps / 10);
+    const auto = getAutoProduction();
+    if(auto > 0) {
+        addScore(auto / 10);
     }
-    // Auto Save every 5 seconds
-    if (new Date().getSeconds() % 5 === 0) saveGame();
 }, 100);
 
+// Auto-Save Loop
+setInterval(() => saveGame(false), 10000); 
 
-// --- SHOP SYSTEM ---
+/* --- SHOP SYSTEM --- */
 
 function renderShop() {
-    els.shop.innerHTML = ""; // Clear list
+    els.shop.innerHTML = '';
     
-    upgradeData.forEach(item => {
-        const cost = getCost(item);
-        const count = game.inventory[item.id];
+    upgrades.forEach(u => {
+        const cost = getCost(u.id);
+        const count = game.inventory[u.id];
+        const power = getPower(u.id);
         
-        const btn = document.createElement('div');
-        btn.className = 'shop-item';
-        if (game.score < cost) btn.classList.add('locked');
-        else btn.classList.add('unlocked');
-
-        btn.innerHTML = `
-            <div class="item-icon">${item.icon}</div>
-            <div class="item-details">
-                <div class="item-name">${item.name} <span class="item-level">Lvl ${count}</span></div>
-                <div class="item-desc">${item.desc}</div>
-                <div class="item-cost">${formatNum(cost)} Anthonys</div>
+        // Milestone progress (0 to 25)
+        const progress = (count % 25) / 25 * 100;
+        
+        const card = document.createElement('div');
+        card.className = `upgrade-card ${game.score >= cost ? 'affordable' : 'too-expensive'}`;
+        
+        card.innerHTML = `
+            <div class="card-icon">${u.icon}</div>
+            <div class="card-info">
+                <div class="card-name">${u.name}</div>
+                <div class="card-details">Effect: +${format(power)} ${u.type === 'click' ? '/click' : '/sec'}</div>
+                <div class="card-cost">💰 ${format(cost)}</div>
+            </div>
+            <div class="card-level">${count}</div>
+            <div class="milestone-progress">
+                <div class="milestone-fill" style="width: ${progress}%"></div>
             </div>
         `;
-
-        btn.onclick = () => buyItem(item);
-        els.shop.appendChild(btn);
+        
+        card.onclick = () => buyUpgrade(u.id);
+        els.shop.appendChild(card);
     });
 }
 
-function buyItem(item) {
-    const cost = getCost(item);
-    if (game.score >= cost) {
+function buyUpgrade(id) {
+    const cost = getCost(id);
+    if(game.score >= cost) {
         game.score -= cost;
-        game.inventory[item.id]++;
-        updateUI();
+        game.inventory[id]++;
+        updateUI(); // Re-render to update costs and affordability
     }
 }
 
-// --- VISUALS ---
-
-function spawnFloatingText(x, y, text, isCrit) {
-    const el = document.createElement('div');
-    el.className = 'floater';
-    if (isCrit) el.classList.add('crit');
-    el.innerText = text;
+/* --- PRESTIGE SYSTEM --- */
+function triggerAscension() {
+    if(game.score < 1000000) return;
     
-    // Randomize position slightly
-    const rx = (Math.random() - 0.5) * 40;
-    const ry = (Math.random() - 0.5) * 40;
-    
-    el.style.left = `${x + rx}px`;
-    el.style.top = `${y + ry}px`;
-    
-    els.particles.appendChild(el);
-    setTimeout(() => el.remove(), 800);
-}
-
-function triggerShockwave() {
-    els.shockwave.classList.remove('pulse');
-    void els.shockwave.offsetWidth; // Magic reset
-    els.shockwave.classList.add('pulse');
-}
-
-function formatNum(num) {
-    if (num >= 1000000) return (num / 1000000).toFixed(2) + 'M';
-    if (num >= 1000) return (num / 1000).toFixed(1) + 'k';
-    return Math.floor(num);
-}
-
-function updateUI() {
-    // Score & Level
-    els.score.innerText = formatNum(game.score);
-    els.level.innerText = game.level;
-    
-    const xpPercent = (game.xp / game.xpToNext) * 100;
-    els.xpBar.style.width = `${xpPercent}%`;
-
-    // Stats
-    els.statClick.innerText = formatNum(getClickPower());
-    els.statAuto.innerText = formatNum(getAutoPerSec());
-    els.statCrit.innerText = Math.floor(getCritChance() * 100) + '%';
-
-    // Refresh Shop
-    renderShop();
-}
-
-function saveGame() {
-    localStorage.setItem('anthonySave', JSON.stringify(game));
-}
-
-function resetGame() {
-    if(confirm("Wipe save?")) {
-        localStorage.removeItem('anthonySave');
+    if(confirm("ASCEND? You will lose upgrades but gain +10% permanent bonus per level!")) {
+        game.prestigeLevel++;
+        game.score = 0;
+        // Reset inventory
+        for(let key in game.inventory) game.inventory[key] = 0;
+        saveGame(true);
         location.reload();
     }
 }
 
-// Start
+/* --- VISUALS & UTILS --- */
+
+function updateUI() {
+    els.score.innerText = format(game.score);
+    els.perSec.innerText = format(getAutoProduction());
+    
+    // Prestige Button
+    if(game.totalScore > 500000) { // Show button when close
+        els.ascendBtn.style.display = 'block';
+        if(game.score >= 1000000) {
+            els.ascendBtn.classList.remove('locked');
+            els.ascendBtn.innerText = "🌀 ASCEND NOW!";
+        } else {
+            els.ascendBtn.classList.add('locked');
+        }
+    } else {
+        els.ascendBtn.style.display = 'none';
+    }
+
+    // Prestige Badge
+    if(game.prestigeLevel > 0) {
+        els.prestigeBadge.style.display = 'block';
+        els.prestigeLvl.innerText = game.prestigeLevel;
+        els.prestigeBoost.innerText = (game.prestigeLevel * 10);
+    }
+
+    // Only re-render shop if interaction happened (optimization)
+    // For simplicity in this script, we just re-render class status
+    // A full React/Vue app would do this better, but here we just re-render:
+    renderShop(); 
+}
+
+function spawnFloater(x, y, text) {
+    const el = document.createElement('div');
+    el.className = 'floater';
+    el.innerText = text;
+    el.style.left = `${x}px`;
+    el.style.top = `${y - 50}px`;
+    el.style.color = `hsl(${Math.random() * 360}, 100%, 70%)`; // Rainbow colors
+    els.particles.appendChild(el);
+    setTimeout(() => el.remove(), 1000);
+}
+
+function format(num) {
+    if (num >= 1e9) return (num / 1e9).toFixed(2) + 'B';
+    if (num >= 1e6) return (num / 1e6).toFixed(2) + 'M';
+    if (num >= 1e3) return (num / 1e3).toFixed(1) + 'k';
+    return Math.floor(num);
+}
+
+function saveGame(notify) {
+    localStorage.setItem('anthonyUltimate', JSON.stringify(game));
+    if(notify) {
+        const t = document.getElementById('toast');
+        t.classList.remove('hidden');
+        setTimeout(() => t.classList.add('hidden'), 2000);
+    }
+}
+
+function hardReset() {
+    if(confirm("Delete save file permanently?")) {
+        localStorage.removeItem('anthonyUltimate');
+        location.reload();
+    }
+}
+
+// Initial Kickoff
 updateUI();
