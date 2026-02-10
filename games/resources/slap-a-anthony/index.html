@@ -3,40 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anthony Clicker</title>
+    <title>Anthony Clicker: Turbo Edition</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="game-container">
-        <h1>Anthony Clicker</h1>
+    <div id="particles-container"></div>
+
+    <div class="game-layout">
         
-        <div class="score-board">
-            <span id="score">0</span> Anthonys
-        </div>
-        
-        <div class="click-area">
-            <img src="anthony.png" id="anthony-face" alt="Click Anthony!">
+        <div class="click-section">
+            <h1 class="glow-text">Anthony Clicker</h1>
+            
+            <div class="score-container">
+                <span id="score">0</span> <span class="currency-name">Anthonys</span>
+            </div>
+
+            <div class="image-wrapper">
+                <div id="shockwave"></div>
+                <img src="anthony.png" id="anthony-face" alt="Click Anthony">
+            </div>
+
+            <div class="stats-bar">
+                <div class="stat-box">
+                    <span class="label">Click Power</span>
+                    <span id="per-click" class="value">1</span>
+                </div>
+                <div class="stat-box">
+                    <span class="label">Auto/Sec</span>
+                    <span id="per-second" class="value">0</span>
+                </div>
+            </div>
         </div>
 
-        <div class="stats">
-            <p>Per Click: <span id="per-click">1</span></p>
-            <p>Per Second: <span id="per-second">0</span></p>
-        </div>
-
-        <div class="shop">
+        <div class="shop-section">
             <h2>Upgrades</h2>
             
-            <button id="btn-upgrade-click" class="upgrade-btn" onclick="buyClickUpgrade()">
-                <div class="name">Stronger Click</div>
-                <div class="cost">Cost: <span id="cost-click">10</span></div>
+            <button id="btn-click" class="upgrade-item" onclick="buyUpgrade('click')">
+                <div class="icon">👆</div>
+                <div class="info">
+                    <div class="name">Gym Membership</div>
+                    <div class="desc">+1 Per Click</div>
+                </div>
+                <div class="price">
+                    <span id="cost-click">15</span>
+                </div>
             </button>
 
-            <button id="btn-upgrade-auto" class="upgrade-btn" onclick="buyAutoClicker()">
-                <div class="name">Auto-Clicker</div>
-                <div class="cost">Cost: <span id="cost-auto">50</span></div>
+            <button id="btn-clone" class="upgrade-item" onclick="buyUpgrade('clone')">
+                <div class="icon">👯</div>
+                <div class="info">
+                    <div class="name">Anthony Clone</div>
+                    <div class="desc">+1 Per Second</div>
+                </div>
+                <div class="price">
+                    <span id="cost-clone">50</span>
+                </div>
+            </button>
+
+            <button id="btn-farm" class="upgrade-item" onclick="buyUpgrade('farm')">
+                <div class="icon">🏭</div>
+                <div class="info">
+                    <div class="name">Anthony Factory</div>
+                    <div class="desc">+10 Per Second</div>
+                </div>
+                <div class="price">
+                    <span id="cost-farm">500</span>
+                </div>
             </button>
         </div>
+
     </div>
 
     <script src="script.js"></script>

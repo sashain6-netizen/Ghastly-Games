@@ -1,76 +1,138 @@
 // Game State
-let score = 0;
-let clickPower = 1;
-let autoClickPower = 0;
+let game = {
+    score: 0,
+    clickPower: 1,
+    autoPerSecond: 0
+};
 
-// Upgrade Costs
-let clickUpgradeCost = 10;
-let autoClickerCost = 50;
+// Shop Data
+const upgrades = {
+    click: { cost: 15, count: 0, power: 1, type: 'click' },
+    clone: { cost: 50, count: 0, power: 1, type: 'auto' },
+    farm:  { cost: 500, count: 0, power: 10, type: 'auto' }
+};
 
 // DOM Elements
 const scoreEl = document.getElementById('score');
-const perClickEl = document.getElementById('per-click');
-const perSecondEl = document.getElementById('per-second');
 const anthonyImg = document.getElementById('anthony-face');
+const shockwave = document.getElementById('shockwave');
+const particlesContainer = document.getElementById('particles-container');
 
-const clickCostEl = document.getElementById('cost-click');
-const autoCostEl = document.getElementById('cost-auto');
-const clickBtn = document.getElementById('btn-upgrade-click');
-const autoBtn = document.getElementById('btn-upgrade-auto');
+// Sound (Optional: Add a 'pop.mp3' in folder if you want sound, otherwise this is safe)
+// const clickSound = new Audio('pop.mp3'); 
 
-// Event Listener for Clicking Anthony
-anthonyImg.addEventListener('click', () => {
-    addToScore(clickPower);
+// --- Core Mechanics ---
+
+// The Click Event
+anthonyImg.addEventListener('mousedown', (e) => { // using mousedown for instant response
+    // 1. Logic
+    game.score += game.clickPower;
+    
+    // 2. Visual Effects
+    triggerShockwave();
+    createFloatingNumber(e.clientX, e.clientY, `+${formatNumber(game.clickPower)}`);
+    
+    // 3. Audio (Optional - Uncomment if you have a file)
+    // clickSound.currentTime = 0;
+    // clickSound.play();
+
+    updateUI();
 });
 
-// Function to add score and update UI
-function addToScore(amount) {
-    score += amount;
-    updateUI();
-}
-
-// Upgrade 1: Increase Click Power
-function buyClickUpgrade() {
-    if (score >= clickUpgradeCost) {
-        score -= clickUpgradeCost;
-        clickPower += 1;             // Increase power by 1
-        clickUpgradeCost = Math.floor(clickUpgradeCost * 1.5); // Increase cost by 50%
-        
-        updateUI();
-    }
-}
-
-// Upgrade 2: Buy Auto Clicker
-function buyAutoClicker() {
-    if (score >= autoClickerCost) {
-        score -= autoClickerCost;
-        autoClickPower += 1;         // Increase auto clicks by 1 per sec
-        autoClickerCost = Math.floor(autoClickerCost * 1.5); // Increase cost by 50%
-        
-        updateUI();
-    }
-}
-
-// The Game Loop (Runs once every second for passive income)
+// Passive Income Loop (Runs 10 times a second for smoothness)
 setInterval(() => {
-    if (autoClickPower > 0) {
-        addToScore(autoClickPower);
+    if (game.autoPerSecond > 0) {
+        // Add 1/10th of the per-second value
+        game.score += (game.autoPerSecond / 10);
+        updateUI();
     }
-}, 1000);
+}, 100);
 
-// Update the User Interface
-function updateUI() {
-    // Update text
-    scoreEl.innerText = score;
-    perClickEl.innerText = clickPower;
-    perSecondEl.innerText = autoClickPower;
-    clickCostEl.innerText = clickUpgradeCost;
-    autoCostEl.innerText = autoClickerCost;
+// --- Visual Effects Functions ---
 
-    // Enable/Disable buttons based on affordability
-    clickBtn.disabled = score < clickUpgradeCost;
-    autoBtn.disabled = score < autoClickerCost;
+function triggerShockwave() {
+    // Reset animation
+    shockwave.classList.remove('ripple-animation');
+    // Force a browser reflow (magic trick to restart animation)
+    void shockwave.offsetWidth;
+    // Start animation
+    shockwave.classList.add('ripple-animation');
 }
 
-// Initial UI load
+function createFloatingNumber(x, y, text) {
+    const el = document.createElement('div');
+    el.classList.add('floating-number');
+    el.innerText = text;
+    
+    // Randomize position slightly for "organic" feel
+    const randomX = (Math.random() - 0.5) * 40;
+    el.style.left = `${x + randomX}px`;
+    el.style.top = `${y - 20}px`;
+
+    particlesContainer.appendChild(el);
+
+    // Remove element after animation finishes (1 second)
+    setTimeout(() => {
+        el.remove();
+    }, 1000);
+}
+
+// --- Shop Logic ---
+
+function buyUpgrade(id) {
+    const item = upgrades[id];
+    
+    if (game.score >= item.cost) {
+        game.score -= item.cost;
+        item.count++;
+        
+        // Increase Cost (1.5x multiplier)
+        item.cost = Math.ceil(item.cost * 1.5);
+
+        // Apply Benefit
+        if (item.type === 'click') {
+            game.clickPower += item.power;
+        } else if (item.type === 'auto') {
+            game.autoPerSecond += item.power;
+        }
+
+        updateUI();
+    }
+}
+
+// --- Utility & UI ---
+
+// Formats numbers (e.g., 1200 -> 1.2k)
+function formatNumber(num) {
+    if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+    if (num >= 1000) return (num / 1000).toFixed(1) + 'k';
+    return Math.floor(num); // No decimals for small numbers
+}
+
+function updateUI() {
+    scoreEl.innerText = formatNumber(game.score);
+    document.getElementById('per-click').innerText = formatNumber(game.clickPower);
+    document.getElementById('per-second').innerText = formatNumber(game.autoPerSecond);
+
+    // Update Shop Buttons
+    updateShopButton('click', 'cost-click');
+    updateShopButton('clone', 'cost-clone');
+    updateShopButton('farm', 'cost-farm');
+}
+
+function updateShopButton(id, costId) {
+    const item = upgrades[id];
+    const btn = document.getElementById(`btn-${id}`);
+    const costSpan = document.getElementById(costId);
+
+    costSpan.innerText = formatNumber(item.cost);
+
+    if (game.score >= item.cost) {
+        btn.disabled = false;
+    } else {
+        btn.disabled = true;
+    }
+}
+
+// Init
 updateUI();
