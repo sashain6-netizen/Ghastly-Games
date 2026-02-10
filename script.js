@@ -1,6 +1,5 @@
 const sites = [
     { name: "GameZone", url: "/games/" },
-    { name: "Ghastly Search", url: "/proxy/" },
     { name: "Selenite", url: "https://development.churchinhuntsville.org" },
     { name: "Six Seven Games", url: "https://sixsevengames.pages.dev" },
     { name: "Duck Math", url: "https://ajdhbajhdsbashjbdhbawkjdbuyabidughauygediugweg8aw648676217.pages.dev" },
@@ -13,6 +12,7 @@ const sites = [
     { name: "Cool Math Games", url: "https://www.coolmathgames.com/" },
     { name: "Edugames", url: "https://edugames33.wixsite.com/edugames/games5" },
     { name: "Youtube Video Unblocker", url: "https://clipwise.com/" },
+    { name: "Unlinked (Click for Details)", url: "https://docs.google.com/forms/d/e/1FAIpQLSfa1r9xeF5WwPNJ6zd7eY7VkT8zWOLstNIr5DlseG4jpnIfzQ/viewform?usp=publish-editor" },
     { name: "Unlinked (Click for Details)", url: "https://docs.google.com/forms/d/e/1FAIpQLSfa1r9xeF5WwPNJ6zd7eY7VkT8zWOLstNIr5DlseG4jpnIfzQ/viewform?usp=publish-editor" },
     { name: "Unlinked (Click for Details)", url: "https://docs.google.com/forms/d/e/1FAIpQLSfa1r9xeF5WwPNJ6zd7eY7VkT8zWOLstNIr5DlseG4jpnIfzQ/viewform?usp=publish-editor" },
     { name: "Unlinked (Click for Details)", url: "https://docs.google.com/forms/d/e/1FAIpQLSfa1r9xeF5WwPNJ6zd7eY7VkT8zWOLstNIr5DlseG4jpnIfzQ/viewform?usp=publish-editor" },
