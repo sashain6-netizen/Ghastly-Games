@@ -1,12 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Slap-a-Anthony</title>
-  <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anthony Clicker</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <canvas id='canvas1'></canvas>
-  <script type="module" src="script.js"></script>
+
+    <div class="game-container">
+        <h1>Anthony Clicker</h1>
+        
+        <div class="score-board">
+            <span id="score">0</span> Anthonys
+        </div>
+        
+        <div class="click-area">
+            <img src="anthony.png" id="anthony-face" alt="Click Anthony!">
+        </div>
+
+        <div class="stats">
+            <p>Per Click: <span id="per-click">1</span></p>
+            <p>Per Second: <span id="per-second">0</span></p>
+        </div>
+
+        <div class="shop">
+            <h2>Upgrades</h2>
+            
+            <button id="btn-upgrade-click" class="upgrade-btn" onclick="buyClickUpgrade()">
+                <div class="name">Stronger Click</div>
+                <div class="cost">Cost: <span id="cost-click">10</span></div>
+            </button>
+
+            <button id="btn-upgrade-auto" class="upgrade-btn" onclick="buyAutoClicker()">
+                <div class="name">Auto-Clicker</div>
+                <div class="cost">Cost: <span id="cost-auto">50</span></div>
+            </button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
 </body>
+</html>
