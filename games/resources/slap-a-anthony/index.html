@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Slap a Anthony</title>
+    <title>Anthony Clicker: Ultimate</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -13,64 +13,49 @@
     <div class="game-layout">
         
         <div class="click-section">
-            <h1 class="glow-text">Slap a Anthony</h1>
             
-            <div class="score-container">
-                <span id="score">0</span> <span class="currency-name">Anthonys</span>
+            <div class="header-stats">
+                <h1 class="glow-text">Anthony Clicker</h1>
+                <div class="level-container">
+                    <span>Level <span id="level-val">1</span></span>
+                    <div class="progress-bar-bg">
+                        <div id="xp-bar" class="progress-bar-fill"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="score-display">
+                <span id="score">0</span>
+                <div class="sub-label">Anthonys Collected</div>
             </div>
 
             <div class="image-wrapper">
                 <div id="shockwave"></div>
-                <img src="anthony.png" id="anthony-face" alt="Slap Anthony">
+                <img src="anthony.png" id="anthony-face" draggable="false">
             </div>
 
-            <div class="stats-bar">
-                <div class="stat-box">
+            <div class="stats-grid">
+                <div class="stat">
                     <span class="label">Click Power</span>
-                    <span id="per-click" class="value">1</span>
+                    <span id="stat-click" class="val">1</span>
                 </div>
-                <div class="stat-box">
+                <div class="stat">
                     <span class="label">Auto/Sec</span>
-                    <span id="per-second" class="value">0</span>
+                    <span id="stat-auto" class="val">0</span>
+                </div>
+                <div class="stat">
+                    <span class="label">Crit Chance</span>
+                    <span id="stat-crit" class="val">0%</span>
                 </div>
             </div>
+
+            <button onclick="resetGame()" class="reset-btn">Reset Save</button>
         </div>
 
         <div class="shop-section">
-            <h2>Upgrades</h2>
-            
-            <button id="btn-click" class="upgrade-item" onclick="buyUpgrade('click')">
-                <div class="icon">👆</div>
-                <div class="info">
-                    <div class="name">Gym Membership</div>
-                    <div class="desc">+1 Per Click</div>
+            <h2>Anthony's Market</h2>
+            <div id="shop-container" class="shop-list">
                 </div>
-                <div class="price">
-                    <span id="cost-click">15</span>
-                </div>
-            </button>
-
-            <button id="btn-clone" class="upgrade-item" onclick="buyUpgrade('clone')">
-                <div class="icon">👯</div>
-                <div class="info">
-                    <div class="name">Anthony Clone</div>
-                    <div class="desc">+1 Per Second</div>
-                </div>
-                <div class="price">
-                    <span id="cost-clone">50</span>
-                </div>
-            </button>
-
-            <button id="btn-farm" class="upgrade-item" onclick="buyUpgrade('farm')">
-                <div class="icon">🏭</div>
-                <div class="info">
-                    <div class="name">Anthony Factory</div>
-                    <div class="desc">+10 Per Second</div>
-                </div>
-                <div class="price">
-                    <span id="cost-farm">500</span>
-                </div>
-            </button>
         </div>
 
     </div>
