@@ -463,28 +463,20 @@ function closeAscendModal() {
 }
 
 function confirmAscension() {
-    // 1. Apply Logic
     game.prestigeLevel++;
     game.score = 0;
-    
-    // Reset inventory
-    for(let key in game.inventory) {
-        game.inventory[key] = 0;
-    }
-
-    // 2. Save and Reload
+    for(let key in game.inventory) { game.inventory[key] = 0; }
     saveGame(true);
-    
-    // Optional: Add a small delay for visual effect before reload
+
+    // Modern Styled Ascension Screen
     document.body.innerHTML = `
-        <div style="display:flex;justify-content:center;align-items:center;height:100vh;background:#000;color:#d900ff;font-size:3rem;font-family:sans-serif;flex-direction:column;">
-            <div>🌀 ASCENDING...</div>
+        <div class="transition-screen ascending-bg">
+            <h1 class="transition-title">🌀 ASCENDING</h1>
+            <p class="transition-subtitle">REACHING HIGHER PLANES OF ANTHONY...</p>
         </div>
     `;
     
-    setTimeout(() => {
-        location.reload();
-    }, 1500);
+    setTimeout(() => { location.reload(); }, 1500);
 }
 
 function spawnFloater(x, y, text) {
@@ -529,10 +521,16 @@ function closeModal() {
 
 function confirmWipe() {
     localStorage.removeItem('anthonyUltimate');
-    document.body.innerHTML = '<div style="display:flex;justify-content:center;align-items:center;height:100vh;color:red;font-size:2rem;font-family:sans-serif;">WIPING DATA...</div>';
-    setTimeout(() => {
-        location.reload();
-    }, 1000);
+    
+    // Modern Styled Wipe Screen
+    document.body.innerHTML = `
+        <div class="transition-screen wiping-bg">
+            <h1 class="transition-title">⚠️ WIPING DATA</h1>
+            <p class="transition-subtitle">SYSTEM PURGE IN PROGRESS...</p>
+        </div>
+    `;
+
+    setTimeout(() => { location.reload(); }, 1500);
 }
 
 // Start
