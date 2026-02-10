@@ -269,40 +269,47 @@ const getGlobalPerSec = () => {
 };
 
 const getClickStrength = () => {
-    // Base 1 + Power from click upgrades
-    return 1 + getProduction('click');
+    let total = 1; // Base power (always 1)
+    
+    // Loop through ALL upgrades
+    upgrades.forEach(u => {
+        // If it's a click upgrade, add its power to the total
+        if(u.type === 'click') {
+            total += getProduction(u.id);
+        }
+    });
+
+    return total;
 };
 
 /* --- 6. INTERACTION --- */
 
+/* --- 6. INTERACTION --- */
+
 els.anthony.addEventListener('mousedown', (e) => {
-    const amount = getClickStrength();
+    // 1. Get Base Strength
+    let amount = getClickStrength();
+
+    // 2. Calculate Crit Chance (Lucky Charm logic)
+    // We look for 'passive1' specifically, or loop for all passives
+    const luckyCharmLevel = game.inventory['passive1'] || 0;
+    const critChance = luckyCharmLevel * 0.01; // 1% per level
+
+    // 3. Roll for Crit
+    let text = `+${format(amount)}`;
+    if (Math.random() < critChance) {
+        amount *= 5; // 5x Damage on Crit
+        text = `💥 CRIT! +${format(amount)}`;
+    }
+
     addScore(amount);
-    spawnFloater(e.clientX, e.clientY, `+${format(amount)}`);
+    spawnFloater(e.clientX, e.clientY, text);
     
     // Animation reset trick
     els.bgPulse.classList.remove('pulse-anim');
     void els.bgPulse.offsetWidth; 
     els.bgPulse.classList.add('pulse-anim');
 });
-
-function addScore(amount) {
-    game.score += amount;
-    game.totalScore += amount;
-}
-
-// Game Loop (Runs 10 times per second)
-setInterval(() => {
-    const auto = getGlobalPerSec();
-    if(auto > 0) {
-        game.score += (auto / 10);
-        game.totalScore += (auto / 10);
-    }
-    updateUI(); 
-}, 100);
-
-// Auto-Save (Every 10 seconds)
-setInterval(() => saveGame(false), 10000); 
 
 /* --- 7. SHOP SYSTEM --- */
 
