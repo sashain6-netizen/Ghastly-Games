@@ -284,8 +284,6 @@ const getClickStrength = () => {
 
 /* --- 6. INTERACTION --- */
 
-/* --- 6. INTERACTION --- */
-
 els.anthony.addEventListener('mousedown', (e) => {
     // 1. Get Base Strength
     let amount = getClickStrength();
