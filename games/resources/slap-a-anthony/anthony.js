@@ -12,6 +12,6 @@ class Anthony {
     }
 
     draw(context) {
-        context.drawImage(this.image, 50%, 50%, this.width, this.height)
+        context.drawImage(this.image, 100, 100, this.width, this.height)
     }
 }
