@@ -328,11 +328,30 @@ function saveGame(notify) {
     }
 }
 
+/* --- MODAL LOGIC --- */
+
+// 1. Opens the menu (Called by the Wipe button)
 function hardReset() {
-    if(confirm("Delete save file permanently?")) {
-        localStorage.removeItem('anthonyUltimate');
+    const modal = document.getElementById('delete-modal');
+    modal.classList.remove('hidden');
+}
+
+// 2. Closes the menu (Called by the Cancel button)
+function closeModal() {
+    const modal = document.getElementById('delete-modal');
+    modal.classList.add('hidden');
+}
+
+// 3. Actually deletes the save (Called by the Confirm button)
+function confirmWipe() {
+    localStorage.removeItem('anthonyUltimate');
+    
+    // Optional: Add a visual effect or small delay before reload
+    document.body.innerHTML = '<div style="display:flex;justify-content:center;align-items:center;height:100vh;color:red;font-size:2rem;font-family:sans-serif;">WIPING DATA...</div>';
+    
+    setTimeout(() => {
         location.reload();
-    }
+    }, 1000);
 }
 
 // Start

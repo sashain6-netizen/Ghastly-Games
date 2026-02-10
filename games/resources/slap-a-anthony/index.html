@@ -9,6 +9,19 @@
 </head>
 <body>
 
+    <div id="delete-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h3 class="danger-title">⚠️ HARD RESET</h3>
+            <p>Are you sure you want to wipe your save file?<br>
+            <span style="font-size: 0.8em; color: #aaa;">(You will lose all upgrades and prestige)</span>
+            </p>
+            <div class="modal-buttons">
+                <button class="modal-btn cancel" onclick="closeModal()">Cancel</button>
+                <button class="modal-btn confirm" onclick="confirmWipe()">DELETE EVERYTHING</button>
+            </div>
+        </div>
+    </div>
+
     <div id="particles"></div>
 
     <div id="toast" class="toast hidden">Game Saved!</div>
