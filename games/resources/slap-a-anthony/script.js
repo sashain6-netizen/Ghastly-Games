@@ -1,5 +1,4 @@
 /* --- 1. ADVANCED CONFIGURATION --- */
-// Tweak these numbers to balance your game!
 const upgrades = [
     // --- TIER 1: THE BEGINNING ---
     { 
@@ -9,7 +8,7 @@ const upgrades = [
         type: 'click',
         baseCost: 15,       
         basePower: 1,       
-        costScale: 1.35,     // Kept low to encourage early clicking
+        costScale: 1.35,     
         milestoneStep: 50,  
         milestoneMult: 2    
     },
@@ -52,11 +51,11 @@ const upgrades = [
         id: 'passive1', 
         name: 'Lucky Charm', 
         icon: '🍀', 
-        type: 'passive', // Special Type: Adds Crit Chance
+        type: 'passive', 
         baseCost: 1000, 
         basePower: 0,    
-        effect: 0.01,    // Adds 1% Crit Chance per level
-        costScale: 2.5,  // Very steep scaling (hard to max out)
+        effect: 0.01,    // 1% Crit Chance per level
+        costScale: 2.5,  
         milestoneStep: 10, 
         milestoneMult: 1 
     },
@@ -68,8 +67,8 @@ const upgrades = [
         baseCost: 3500, 
         basePower: 45, 
         costScale: 1.15,    
-        milestoneStep: 100, // Harder milestone...
-        milestoneMult: 5    // ...Big reward
+        milestoneStep: 100, 
+        milestoneMult: 5    
     },
     { 
         id: 'auto4', 
@@ -87,7 +86,7 @@ const upgrades = [
         name: 'Macro Script', 
         icon: '📜', 
         type: 'click',
-        baseCost: 15000,    // Strategic choice: Buy this or AI Generator?
+        baseCost: 15000,    
         basePower: 120,     
         costScale: 1.40,    
         milestoneStep: 50, 
@@ -111,7 +110,7 @@ const upgrades = [
         name: 'Alien Tech', 
         icon: '👽', 
         type: 'auto',
-        baseCost: 1200000,   // 1.2 Million
+        baseCost: 1200000,   
         basePower: 6500, 
         costScale: 1.18, 
         milestoneStep: 10,  
@@ -122,7 +121,7 @@ const upgrades = [
         name: 'Bionic Implant', 
         icon: '🦾', 
         type: 'click',
-        baseCost: 2500000,  // 2.5 Million
+        baseCost: 2500000,  
         basePower: 8500,    
         costScale: 1.5,     
         milestoneStep: 10,  
@@ -135,7 +134,7 @@ const upgrades = [
         name: 'Dyson Sphere', 
         icon: '☀️', 
         type: 'auto',
-        baseCost: 25000000,  // 25 Million
+        baseCost: 25000000,  
         basePower: 45000, 
         costScale: 1.15, 
         milestoneStep: 50, 
@@ -146,7 +145,7 @@ const upgrades = [
         name: 'Reality Bender', 
         icon: '🌀', 
         type: 'auto',
-        baseCost: 300000000, // 300 Million
+        baseCost: 300000000, 
         basePower: 220000, 
         costScale: 1.15, 
         milestoneStep: 25, 
@@ -157,9 +156,9 @@ const upgrades = [
         name: 'Telekinetic Link', 
         icon: '🧠', 
         type: 'click',
-        baseCost: 500000000, // 500 Million
-        basePower: 500000,   // Massive active play reward
-        costScale: 1.6,      // Luxury item scaling
+        baseCost: 500000000, 
+        basePower: 500000,   
+        costScale: 1.6,      
         milestoneStep: 100, 
         milestoneMult: 10    
     },
@@ -170,7 +169,7 @@ const upgrades = [
         name: 'Timeline Thief', 
         icon: '⏳', 
         type: 'auto',
-        baseCost: 5000000000, // 5 Billion
+        baseCost: 5000000000, 
         basePower: 1500000, 
         costScale: 1.20,      
         milestoneStep: 100, 
@@ -181,8 +180,8 @@ const upgrades = [
         name: 'Multiverse Simulation', 
         icon: '🌌', 
         type: 'auto',
-        baseCost: 75000000000, // 75 Billion
-        basePower: 12000000,   // 12 Million DPS
+        baseCost: 75000000000, 
+        basePower: 12000000,   
         costScale: 1.25,       
         milestoneStep: 10, 
         milestoneMult: 1.2     
@@ -289,9 +288,9 @@ els.anthony.addEventListener('mousedown', (e) => {
     let amount = getClickStrength();
 
     // 2. Calculate Crit Chance (Lucky Charm logic)
-    // We look for 'passive1' specifically, or loop for all passives
     const luckyCharmLevel = game.inventory['passive1'] || 0;
-    const critChance = luckyCharmLevel * 0.01; // 1% per level
+    const charmStats = upgrades.find(u => u.id === 'passive1');
+    const critChance = luckyCharmLevel * charmStats.effect; 
 
     // 3. Roll for Crit
     let text = `+${format(amount)}`;
@@ -309,6 +308,24 @@ els.anthony.addEventListener('mousedown', (e) => {
     els.bgPulse.classList.add('pulse-anim');
 });
 
+function addScore(amount) {
+    game.score += amount;
+    game.totalScore += amount;
+}
+
+// Game Loop (Runs 10 times per second)
+setInterval(() => {
+    const auto = getGlobalPerSec();
+    if(auto > 0) {
+        // Use addScore to ensure totalScore tracks correctly
+        addScore(auto / 10);
+    }
+    updateUI(); 
+}, 100);
+
+// Auto-Save (Every 10 seconds)
+setInterval(() => saveGame(false), 10000); 
+
 /* --- 7. SHOP SYSTEM --- */
 
 function renderShop() {
@@ -317,11 +334,23 @@ function renderShop() {
     upgrades.forEach((u, index) => {
         const cost = getCost(u.id);
         const count = game.inventory[u.id];
-        const power = getUnitPower(u.id); // Power of the NEXT item you buy
+        const power = getUnitPower(u.id); 
         
         // Progress bar for next milestone
         const progress = (count % u.milestoneStep) / u.milestoneStep * 100;
         
+        // --- NEW: SMART DESCRIPTION TEXT ---
+        let descriptionText;
+        if (u.type === 'passive') {
+            // Display Crit Chance instead of "Power"
+            descriptionText = `+${(u.effect * 100)}% Crit Chance`; 
+        } else if (u.type === 'click') {
+            descriptionText = `+${format(power)} / click`;
+        } else {
+            descriptionText = `+${format(power)} / sec`;
+        }
+        // -----------------------------------
+
         const card = document.createElement('div');
         card.id = `card-${index}`;
         card.className = `upgrade-card ${game.score >= cost ? 'affordable' : 'too-expensive'}`;
@@ -331,7 +360,7 @@ function renderShop() {
             <div class="card-info">
                 <div class="card-name">${u.name}</div>
                 <div class="card-details">
-                    +${format(power)} ${u.type === 'click' ? '/click' : '/sec'}
+                    ${descriptionText}
                     <br><span style="font-size:0.75em; opacity:0.7">Next x${u.milestoneMult} at level ${Math.floor(count/u.milestoneStep + 1) * u.milestoneStep}</span>
                 </div>
                 <div class="card-cost">💰 ${format(cost)}</div>
@@ -455,25 +484,19 @@ function saveGame(notify) {
 
 /* --- MODAL LOGIC --- */
 
-// 1. Opens the menu (Called by the Wipe button)
 function hardReset() {
     const modal = document.getElementById('delete-modal');
     modal.classList.remove('hidden');
 }
 
-// 2. Closes the menu (Called by the Cancel button)
 function closeModal() {
     const modal = document.getElementById('delete-modal');
     modal.classList.add('hidden');
 }
 
-// 3. Actually deletes the save (Called by the Confirm button)
 function confirmWipe() {
     localStorage.removeItem('anthonyUltimate');
-    
-    // Optional: Add a visual effect or small delay before reload
     document.body.innerHTML = '<div style="display:flex;justify-content:center;align-items:center;height:100vh;color:red;font-size:2rem;font-family:sans-serif;">WIPING DATA...</div>';
-    
     setTimeout(() => {
         location.reload();
     }, 1000);
