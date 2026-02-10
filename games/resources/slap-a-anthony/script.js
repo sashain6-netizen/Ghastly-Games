@@ -1,16 +1,17 @@
 /* --- 1. ADVANCED CONFIGURATION --- */
 // Tweak these numbers to balance your game!
 const upgrades = [
+    // --- TIER 1: THE BEGINNING ---
     { 
-        id: 'click', 
-        name: 'Click Strength', 
+        id: 'click1', 
+        name: 'Finger Gym', 
         icon: '👆', 
         type: 'click',
-        baseCost: 15,       // Starting Price
-        basePower: 1,       // Starting Power
-        costScale: 1.5,     // Cost multiplies by 1.5x each level (Steep!)
-        milestoneStep: 50,  // Every 50 levels...
-        milestoneMult: 2    // ...power doubles (x2)
+        baseCost: 15,       
+        basePower: 1,       
+        costScale: 1.35,     // Kept low to encourage early clicking
+        milestoneStep: 50,  
+        milestoneMult: 2    
     },
     { 
         id: 'auto1', 
@@ -19,53 +20,172 @@ const upgrades = [
         type: 'auto',
         baseCost: 50, 
         basePower: 1, 
-        costScale: 1.15,    // Standard 15% cost growth
+        costScale: 1.15,    
         milestoneStep: 25, 
         milestoneMult: 2 
+    },
+    { 
+        id: 'click2', 
+        name: 'RGB Mouse', 
+        icon: '🖱️', 
+        type: 'click',
+        baseCost: 350,      
+        basePower: 8,       
+        costScale: 1.45,    
+        milestoneStep: 25,  
+        milestoneMult: 2    
     },
     { 
         id: 'auto2', 
         name: 'Anthony Clone', 
         icon: '👯', 
         type: 'auto',
-        baseCost: 500, 
+        baseCost: 600,        
         basePower: 10, 
         costScale: 1.15, 
         milestoneStep: 25, 
         milestoneMult: 2 
+    },
+
+    // --- TIER 2: ESTABLISHING THE BASE ---
+    { 
+        id: 'passive1', 
+        name: 'Lucky Charm', 
+        icon: '🍀', 
+        type: 'passive', // Special Type: Adds Crit Chance
+        baseCost: 1000, 
+        basePower: 0,    
+        effect: 0.01,    // Adds 1% Crit Chance per level
+        costScale: 2.5,  // Very steep scaling (hard to max out)
+        milestoneStep: 10, 
+        milestoneMult: 1 
     },
     { 
         id: 'auto3', 
         name: 'Server Farm', 
         icon: '💻', 
         type: 'auto',
-        baseCost: 2500, 
-        basePower: 50, 
-        costScale: 1.20,    // Slightly steeper cost curve
-        milestoneStep: 100, // Harder to reach milestone...
-        milestoneMult: 5    // ...but HUGE x5 reward!
+        baseCost: 3500, 
+        basePower: 45, 
+        costScale: 1.15,    
+        milestoneStep: 100, // Harder milestone...
+        milestoneMult: 5    // ...Big reward
     },
     { 
         id: 'auto4', 
         name: 'AI Generator', 
         icon: '🤖', 
         type: 'auto',
-        baseCost: 10000, 
-        basePower: 200, 
-        costScale: 1.25, 
+        baseCost: 12000, 
+        basePower: 180, 
+        costScale: 1.15, 
         milestoneStep: 25, 
         milestoneMult: 2 
     },
     { 
+        id: 'click3', 
+        name: 'Macro Script', 
+        icon: '📜', 
+        type: 'click',
+        baseCost: 15000,    // Strategic choice: Buy this or AI Generator?
+        basePower: 120,     
+        costScale: 1.40,    
+        milestoneStep: 50, 
+        milestoneMult: 3    
+    },
+
+    // --- TIER 3: INDUSTRIAL EXPANSION ---
+    { 
         id: 'auto5', 
+        name: 'Quantum Core', 
+        icon: '⚛️', 
+        type: 'auto',
+        baseCost: 85000, 
+        basePower: 950, 
+        costScale: 1.15, 
+        milestoneStep: 25, 
+        milestoneMult: 2 
+    },
+    { 
+        id: 'auto6', 
         name: 'Alien Tech', 
         icon: '👽', 
         type: 'auto',
-        baseCost: 1000000, 
-        basePower: 5000, 
-        costScale: 1.30, 
-        milestoneStep: 10,  // Frequent milestones...
-        milestoneMult: 1.5  // ...but smaller bonuses (x1.5)
+        baseCost: 1200000,   // 1.2 Million
+        basePower: 6500, 
+        costScale: 1.18, 
+        milestoneStep: 10,  
+        milestoneMult: 1.5  
+    },
+    { 
+        id: 'click4', 
+        name: 'Bionic Implant', 
+        icon: '🦾', 
+        type: 'click',
+        baseCost: 2500000,  // 2.5 Million
+        basePower: 8500,    
+        costScale: 1.5,     
+        milestoneStep: 10,  
+        milestoneMult: 1.5  
+    },
+
+    // --- TIER 4: PLANETARY SCALE ---
+    { 
+        id: 'auto7', 
+        name: 'Dyson Sphere', 
+        icon: '☀️', 
+        type: 'auto',
+        baseCost: 25000000,  // 25 Million
+        basePower: 45000, 
+        costScale: 1.15, 
+        milestoneStep: 50, 
+        milestoneMult: 3 
+    },
+    { 
+        id: 'auto8', 
+        name: 'Reality Bender', 
+        icon: '🌀', 
+        type: 'auto',
+        baseCost: 300000000, // 300 Million
+        basePower: 220000, 
+        costScale: 1.15, 
+        milestoneStep: 25, 
+        milestoneMult: 2 
+    },
+    { 
+        id: 'click5', 
+        name: 'Telekinetic Link', 
+        icon: '🧠', 
+        type: 'click',
+        baseCost: 500000000, // 500 Million
+        basePower: 500000,   // Massive active play reward
+        costScale: 1.6,      // Luxury item scaling
+        milestoneStep: 100, 
+        milestoneMult: 10    
+    },
+
+    // --- TIER 5: COSMIC ENDGAME ---
+    { 
+        id: 'auto9', 
+        name: 'Timeline Thief', 
+        icon: '⏳', 
+        type: 'auto',
+        baseCost: 5000000000, // 5 Billion
+        basePower: 1500000, 
+        costScale: 1.20,      
+        milestoneStep: 100, 
+        milestoneMult: 10     
+    },
+    { 
+        id: 'auto10', 
+        name: 'Multiverse Simulation', 
+        icon: '🌌', 
+        type: 'auto',
+        baseCost: 75000000000, // 75 Billion
+        basePower: 12000000,   // 12 Million DPS
+        costScale: 1.25,       
+        milestoneStep: 10, 
+        milestoneMult: 1.2     
     }
 ];
 
