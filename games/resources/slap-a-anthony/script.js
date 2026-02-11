@@ -244,12 +244,13 @@ const getUnitPower = (id) => {
     const u = upgrades.find(x => x.id === id);
     const count = game.inventory[id];
     
-    // 1. Calculate Milestones
+    // 1. Calculate Milestones (e.g., doubling power every 25 levels)
     const milestonesReached = Math.floor(count / u.milestoneStep);
     const milestoneBonus = Math.pow(u.milestoneMult, milestonesReached);
 
-    // 2. Calculate Prestige
-    const prestigeMulti = 1 + (game.prestigeLevel * 0.1); // +10% per prestige
+    // 2. Calculate Prestige (+10% per level)
+    // Using (1 + level * 0.1) creates additive scaling (10%, 20%, 30%...)
+    const prestigeMulti = 1 + (game.prestigeLevel * 0.1); 
 
     return u.basePower * milestoneBonus * prestigeMulti;
 };
