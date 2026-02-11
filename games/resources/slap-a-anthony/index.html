@@ -3,57 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Slap-a-Anthony: Evolution</title>
+    <title>Slap-a-Anthony</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
-    <style>
-        /* --- NEW STYLES FOR ENGAGEMENT FEATURES --- */
-        
-        /* Golden Target */
-        #golden-anthony {
-            position: absolute;
-            width: 80px;
-            height: 80px;
-            cursor: pointer;
-            z-index: 1000;
-            display: none; /* Hidden by default */
-            filter: drop-shadow(0 0 10px gold);
-            transition: transform 0.1s;
-        }
-        #golden-anthony:active { transform: scale(0.9); }
-
-        /* Floating Text Particles */
-        .floater {
-            position: absolute;
-            pointer-events: none;
-            font-weight: 900;
-            font-size: 1.2rem;
-            animation: floatUp 1s ease-out forwards;
-            z-index: 999;
-            text-shadow: 1px 1px 0 #000;
-        }
-        @keyframes floatUp {
-            0% { opacity: 1; transform: translateY(0) scale(1); }
-            100% { opacity: 0; transform: translateY(-80px) scale(1.2); }
-        }
-
-        /* Offline Modal Specifics */
-        .highlight-green { color: #4cd137; font-weight: bold; }
-    </style>
 </head>
 <body>
-
-    <div id="offline-modal" class="modal-overlay hidden">
-        <div class="modal-content">
-            <h3 class="neon-title">WELCOME BACK!</h3>
-            <p>While you were away, your empire generated:</p>
-            <h2 id="offline-gains" style="font-size: 2.5em; margin: 15px 0;" class="highlight-green">0</h2>
-            <p>Anthonys</p>
-            <div class="modal-buttons">
-                <button class="modal-btn confirm" onclick="closeOfflineModal()">COLLECT</button>
-            </div>
-        </div>
-    </div>
 
     <div id="delete-modal" class="modal-overlay hidden">
         <div class="modal-content">
@@ -99,8 +53,6 @@
     <div id="particles"></div>
 
     <div id="toast" class="toast hidden">Game Saved!</div>
-
-    <img id="golden-anthony" src="https://em-content.zobj.net/source/microsoft-teams/337/sparkles_2728.png" alt="Golden Bonus">
 
     <div class="main-layout">
         
