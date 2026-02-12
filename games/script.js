@@ -177,6 +177,10 @@ function toggleFullScreen() {
     }
 }
 
+function openSource(link) {
+    window.location.href = "https://example.com"
+}
+
 window.onclick = function(event) {
     const modal = document.getElementById('gameModal');
     if (event.target == modal) closeGame();
