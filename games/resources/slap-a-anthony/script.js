@@ -191,7 +191,7 @@ const upgrades = [
         name: 'Christian',
         icon: '<img src="Christian.png" alt="custom emoji" style="height: 1.2em; vertical-align: middle;">',
         type: 'click',
-        baseCost: 1,
+        baseCost: 1000000000000,
         basePower: 50000000,
         costScale: 1.5,
         milestoneStep: 10,
