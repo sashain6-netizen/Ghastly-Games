@@ -165,21 +165,6 @@ footer {
     gap: 15px;
 }
 
-#sourceBtn {
-    background-color: #0fff2b;
-    color: white;
-    border: none;
-    padding: 5px 12px;
-    border-radius: 5px;
-    font-size: 12px;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-#sourceBtn:hover {
-    background-color: #0cab0c;
-}
-
 #fullScreenBtn {
     background-color: #3b82f6;
     color: white;
