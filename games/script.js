@@ -177,8 +177,8 @@ function toggleFullScreen() {
     }
 }
 
-function openSource(link) {
-    window.location.href = "https://example.com"
+function openSource(sourceUrl) {
+    window.location.href = "sourceUrl"
 }
 
 window.onclick = function(event) {
