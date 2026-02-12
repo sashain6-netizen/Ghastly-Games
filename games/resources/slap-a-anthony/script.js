@@ -185,6 +185,17 @@ const upgrades = [
         costScale: 1.25,       
         milestoneStep: 10, 
         milestoneMult: 1.2     
+    },
+    {
+        id: 'click6',
+        name: 'Godly Celestionite',
+        icon: '',
+        type: 'click',
+        baseCost: 1000000000000,
+        basePower: 50000000,
+        costScale: 1.5,
+        milestoneStep: 10,
+        milestoneMult: 2
     }
 ];
 
