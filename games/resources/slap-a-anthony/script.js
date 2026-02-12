@@ -188,7 +188,7 @@ const upgrades = [
     },
     {
         id: 'click6',
-        name: 'Godly Celestionite',
+        name: 'Christian',
         icon: '<img src="Christian.png" alt="custom emoji" style="height: 1.2em; vertical-align: middle;">',
         type: 'click',
         baseCost: 1000000000000,
