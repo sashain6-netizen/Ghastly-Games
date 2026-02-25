@@ -762,7 +762,7 @@ input:checked + .slider:before {
   
   /* Style the "i" */
   color: #007bff;
-  font-family: "Georgia", serif; /* Serif fonts often have a better 'i' */
+  font-family: "Georgia",
   font-size: 16px;
   font-weight: bold;
   font-style: italic;
