@@ -754,30 +754,38 @@ input:checked + .slider:before {
 }
 
 /* Styling for the small '?' button next to the Signup Header */
+/* Styling for the small '?' button next to the Signup Header */
 .mini-info-btn {
-    background: #bc6ff1;
-    color: #fff;
-    border: none;
-    border-radius: 50%;
-    width: 22px;
-    height: 22px;
+    background: #bc6ff1 !important; /* Forces the purple color */
+    color: #fff !important;
+    border: none !important;
+    border-radius: 50% !important;
+    
+    /* These three lines are the fix for the "not styling" issue */
+    width: 22px !important; 
+    height: 22px !important;
+    min-width: 22px !important; 
+    
     font-size: 0.85rem;
     cursor: pointer;
     font-weight: bold;
-    display: flex;
+    display: flex !important;
     align-items: center;
     justify-content: center;
     transition: transform 0.2s, background 0.2s;
     box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    margin: 0; /* Prevents unwanted spacing */
+    padding: 0 !important;
 }
 
 .mini-info-btn:hover {
-    background: #a356d9;
+    background: #a356d9 !important;
     transform: scale(1.1);
 }
 
-/* Styling for the info box that appears when clicked */
+/* Ensure the info box is visible against the dark background */
 #signup-info-box {
+    display: none; /* Controlled by JS */
     background: #252525;
     color: #efefef;
     padding: 12px;
@@ -787,7 +795,6 @@ input:checked + .slider:before {
     line-height: 1.4;
     border-left: 4px solid #bc6ff1;
     text-align: left;
-    animation: fadeIn 0.3s ease-in-out;
 }
 
 @keyframes fadeIn {
