@@ -771,9 +771,6 @@ input:checked + .slider:before {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  
-  /* Optional: clickable cursor */
-  cursor: help;
 }
 
 #info-circle:hover {
