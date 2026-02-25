@@ -754,19 +754,30 @@ input:checked + .slider:before {
 }
 
 #info-circle {
-    color: #a0a0a0;
-    border-radius: 12px;
-    height: 55px;
-    padding: 0 25px;         
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;               
-    white-space: nowrap;  
+  /* Create the circle shape */
+  width: 24px;
+  height: 24px;
+  border: 2px solid #007bff; /* Border color */
+  border-radius: 50%;         /* Makes it a perfect circle */
+  
+  /* Style the "i" */
+  color: #007bff;
+  font-family: "Georgia", serif; /* Serif fonts often have a better 'i' */
+  font-size: 16px;
+  font-weight: bold;
+  font-style: italic;
 
+  /* Perfect centering */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  
+  /* Optional: clickable cursor */
+  cursor: help;
 }
 
-#info-circle:hover {
-    color: #808080;
+.info-circle:hover {
+  background-color: #007bff;
+  color: white;
 }
+
