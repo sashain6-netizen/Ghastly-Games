@@ -31,7 +31,15 @@
             <button id="close-btn" onclick="closeAuth()">x</button>
             
             <div id="signup-form-container" class="auth-form" style="display: none;">
-                <h2>Join Ghastly Games</h2>
+                <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                    <h2>Join Ghastly Games</h2>
+                    <button type="button" class="mini-info-btn" onclick="toggleSignupInfo()">?</button>
+                </div>
+
+                <div id="signup-info-box" style="display: none; background: #2a2a2a; padding: 10px; border-radius: 5px; margin-bottom: 15px; font-size: 0.85rem; border-left: 3px solid #bc6ff1;">
+                    <p><strong>How it works:</strong> Creating an account lets you save XP and 💎 G-Bucks across sessions. We only use your email for login verification.</p>
+                </div>
+
                 <input type="email" id="reg-email" placeholder="Email">
                 <input type="password" id="reg-password" placeholder="Password">
                 <div class="show-pw-container">
