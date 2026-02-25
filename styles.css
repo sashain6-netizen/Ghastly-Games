@@ -776,7 +776,7 @@ input:checked + .slider:before {
   cursor: help;
 }
 
-.info-circle:hover {
+#info-circle:hover {
   background-color: #007bff;
   color: white;
 }
