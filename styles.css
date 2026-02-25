@@ -566,7 +566,6 @@ body {
     height: 55px;
     padding: 0 25px;         
     border-radius: 12px;
-
     display: flex;
     align-items: center;
     justify-content: center;
@@ -752,4 +751,9 @@ input:checked + .slider:before {
     color: #ccc;
     font-size: 0.9rem;
     font-family: inherit;
+}
+
+#info-box {
+    color: #a0a0a0
+    
 }
