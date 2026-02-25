@@ -754,12 +754,7 @@ input:checked + .slider:before {
 }
 
 #info-box {
-    color: #a0a0a0
-
-}
-
-#info-box:hover {
-    color: #808080;
+    color: #a0a0a0;
     border-radius: 12px;
     height: 55px;
     padding: 0 25px;         
@@ -769,4 +764,9 @@ input:checked + .slider:before {
     justify-content: center;
     gap: 20px;               
     white-space: nowrap;  
+
+}
+
+#info-box:hover {
+    color: #808080;
 }
