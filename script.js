@@ -359,3 +359,13 @@ function togglePassword(inputId) {
         passwordInput.type = passwordInput.type === "password" ? "text" : "password";
     }
 }
+
+function toggleSignupInfo() {
+    const infoBox = document.getElementById('signup-info-box');
+    // Checks current state and flips it
+    if (infoBox.style.display === 'none' || infoBox.style.display === '') {
+        infoBox.style.display = 'block';
+    } else {
+        infoBox.style.display = 'none';
+    }
+}
