@@ -755,27 +755,33 @@ input:checked + .slider:before {
 
 /* Styling for the small '?' button next to the Signup Header */
 /* Styling for the small '?' button next to the Signup Header */
+/* Styling for the small '?' button next to the Signup Header */
 .mini-info-btn {
-    background: #bc6ff1 !important; /* Forces the purple color */
+    background: #bc6ff1 !important;
     color: #fff !important;
     border: none !important;
     border-radius: 50% !important;
     
-    /* These three lines are the fix for the "not styling" issue */
-    width: 22px !important; 
-    height: 22px !important;
-    min-width: 22px !important; 
+    /* Fixed Dimensions */
+    width: 24px !important; 
+    height: 24px !important;
+    min-width: 24px !important;
+    max-width: 24px !important;
     
-    font-size: 0.85rem;
-    cursor: pointer;
-    font-weight: bold;
+    font-size: 0.85rem !important;
+    cursor: pointer !important;
+    font-weight: bold !important;
+    
+    /* Center the '?' */
     display: flex !important;
-    align-items: center;
-    justify-content: center;
+    align-items: center !important;
+    justify-content: center !important;
+    
+    /* Reset layout interference */
+    margin: 0 !important;
+    padding: 0 !important;
     transition: transform 0.2s, background 0.2s;
     box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-    margin: 0; /* Prevents unwanted spacing */
-    padding: 0 !important;
 }
 
 .mini-info-btn:hover {
@@ -783,18 +789,20 @@ input:checked + .slider:before {
     transform: scale(1.1);
 }
 
-/* Ensure the info box is visible against the dark background */
+/* Ensure the info box text is readable and aligned */
 #signup-info-box {
-    display: none; /* Controlled by JS */
+    display: none; 
     background: #252525;
     color: #efefef;
     padding: 12px;
     border-radius: 8px;
-    margin-bottom: 15px;
+    margin: 10px 0 20px 0;
     font-size: 0.85rem;
     line-height: 1.4;
     border-left: 4px solid #bc6ff1;
     text-align: left;
+    width: 100%; /* Match the input width */
+    box-sizing: border-box;
 }
 
 @keyframes fadeIn {
