@@ -756,37 +756,30 @@ input:checked + .slider:before {
 /* Styling for the small '?' button next to the Signup Header */
 /* Styling for the small '?' button next to the Signup Header */
 /* Styling for the small '?' button next to the Signup Header */
-.mini-info-btn {
+/* High specificity selector to override the general auth button styles */
+#ghastly-auth-system .mini-info-btn {
+    all: unset; /* This kills the big gradient and 100% width from your other rule */
     background: #bc6ff1 !important;
-    color: #fff !important;
-    border: none !important;
+    color: white !important;
+    width: 20px !important;
+    height: 20px !important;
     border-radius: 50% !important;
-    
-    /* Fixed Dimensions */
-    width: 24px !important; 
-    height: 24px !important;
-    min-width: 24px !important;
-    max-width: 24px !important;
-    
-    font-size: 0.85rem !important;
-    cursor: pointer !important;
-    font-weight: bold !important;
-    
-    /* Center the '?' */
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    
-    /* Reset layout interference */
+    cursor: pointer !important;
+    font-size: 0.8rem !important;
+    font-weight: bold !important;
     margin: 0 !important;
     padding: 0 !important;
-    transition: transform 0.2s, background 0.2s;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    transition: transform 0.2s;
+    box-shadow: 0 0 5px rgba(188, 111, 241, 0.5);
 }
 
-.mini-info-btn:hover {
-    background: #a356d9 !important;
-    transform: scale(1.1);
+#ghastly-auth-system .mini-info-btn:hover {
+    transform: scale(1.2);
+    background: #ffffff !important;
+    color: #bc6ff1 !important;
 }
 
 /* Ensure the info box text is readable and aligned */
