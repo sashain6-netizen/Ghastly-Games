@@ -753,7 +753,7 @@ input:checked + .slider:before {
     font-family: inherit;
 }
 
-#info-box {
+#info-circle {
     color: #a0a0a0;
     border-radius: 12px;
     height: 55px;
@@ -767,6 +767,6 @@ input:checked + .slider:before {
 
 }
 
-#info-box:hover {
+#info-circle:hover {
     color: #808080;
 }
