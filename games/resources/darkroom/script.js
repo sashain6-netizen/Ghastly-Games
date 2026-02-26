@@ -1,4 +1,4 @@
-
+$(document).ready(function() {
 var oldIE = false;
 var Dropbox = { isBrowserSupported: function() { return false; } };
 function _(s) { return s; }
@@ -16696,5 +16696,4 @@ Events.Executioner = {
 
 	keywords = null;
 })();
-
-;
+});
