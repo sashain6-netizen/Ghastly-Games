@@ -6,25 +6,22 @@
     <meta itemprop="description" name="description" property="og:description" content="A minimalist text adventure">
     <link rel="shortcut icon" href="favicon.ico" />
     
-    <!-- External Dependencies -->
+    <!-- jQuery must load first -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
 
-    <!-- Essential Layout Styles (Your merged 1,000 lines) -->
-    <link rel="stylesheet" type="text/css" href="styles.css" />
+    <!-- Use relative path to avoid MIME/404 errors -->
+    <link rel="stylesheet" type="text/css" href="./styles.css" />
 
     <script type='text/javascript'>
-        // Fixes "ReferenceError: oldIE is not defined"
-        var oldIE = false; 
-        
-        // Language detection logic (keeps translation features working)
+        var oldIE = false;
         var lang = decodeURIComponent((new RegExp('[?|&]lang=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null;
         if(!lang){ try { lang = localStorage.lang; } catch(e) {} }
     </script>
     
-    <!-- Your merged 15,000 lines (Contains Engine, Buttons, and Events) -->
-    <script src="script.js"></script>
+    <!-- Main Game Logic -->
+    <script src="./script.js"></script>
 
-    <!-- Google tag (gtag.js) -->
+    <!-- Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-606P6J79WH"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -35,10 +32,7 @@
 </head>
 <body>
     <div id="wrapper">
-        <!-- saveNotify needs the _() function from your script.js to exist first -->
-        <div id="saveNotify">
-            <script>if(window._) { document.write(_("saved.")); }</script>
-        </div>
+        <div id="saveNotify"></div>
         <div id="content">
             <div id="outerSlider">
                 <div id="main">
@@ -48,11 +42,17 @@
         </div>
     </div>
     
-    <!-- The Logo SVG (Kept exactly as original) -->
     <a class="logo" href="https://www.doublespeakgames.com" alt="doublespeak games" target="_blank">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 41.75 32.84375" class="logo-icon" style="width:40px; height:auto; position:fixed; bottom:10px; right:10px;">
             <path d="m 18.024533,28.5722 c 2.532365,-2.243 5.064679,-4.4861 7.596993,-6.7292 4.907813,0 9.815625,0 14.723438,0 0,-6.8136 0,-13.6272 0,-20.4408 -12.976656,0 -25.953312,0 -38.9299676,0 0,6.8136 0,13.6272 0,20.4408 3.2917905,0 6.5835811,0 9.8753716,0 -0.643311,2.2431 -1.286622,4.4861 -1.9299604,6.7292 2.5323644,-2.243 5.0646784,-4.4861 7.5969924,-6.7292 0.999066,0 1.998131,0 2.997197,0 -0.643345,2.2431 -1.286691,4.4861 -1.930064,6.7292 z" fill="none" stroke="currentColor"></path>
         </svg>
     </a>
+
+    <!-- This script is moved down here so window._ is defined before it runs -->
+    <script>
+        if(window._ && document.getElementById("saveNotify")) { 
+            document.getElementById("saveNotify").innerHTML = _("saved."); 
+        }
+    </script>
 </body>
 </html>
