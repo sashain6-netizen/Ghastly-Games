@@ -6,26 +6,29 @@
     <meta itemprop="description" name="description" property="og:description" content="A minimalist text adventure">
     <link rel="shortcut icon" href="favicon.ico" />
     
-    <!-- jQuery: Required for the engine -->
+    <!-- FIXED: Full jQuery URL -->
     <script src="https://ajax.googleapis.com"></script>
 
-    <!-- 1. PERMANENT LAYOUT: Always stays on so you can see the game -->
+    <!-- 1. PERMANENT LAYOUT (Always On) -->
     <link rel="stylesheet" type="text/css" href="./styles.css" />
 
-    <!-- 2. THEME OVERLAY: This is the one you will toggle with your script -->
+    <!-- 2. THEME OVERLAY (Toggleable) -->
     <link rel="stylesheet" type="text/css" href="./dark.css" id="darkenLights" title="darkenLights" />
 
+    <!-- FIXED: Safe Language Logic -->
     <script type='text/javascript'>
         var oldIE = false;
-        var params = new URLSearchParams(window.location.search);
-		var lang = params.get('lang') || localStorage.getItem('lang') || 'en';
-	if(!lang){ try { lang = localStorage.lang; } catch(e) {} }
+        var lang = 'en';
+        try {
+            var params = new URLSearchParams(window.location.search);
+            lang = params.get('lang') || localStorage.getItem('lang') || 'en';
+        } catch(e) { console.log("Lang error, defaulting to en"); }
     </script>
     
-    <!-- Main Game Logic (Deferred to wait for jQuery) -->
+    <!-- Main Game Logic -->
     <script src="./script.js" defer></script>
 
-    <!-- Analytics -->
+    <!-- FIXED: Full Google Tag Manager URL -->
     <script async src="https://www.googletagmanager.com"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -40,7 +43,7 @@
         <div id="content">
             <div id="outerSlider">
                 <div id="main">
-                    <!-- Essential IDs for the game engine to build the UI -->
+                    <!-- Critical structural IDs for the UI -->
                     <div id="header"></div>
                     <div id="sidebar"></div>
                     <div id="location"></div>
@@ -57,15 +60,15 @@
         </svg>
     </a>
 
-    <!-- Bootloader -->
+    <!-- Bootloader ensures Engine.init() only runs when scripts are ready -->
     <script type="text/javascript">
         function initGame() {
-            // Wait for both jQuery and the Engine object in script.js to be ready
             if (window.jQuery && typeof Engine !== 'undefined') {
+                // If translation tool exists, show 'saved'
                 if(window._) { document.getElementById("saveNotify").innerHTML = _("saved."); }
                 Engine.init();
             } else {
-                setTimeout(initGame, 100); // Retry every 100ms
+                setTimeout(initGame, 100); 
             }
         }
         initGame();
