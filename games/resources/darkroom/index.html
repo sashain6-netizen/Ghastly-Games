@@ -17,8 +17,9 @@
 
     <script type='text/javascript'>
         var oldIE = false;
-        var lang = decodeURIComponent((new RegExp('[?|&]lang=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""]).replace(/\+/g, '%20'))||null;
-        if(!lang){ try { lang = localStorage.lang; } catch(e) {} }
+        var params = new URLSearchParams(window.location.search);
+		var lang = params.get('lang') || localStorage.getItem('lang') || 'en';
+	if(!lang){ try { lang = localStorage.lang; } catch(e) {} }
     </script>
     
     <!-- Main Game Logic (Deferred to wait for jQuery) -->
