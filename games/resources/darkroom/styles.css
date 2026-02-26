@@ -16,25 +16,6 @@ html, body {
     display: none !important;
 }
 
-/* Prevent all rooms from showing at once */
-#main > div {
-    display: none;
-}
-
-/* Show only the active parts */
-#header, #saveNotify, #notifications, #main #locationSlider, #main #header {
-    display: block !important;
-}
-
-/* Specifically target the inner locations */
-.location {
-    display: none;
-}
-.location.active {
-    display: block !important;
-}
-
-
 /* Merged Stylesheet */
 
 /* --- SOURCE: css/main.css --- */
@@ -1201,4 +1182,22 @@ div.blueprintRow {
 
 div.blueprintRow .row_key {
 	float: none;
+}
+
+/* Prevent all rooms from showing at once */
+#main > div {
+    display: none;
+}
+
+/* Show only the active parts */
+#header, #saveNotify, #notifications, #main #locationSlider, #main #header {
+    display: block !important;
+}
+
+/* Specifically target the inner locations */
+.location {
+    display: none;
+}
+.location.active {
+    display: block !important;
 }
