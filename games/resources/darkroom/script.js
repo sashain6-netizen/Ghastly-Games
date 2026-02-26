@@ -1,5 +1,8 @@
 function _(s){return s;} var AudioLibrary={BUILD_TRAP:""}; // Too lazy to add the real manly stuff
 
+var oldIE = false;
+var Dropbox = { isBrowserSupported: function() { return false; } };
+
 (function() {
   var Engine = window.Engine = {
 
