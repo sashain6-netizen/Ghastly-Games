@@ -2504,23 +2504,29 @@ var $SM = StateManager;
       return false;
     },
 
+
     turnLightsOff: function() {
-      var darkCss = Engine.findStylesheet('darkenLights');
-      if (darkCss == null) {
-        $('head').append('<link rel="stylesheet" href="css/dark.css" type="text/css" title="darkenLights" />');
-        $('.lightsOff').text(_('lights on.'));
-        $SM.set('config.lightsOff', true, true);
-      } else if (darkCss.disabled) {
-        darkCss.disabled = false;
-        $('.lightsOff').text(_('lights on.'));
-        $SM.set('config.lightsOff', true,true);
-      } else {
-        $("#darkenLights").attr("disabled", "disabled");
-        darkCss.disabled = true;
-        $('.lightsOff').text(_('lights off.'));
-        $SM.set('config.lightsOff', false, true);
-      }
-    },
+        // Look for your condensed styles.css instead
+        var darkCss = Engine.findStylesheet('styles.css'); 
+        
+        if (darkCss == null) {
+            // Change 'css/dark.css' to 'styles.css'
+            $('head').append('<link rel="stylesheet" href="styles.css" type="text/css" title="darkenLights" id="darkenLights" />');
+            $('.lightsOff').text(_('lights on.'));
+            $SM.set('config.lightsOff', true, true);
+        } else if (darkCss.disabled) {
+            darkCss.disabled = false;
+            $('.lightsOff').text(_('lights on.'));
+            $SM.set('config.lightsOff', true, true);
+        } else {
+            // Ensure the ID matches what we appended above
+            $("#darkenLights").attr("disabled", "disabled");
+            darkCss.disabled = true;
+            $('.lightsOff').text(_('lights off.'));
+            $SM.set('config.lightsOff', false, true);
+        }
+        },
+
 
     confirmHyperMode: function(){
       if (!Engine.options.doubleTime) {
