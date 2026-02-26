@@ -2505,28 +2505,22 @@ var $SM = StateManager;
     },
 
     turnLightsOff: function() {
-    // Look for the ID we set in the HTML
-    var darkCss = document.getElementById('darkenLights'); 
-    
-    if (!darkCss) {
-        // If somehow missing, re-add it
-        $('head').append('<link rel="stylesheet" href="styles.css" type="text/css" title="darkenLights" id="darkenLights" />');
+      var darkCss = Engine.findStylesheet('darkenLights');
+      if (darkCss == null) {
+        $('head').append('<link rel="stylesheet" href="css/dark.css" type="text/css" title="darkenLights" />');
         $('.lightsOff').text(_('lights on.'));
         $SM.set('config.lightsOff', true, true);
-    } else if (darkCss.disabled) {
-        // TURN LIGHTS OFF (Enable the dark CSS)
+      } else if (darkCss.disabled) {
         darkCss.disabled = false;
         $('.lightsOff').text(_('lights on.'));
-        $SM.set('config.lightsOff', true, true);
-    } else {
-        // TURN LIGHTS ON (Disable the dark CSS)
+        $SM.set('config.lightsOff', true,true);
+      } else {
+        $("#darkenLights").attr("disabled", "disabled");
         darkCss.disabled = true;
         $('.lightsOff').text(_('lights off.'));
         $SM.set('config.lightsOff', false, true);
-    }
-},
-
-
+      }
+    },
 
     confirmHyperMode: function(){
       if (!Engine.options.doubleTime) {
