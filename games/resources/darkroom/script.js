@@ -2,6 +2,7 @@
  * Module that registers the fabricator functionality
  */
 function _(s) { return s; } 
+var AudioLibrary = { BUILD_TRAP: "" };
 
 const Fabricator = {
   _STORES_OFFSET: 0,
