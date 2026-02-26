@@ -1,559 +1,3 @@
-div#buildBtns {
-	position: absolute;
-	top: 50px;
-	left: 0px;
-}
-
-div#buildBtns:before, div#craftBtns:before, div#buyBtns:before {
-	content: attr(data-legend);
-	position: relative;
-	top: -5px;
-}
-
-div#craftBtns {
-	position: absolute;
-	top: 50px;
-	left: 150px;
-}
-
-div#buyBtns {
-	position: absolute;
-	top: 50px;
-	left: 300px;
-}
-
-div#storesContainer {
-	position: absolute;
-	top: 0px;
-	right: 0px;
-}
-
-div#stores:before, div#weapons:before {
-	position: absolute;
-	background: white;
-	content: attr(data-legend);
-	left: 8px;
-	top: -13px;
-}
-
-div#stores {
-	position: relative;
-	z-index:10;
-	border: 1px solid black;
-	cursor: default;
-	padding: 5px 10px;
-	width: 200px;
-}
-
-div.storeRow {
-	position: relative;
-}
-
-div#weapons {
-	margin-top: 15px;
-	position: relative;
-	right: 0px;
-	border: 1px solid black;
-	cursor: default;
-	padding: 5px 10px;
-	width: 200px;
-}
- 
-div#hullRow {
-	width: 70px;
-}
-
-div#engineRow {
-	width: 70px;
-	margin-bottom: 20px;
-}
- 
-@-ms-keyframes spin {
-	0% { 
-		-ms-transform: rotate(0deg);
-		-webkit-transform: rotate(0deg); 
-		-moz-transform: rotate(0deg);
-		transform:rotate(0deg); 
-	}
-	100% { 
-		-ms-transform: rotate(360deg); 
-		-webkit-transform: rotate(360deg); 
-		-moz-transform: rotate(360deg);
-		transform:rotate(360deg); 
-	}
-}
-
-@-webkit-keyframes spin {
-	0% { 
-		-ms-transform: rotate(0deg);
-		-webkit-transform: rotate(0deg); 
-		-moz-transform: rotate(0deg);
-		transform:rotate(0deg); 
-	}
-	100% { 
-		-ms-transform: rotate(360deg); 
-		-webkit-transform: rotate(360deg); 
-		-moz-transform: rotate(360deg);
-		transform:rotate(360deg); 
-	}
-}
-
-@-moz-keyframes spin {
-	0% { 
-		-ms-transform: rotate(0deg);
-		-webkit-transform: rotate(0deg); 
-		-moz-transform: rotate(0deg);
-		transform:rotate(0deg); 
-	}
-	100% { 
-		-ms-transform: rotate(360deg); 
-		-webkit-transform: rotate(360deg); 
-		-moz-transform: rotate(360deg);
-		transform:rotate(360deg); 
-	}
-}
-
-@keyframes spin {
-	0% { 
-		-ms-transform: rotate(0deg);
-		-webkit-transform: rotate(0deg); 
-		-moz-transform: rotate(0deg);
-		transform:rotate(0deg); 
-	}
-	100% { 
-		-ms-transform: rotate(360deg); 
-		-webkit-transform: rotate(360deg); 
-		-moz-transform: rotate(360deg);
-		transform:rotate(360deg); 
-	}
-}
-
-#spacePanel {
-	float: none !important;
-	position: absolute !important;
-	top: -700px;
-	left: 0px;
-}
-
-#starsContainer {
-	width: 100%;
-	height: 100%;
-	position: absolute;
-	top: 0px;
-	left: 0px;
-	overflow: hidden;
-}
-
-#stars, #starsBack {
-	position: absolute;
-	z-index: -1;
-	left: 0px;
-}
-
-#stars > div, #starsBack > div {
-	position: relative;
-	height: 3000px;
-	width: 3000px;
-	color: white;
-}
-
-#starsBack {
-	opacity: 0.5;
-}
-
-.star {
-	position: absolute;
-}
-
-#ship {
-	cursor: default;
-	position: absolute;
-	margin-top: -10px;
-	margin-left: -7.5px;
-}
-
-#theEnd {
-	position: relative;
-	cursor: default;
-	top: 200px;
-	margin-left: -220px;
-	text-align: center;
-	font-size: 24px;
-	font-weight: bold;
-	opacity: 0;
-	color: white;
-}
-
-.asteroid {
-	cursor: default;
-	position: absolute;
-	top: -40px;
-	left: 350px;
-	-webkit-animation: 1s linear 0s normal none infinite spin;
-	-moz-animation: 1s linear 0s normal none infinite spin;
-	-ms-animation: 1s linear 0s normal none infinite spin;
-	animation: 1s linear 0s normal none infinite spin;
-	font-size: 32px;
-}
-
-#hullRemaining {
-	width: 70px;
-	position: absolute;
-	top: 0px;
-	left: 0px;
-}
-
-.centerCont {
-	padding-top:10%;
-}
-
-.outroContainer {
-	padding-top:10%;
-	width: 800px;
-	margin: 0 auto;
-}
-
-.outro {
-	font-size: 1.5rem;
-	color: #FFF;
-	opacity: 0;
-	margin-bottom: 40px;
-}
-
-.endGame {
-	font-size:48px;
-	color:#FFFFFF;
-	opacity:0;
-	position:relative;
-}
-
-.endGameOption {
-	font-size: 32px;
-	cursor: pointer;
-}
-
-.endGameOption:hover {
-	text-decoration: underline;
-}
-
-#wait-btn {
-	border-color: #fff;
-	color: #fff;
-	margin: 0 auto;
-	opacity: 0;
-}
- 
-#worldOuter {
-	position: relative;
-	display: inline-block;
-}
-
-#map {
-	position: relative;
-	font-family: "Courier New", Courier, monospace;
-	border: 1px solid black;
-	overflow: hidden;
-	display: inline-block;
-	line-height: 10px;
-	letter-spacing: 1px;
-	color: #999;
-	cursor: default;
-	-webkit-touch-callout: none;
-	-webkit-user-select: none;
-	-khtml-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
-	user-select: none;
-}
-
-#map .landmark {
-	position: relative;
-	font-weight: bold;
-	color: black;
-	line-height: 0px; /* Hack to prevent the boldness from increasing the row's line-height. I hope it works in all browsers... */
-}
-
-#bagspace-world {
-	border: 1px solid black;
-	height: 62px;
-	margin-bottom: 5px;
-	margin-top: 13px;
-	overflow: hidden;
-}
-
-#bagspace-world > div {
-	padding: 6px 4px;
-}
-
-#backpackTitle {
-	position: absolute;
-	top: 0px;
-	left: 10px;
-	background-color: white;
-	z-index: 1;
-}
-
-#backpackSpace {
-	position: absolute;
-	top: 0px;
-	right: 10px;
-	background-color: white;
-	z-index: 1;
-}
-
-#healthCounter {
-	position: absolute;
-	top: 0px;
-	left: 80px;
-	background-color: white;
-	z-index: 1;
-}
-
-div.supplyItem {
-	display: inline-block;
-	border: 1px solid #999;
-	float: left;
-	margin: 0px 5px 6px 0px;
-	padding: 0 5px;
-	cursor: default;
-} 
-body {
-	background-color: #272823;
-	color: #EEE;
-}
-
-div.headerButton {
-	border-left: 1px solid #EEE;
-}
-
-div#notifyGradient {
-	background-color: #272823;
-	background: -webkit-linear-gradient( rgba(39, 40, 35, 0) 0%, rgba(39, 40, 35, 1) 100% );
-	background: linear-gradient( rgba(39, 40, 35, 0) 0%, rgba(39, 40, 35, 1) 100% );
-	filter: alpha( Opacity=0, FinishOpacity=100, Style=1, StartX=0, StartY=0, FinishX=0, FinishY=500 );
-}
-
-div#saveNotify {
-	background: #272823;
-}
-
-.eventPanel:before {
-	background-color: #272823;
-}
-
-.eventTitle:after {
-	background-color: #272823;
-}
-
-div.tooltip {
-	background-color: #171813;
-	border: 1px solid black;
-	box-shadow: -1px 3px 2px #111;
-}
-
-div#population {
-	background-color: #272823;
-}
-
-div#village:before {
-	background: #272823;
-}
-
-div#village {
-	border: 1px solid #EEE;
-}
-
-div#stores:before {
-	background: #272823;
-}
-
-div#stores {
-	border: 1px solid #EEE;
-}
-
-div#blueprints:before {
-	background: #272823;
-}
-
-div#blueprints {
-	border: 1px solid #EEE;
-}
-
-div#weapons:before {
-	background: #272823;
-}
-
-div#weapons {
-	border: 1px solid #EEE;
-}
-
-div#bagspace {
-	background-color: #272823;
-}
-
-div#outfitting:before {
-	background: #272823;
-}
-
-div#perks {
-	border: 1px solid #EEE;
-}
-
-div#perks:before {
-	background-color: #272823;
-}
-
-div#outfitting {
-	border: 1px solid #EEE;
-}
-
-#bagspace-world {
-	border: 1px solid #EEE;
-}
-
-div.supplyItem {
-	border: 1px solid #EEE;
-}
-
-#backpackTitle {
-	background-color: #272823;
-}
-
-#backpackSpace {
-	background-color: #272823;
-}
-
-#healthCounter {
-	background-color: #272823;
-}
-
-#map {
-	border: 1px solid #EEE;
-}
-
-#map .landmark {
-	color: #EEE;
-}
-
-#dropMenu {
-	background: none repeat scroll 0 0 #272823;
-	box-shadow: -1px 3px 2px #111;
-}
-
-div.button {
-	border: 1px solid #EEE;
-}
-
-div.button.disabled, div.button.disabled:hover {
-	border-color: #444;
-	color: #444;
-}
-
-
-.upBtn:after, .upManyBtn:after {
-	border-color: transparent transparent #272823;
-}
-
-.upBtn:before, .upManyBtn:before {
-	border-color: transparent transparent #EEE;
-}
-
-.upBtn.disabled:before, .upManyBtn.disabled:before {
-	border-color: transparent transparent #555;
-}
-
-.dnBtn:after, .dnManyBtn:after {
-	border-color: #272823 transparent transparent;
-}
-
-.dnBtn:before, .dnManyBtn:before {
-	border-color: #EEE transparent transparent;
-}
-
-.dnBtn.disabled:before, .dnManyBtn.disabled:before {
-	border-color: #555 transparent transparent;
-}
-
-body.noMask .eventTitle {
-	background-color: #EEE;
-	color: #272823;
-}
-
-body.noMask .eventTitle:after {
-	background-color: #EEE;
-}
-
-body.noMask .eventPanel {
-	background-color: #EEE;
-}
-
-body.noMask #description {
-	color: #272823;
-}
-
-body.noMask #buttons > .button {
-	border: 1px solid #272823;
-	color: #272823;
-}
-
-#stars > div, #starsBack > div {
-	color: black;
-}
-
-.endGame, .outro {
-	color:#272823;
-}
-
-#wait-btn {
-	border-color: black;
-	color: black;
-}
-
-#theEnd {
-	color: #272823;
-}
-
-.logo-icon > path {
-  stroke: white;
-}
- 
-div#fabricateButtons {
-  position: relative;
-  top: 5px;
-	left: 0;
-}
-
-div#fabricateButtons::before {
-	content: attr(data-legend);
-	position: relative;
-	top: -5px;
-}
-
-div#blueprints::before {
-  content: attr(data-legend);
-	position: absolute;
-	top: -13px;
-	background-color: white;
-}
-
-div#blueprints {
-	position: absolute;
-	top: 0px;
-	right: 237px;
-	border: 1px solid black;
-	cursor: default;
-	padding: 5px 10px;
-	width: 200px;
-}
-
-div.blueprintRow {
-	position: relative;
-}
-
-div.blueprintRow .row_key {
-	float: none;
-}
- 
 /* Fonts */
 body, .tooltip, select.menuBtn {
 	font-family: "Times New Roman", Times, serif;
@@ -1219,6 +663,500 @@ body.noMask #description {
 #dropMenu > div:hover {
 	text-decoration: underline;
 }
+ div#hullRow {
+	width: 70px;
+}
+
+div#engineRow {
+	width: 70px;
+	margin-bottom: 20px;
+}
+ 
+@-ms-keyframes spin {
+	0% { 
+		-ms-transform: rotate(0deg);
+		-webkit-transform: rotate(0deg); 
+		-moz-transform: rotate(0deg);
+		transform:rotate(0deg); 
+	}
+	100% { 
+		-ms-transform: rotate(360deg); 
+		-webkit-transform: rotate(360deg); 
+		-moz-transform: rotate(360deg);
+		transform:rotate(360deg); 
+	}
+}
+
+@-webkit-keyframes spin {
+	0% { 
+		-ms-transform: rotate(0deg);
+		-webkit-transform: rotate(0deg); 
+		-moz-transform: rotate(0deg);
+		transform:rotate(0deg); 
+	}
+	100% { 
+		-ms-transform: rotate(360deg); 
+		-webkit-transform: rotate(360deg); 
+		-moz-transform: rotate(360deg);
+		transform:rotate(360deg); 
+	}
+}
+
+@-moz-keyframes spin {
+	0% { 
+		-ms-transform: rotate(0deg);
+		-webkit-transform: rotate(0deg); 
+		-moz-transform: rotate(0deg);
+		transform:rotate(0deg); 
+	}
+	100% { 
+		-ms-transform: rotate(360deg); 
+		-webkit-transform: rotate(360deg); 
+		-moz-transform: rotate(360deg);
+		transform:rotate(360deg); 
+	}
+}
+
+@keyframes spin {
+	0% { 
+		-ms-transform: rotate(0deg);
+		-webkit-transform: rotate(0deg); 
+		-moz-transform: rotate(0deg);
+		transform:rotate(0deg); 
+	}
+	100% { 
+		-ms-transform: rotate(360deg); 
+		-webkit-transform: rotate(360deg); 
+		-moz-transform: rotate(360deg);
+		transform:rotate(360deg); 
+	}
+}
+
+#spacePanel {
+	float: none !important;
+	position: absolute !important;
+	top: -700px;
+	left: 0px;
+}
+
+#starsContainer {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	overflow: hidden;
+}
+
+#stars, #starsBack {
+	position: absolute;
+	z-index: -1;
+	left: 0px;
+}
+
+#stars > div, #starsBack > div {
+	position: relative;
+	height: 3000px;
+	width: 3000px;
+	color: white;
+}
+
+#starsBack {
+	opacity: 0.5;
+}
+
+.star {
+	position: absolute;
+}
+
+#ship {
+	cursor: default;
+	position: absolute;
+	margin-top: -10px;
+	margin-left: -7.5px;
+}
+
+#theEnd {
+	position: relative;
+	cursor: default;
+	top: 200px;
+	margin-left: -220px;
+	text-align: center;
+	font-size: 24px;
+	font-weight: bold;
+	opacity: 0;
+	color: white;
+}
+
+.asteroid {
+	cursor: default;
+	position: absolute;
+	top: -40px;
+	left: 350px;
+	-webkit-animation: 1s linear 0s normal none infinite spin;
+	-moz-animation: 1s linear 0s normal none infinite spin;
+	-ms-animation: 1s linear 0s normal none infinite spin;
+	animation: 1s linear 0s normal none infinite spin;
+	font-size: 32px;
+}
+
+#hullRemaining {
+	width: 70px;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+}
+
+.centerCont {
+	padding-top:10%;
+}
+
+.outroContainer {
+	padding-top:10%;
+	width: 800px;
+	margin: 0 auto;
+}
+
+.outro {
+	font-size: 1.5rem;
+	color: #FFF;
+	opacity: 0;
+	margin-bottom: 40px;
+}
+
+.endGame {
+	font-size:48px;
+	color:#FFFFFF;
+	opacity:0;
+	position:relative;
+}
+
+.endGameOption {
+	font-size: 32px;
+	cursor: pointer;
+}
+
+.endGameOption:hover {
+	text-decoration: underline;
+}
+
+#wait-btn {
+	border-color: #fff;
+	color: #fff;
+	margin: 0 auto;
+	opacity: 0;
+}
+ 
+#worldOuter {
+	position: relative;
+	display: inline-block;
+}
+
+#map {
+	position: relative;
+	font-family: "Courier New", Courier, monospace;
+	border: 1px solid black;
+	overflow: hidden;
+	display: inline-block;
+	line-height: 10px;
+	letter-spacing: 1px;
+	color: #999;
+	cursor: default;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+#map .landmark {
+	position: relative;
+	font-weight: bold;
+	color: black;
+	line-height: 0px; /* Hack to prevent the boldness from increasing the row's line-height. I hope it works in all browsers... */
+}
+
+#bagspace-world {
+	border: 1px solid black;
+	height: 62px;
+	margin-bottom: 5px;
+	margin-top: 13px;
+	overflow: hidden;
+}
+
+#bagspace-world > div {
+	padding: 6px 4px;
+}
+
+#backpackTitle {
+	position: absolute;
+	top: 0px;
+	left: 10px;
+	background-color: white;
+	z-index: 1;
+}
+
+#backpackSpace {
+	position: absolute;
+	top: 0px;
+	right: 10px;
+	background-color: white;
+	z-index: 1;
+}
+
+#healthCounter {
+	position: absolute;
+	top: 0px;
+	left: 80px;
+	background-color: white;
+	z-index: 1;
+}
+
+div.supplyItem {
+	display: inline-block;
+	border: 1px solid #999;
+	float: left;
+	margin: 0px 5px 6px 0px;
+	padding: 0 5px;
+	cursor: default;
+} 
+body {
+	background-color: #272823;
+	color: #EEE;
+}
+
+div.headerButton {
+	border-left: 1px solid #EEE;
+}
+
+div#notifyGradient {
+	background-color: #272823;
+	background: -webkit-linear-gradient( rgba(39, 40, 35, 0) 0%, rgba(39, 40, 35, 1) 100% );
+	background: linear-gradient( rgba(39, 40, 35, 0) 0%, rgba(39, 40, 35, 1) 100% );
+	filter: alpha( Opacity=0, FinishOpacity=100, Style=1, StartX=0, StartY=0, FinishX=0, FinishY=500 );
+}
+
+div#saveNotify {
+	background: #272823;
+}
+
+.eventPanel:before {
+	background-color: #272823;
+}
+
+.eventTitle:after {
+	background-color: #272823;
+}
+
+div.tooltip {
+	background-color: #171813;
+	border: 1px solid black;
+	box-shadow: -1px 3px 2px #111;
+}
+
+div#population {
+	background-color: #272823;
+}
+
+div#village:before {
+	background: #272823;
+}
+
+div#village {
+	border: 1px solid #EEE;
+}
+
+div#stores:before {
+	background: #272823;
+}
+
+div#stores {
+	border: 1px solid #EEE;
+}
+
+div#blueprints:before {
+	background: #272823;
+}
+
+div#blueprints {
+	border: 1px solid #EEE;
+}
+
+div#weapons:before {
+	background: #272823;
+}
+
+div#weapons {
+	border: 1px solid #EEE;
+}
+
+div#bagspace {
+	background-color: #272823;
+}
+
+div#outfitting:before {
+	background: #272823;
+}
+
+div#perks {
+	border: 1px solid #EEE;
+}
+
+div#perks:before {
+	background-color: #272823;
+}
+
+div#outfitting {
+	border: 1px solid #EEE;
+}
+
+#bagspace-world {
+	border: 1px solid #EEE;
+}
+
+div.supplyItem {
+	border: 1px solid #EEE;
+}
+
+#backpackTitle {
+	background-color: #272823;
+}
+
+#backpackSpace {
+	background-color: #272823;
+}
+
+#healthCounter {
+	background-color: #272823;
+}
+
+#map {
+	border: 1px solid #EEE;
+}
+
+#map .landmark {
+	color: #EEE;
+}
+
+#dropMenu {
+	background: none repeat scroll 0 0 #272823;
+	box-shadow: -1px 3px 2px #111;
+}
+
+div.button {
+	border: 1px solid #EEE;
+}
+
+div.button.disabled, div.button.disabled:hover {
+	border-color: #444;
+	color: #444;
+}
+
+
+.upBtn:after, .upManyBtn:after {
+	border-color: transparent transparent #272823;
+}
+
+.upBtn:before, .upManyBtn:before {
+	border-color: transparent transparent #EEE;
+}
+
+.upBtn.disabled:before, .upManyBtn.disabled:before {
+	border-color: transparent transparent #555;
+}
+
+.dnBtn:after, .dnManyBtn:after {
+	border-color: #272823 transparent transparent;
+}
+
+.dnBtn:before, .dnManyBtn:before {
+	border-color: #EEE transparent transparent;
+}
+
+.dnBtn.disabled:before, .dnManyBtn.disabled:before {
+	border-color: #555 transparent transparent;
+}
+
+body.noMask .eventTitle {
+	background-color: #EEE;
+	color: #272823;
+}
+
+body.noMask .eventTitle:after {
+	background-color: #EEE;
+}
+
+body.noMask .eventPanel {
+	background-color: #EEE;
+}
+
+body.noMask #description {
+	color: #272823;
+}
+
+body.noMask #buttons > .button {
+	border: 1px solid #272823;
+	color: #272823;
+}
+
+#stars > div, #starsBack > div {
+	color: black;
+}
+
+.endGame, .outro {
+	color:#272823;
+}
+
+#wait-btn {
+	border-color: black;
+	color: black;
+}
+
+#theEnd {
+	color: #272823;
+}
+
+.logo-icon > path {
+  stroke: white;
+}
+ 
+div#fabricateButtons {
+  position: relative;
+  top: 5px;
+	left: 0;
+}
+
+div#fabricateButtons::before {
+	content: attr(data-legend);
+	position: relative;
+	top: -5px;
+}
+
+div#blueprints::before {
+  content: attr(data-legend);
+	position: absolute;
+	top: -13px;
+	background-color: white;
+}
+
+div#blueprints {
+	position: absolute;
+	top: 0px;
+	right: 237px;
+	border: 1px solid black;
+	cursor: default;
+	padding: 5px 10px;
+	width: 200px;
+}
+
+div.blueprintRow {
+	position: relative;
+}
+
+div.blueprintRow .row_key {
+	float: none;
+}
  
 div#village {
 	position: absolute;
@@ -1349,3 +1287,64 @@ div.perkRow .row_key {
 	width: 475px;
 	overflow-y: auto;
 } 
+div#buildBtns {
+	position: absolute;
+	top: 50px;
+	left: 0px;
+}
+
+div#buildBtns:before, div#craftBtns:before, div#buyBtns:before {
+	content: attr(data-legend);
+	position: relative;
+	top: -5px;
+}
+
+div#craftBtns {
+	position: absolute;
+	top: 50px;
+	left: 150px;
+}
+
+div#buyBtns {
+	position: absolute;
+	top: 50px;
+	left: 300px;
+}
+
+div#storesContainer {
+	position: absolute;
+	top: 0px;
+	right: 0px;
+}
+
+div#stores:before, div#weapons:before {
+	position: absolute;
+	background: white;
+	content: attr(data-legend);
+	left: 8px;
+	top: -13px;
+}
+
+div#stores {
+	position: relative;
+	z-index:10;
+	border: 1px solid black;
+	cursor: default;
+	padding: 5px 10px;
+	width: 200px;
+}
+
+div.storeRow {
+	position: relative;
+}
+
+div#weapons {
+	margin-top: 15px;
+	position: relative;
+	right: 0px;
+	border: 1px solid black;
+	cursor: default;
+	padding: 5px 10px;
+	width: 200px;
+}
+ 
