@@ -2504,7 +2504,6 @@ var $SM = StateManager;
       return false;
     },
 
-
     turnLightsOff: function() {
         // Look for your condensed styles.css instead
         var darkCss = Engine.findStylesheet('styles.css'); 
