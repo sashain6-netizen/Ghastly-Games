@@ -1,134 +1,3 @@
-var oldIE = false; var Dropbox = { isBrowserSupported: function() { return false; } };
-// jQuery.event.swipe
-// 0.5
-// Stephen Band
-
-// Dependencies
-// jQuery.event.move 1.2
-
-// One of swipeleft, swiperight, swipeup or swipedown is triggered on
-// moveend, when the move has covered a threshold ratio of the dimension
-// of the target node, or has gone really fast. Threshold and velocity
-// sensitivity changed with:
-//
-// jQuery.event.special.swipe.settings.threshold
-// jQuery.event.special.swipe.settings.sensitivity
-
-(function (module) {
-	if (typeof define === 'function' && define.amd) {
-		// AMD. Register as an anonymous module.
-		define(['jquery'], module);
-	} else {
-		// Browser globals
-		module(jQuery);
-	}
-})(function(jQuery, undefined){
-	var add = jQuery.event.add,
-	   
-	    remove = jQuery.event.remove,
-
-	    // Just sugar, so we can have arguments in the same order as
-	    // add and remove.
-	    trigger = function(node, type, data) {
-	    	jQuery.event.trigger(type, data, node);
-	    },
-
-	    settings = {
-	    	// Ratio of distance over target finger must travel to be
-	    	// considered a swipe.
-	    	threshold: 0.4,
-	    	// Faster fingers can travel shorter distances to be considered
-	    	// swipes. 'sensitivity' controls how much. Bigger is shorter.
-	    	sensitivity: 6
-	    };
-
-	function moveend(e) {
-		var w, h, event;
-
-		w = e.target.offsetWidth;
-		h = e.target.offsetHeight;
-
-		// Copy over some useful properties from the move event
-		event = {
-			distX: e.distX,
-			distY: e.distY,
-			velocityX: e.velocityX,
-			velocityY: e.velocityY,
-			finger: e.finger
-		};
-
-		// Find out which of the four directions was swiped
-		if (e.distX > e.distY) {
-			if (e.distX > -e.distY) {
-				if (e.distX/w > settings.threshold || e.velocityX * e.distX/w * settings.sensitivity > 1) {
-					event.type = 'swiperight';
-					trigger(e.currentTarget, event);
-				}
-			}
-			else {
-				if (-e.distY/h > settings.threshold || e.velocityY * e.distY/w * settings.sensitivity > 1) {
-					event.type = 'swipeup';
-					trigger(e.currentTarget, event);
-				}
-			}
-		}
-		else {
-			if (e.distX > -e.distY) {
-				if (e.distY/h > settings.threshold || e.velocityY * e.distY/w * settings.sensitivity > 1) {
-					event.type = 'swipedown';
-					trigger(e.currentTarget, event);
-				}
-			}
-			else {
-				if (-e.distX/w > settings.threshold || e.velocityX * e.distX/w * settings.sensitivity > 1) {
-					event.type = 'swipeleft';
-					trigger(e.currentTarget, event);
-				}
-			}
-		}
-	}
-
-	function getData(node) {
-		var data = jQuery.data(node, 'event_swipe');
-		
-		if (!data) {
-			data = { count: 0 };
-			jQuery.data(node, 'event_swipe', data);
-		}
-		
-		return data;
-	}
-
-	jQuery.event.special.swipe =
-	jQuery.event.special.swipeleft =
-	jQuery.event.special.swiperight =
-	jQuery.event.special.swipeup =
-	jQuery.event.special.swipedown = {
-		setup: function( data, namespaces, eventHandle ) {
-			var data = getData(this);
-
-			// If another swipe event is already setup, don't setup again.
-			if (data.count++ > 0) { return; }
-
-			add(this, 'moveend', moveend);
-
-			return true;
-		},
-
-		teardown: function() {
-			var data = getData(this);
-
-			// If another swipe event is still setup, don't teardown.
-			if (--data.count > 0) { return; }
-
-			remove(this, 'moveend', moveend);
-
-			return true;
-		},
-
-		settings: settings
-	};
-}); 
 /*! jQuery v1.10.1 | (c) 2005, 2013 jQuery Foundation, Inc. | jquery.org/license
 //@ sourceMappingURL=jquery.min.map
 */
@@ -136,261 +5,6 @@ var oldIE = false; var Dropbox = { isBrowserSupported: function() { return false
 }),n=s=l=u=r=o=null,t}({});var B=/(?:\{[\s\S]*\}|\[[\s\S]*\])$/,P=/([A-Z])/g;function R(e,n,r,i){if(x.acceptData(e)){var o,a,s=x.expando,l=e.nodeType,u=l?x.cache:e,c=l?e[s]:e[s]&&s;if(c&&u[c]&&(i||u[c].data)||r!==t||"string"!=typeof n)return c||(c=l?e[s]=p.pop()||x.guid++:s),u[c]||(u[c]=l?{}:{toJSON:x.noop}),("object"==typeof n||"function"==typeof n)&&(i?u[c]=x.extend(u[c],n):u[c].data=x.extend(u[c].data,n)),a=u[c],i||(a.data||(a.data={}),a=a.data),r!==t&&(a[x.camelCase(n)]=r),"string"==typeof n?(o=a[n],null==o&&(o=a[x.camelCase(n)])):o=a,o}}function W(e,t,n){if(x.acceptData(e)){var r,i,o=e.nodeType,a=o?x.cache:e,s=o?e[x.expando]:x.expando;if(a[s]){if(t&&(r=n?a[s]:a[s].data)){x.isArray(t)?t=t.concat(x.map(t,x.camelCase)):t in r?t=[t]:(t=x.camelCase(t),t=t in r?[t]:t.split(" ")),i=t.length;while(i--)delete r[t[i]];if(n?!I(r):!x.isEmptyObject(r))return}(n||(delete a[s].data,I(a[s])))&&(o?x.cleanData([e],!0):x.support.deleteExpando||a!=a.window?delete a[s]:a[s]=null)}}}x.extend({cache:{},noData:{applet:!0,embed:!0,object:"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"},hasData:function(e){return e=e.nodeType?x.cache[e[x.expando]]:e[x.expando],!!e&&!I(e)},data:function(e,t,n){return R(e,t,n)},removeData:function(e,t){return W(e,t)},_data:function(e,t,n){return R(e,t,n,!0)},_removeData:function(e,t){return W(e,t,!0)},acceptData:function(e){if(e.nodeType&&1!==e.nodeType&&9!==e.nodeType)return!1;var t=e.nodeName&&x.noData[e.nodeName.toLowerCase()];return!t||t!==!0&&e.getAttribute("classid")===t}}),x.fn.extend({data:function(e,n){var r,i,o=null,a=0,s=this[0];if(e===t){if(this.length&&(o=x.data(s),1===s.nodeType&&!x._data(s,"parsedAttrs"))){for(r=s.attributes;r.length>a;a++)i=r[a].name,0===i.indexOf("data-")&&(i=x.camelCase(i.slice(5)),$(s,i,o[i]));x._data(s,"parsedAttrs",!0)}return o}return"object"==typeof e?this.each(function(){x.data(this,e)}):arguments.length>1?this.each(function(){x.data(this,e,n)}):s?$(s,e,x.data(s,e)):null},removeData:function(e){return this.each(function(){x.removeData(this,e)})}});function $(e,n,r){if(r===t&&1===e.nodeType){var i="data-"+n.replace(P,"-$1").toLowerCase();if(r=e.getAttribute(i),"string"==typeof r){try{r="true"===r?!0:"false"===r?!1:"null"===r?null:+r+""===r?+r:B.test(r)?x.parseJSON(r):r}catch(o){}x.data(e,n,r)}else r=t}return r}function I(e){var t;for(t in e)if(("data"!==t||!x.isEmptyObject(e[t]))&&"toJSON"!==t)return!1;return!0}x.extend({queue:function(e,n,r){var i;return e?(n=(n||"fx")+"queue",i=x._data(e,n),r&&(!i||x.isArray(r)?i=x._data(e,n,x.makeArray(r)):i.push(r)),i||[]):t},dequeue:function(e,t){t=t||"fx";var n=x.queue(e,t),r=n.length,i=n.shift(),o=x._queueHooks(e,t),a=function(){x.dequeue(e,t)};"inprogress"===i&&(i=n.shift(),r--),i&&("fx"===t&&n.unshift("inprogress"),delete o.stop,i.call(e,a,o)),!r&&o&&o.empty.fire()},_queueHooks:function(e,t){var n=t+"queueHooks";return x._data(e,n)||x._data(e,n,{empty:x.Callbacks("once memory").add(function(){x._removeData(e,t+"queue"),x._removeData(e,n)})})}}),x.fn.extend({queue:function(e,n){var r=2;return"string"!=typeof e&&(n=e,e="fx",r--),r>arguments.length?x.queue(this[0],e):n===t?this:this.each(function(){var t=x.queue(this,e,n);x._queueHooks(this,e),"fx"===e&&"inprogress"!==t[0]&&x.dequeue(this,e)})},dequeue:function(e){return this.each(function(){x.dequeue(this,e)})},delay:function(e,t){return e=x.fx?x.fx.speeds[e]||e:e,t=t||"fx",this.queue(t,function(t,n){var r=setTimeout(t,e);n.stop=function(){clearTimeout(r)}})},clearQueue:function(e){return this.queue(e||"fx",[])},promise:function(e,n){var r,i=1,o=x.Deferred(),a=this,s=this.length,l=function(){--i||o.resolveWith(a,[a])};"string"!=typeof e&&(n=e,e=t),e=e||"fx";while(s--)r=x._data(a[s],e+"queueHooks"),r&&r.empty&&(i++,r.empty.add(l));return l(),o.promise(n)}});var z,X,U=/[\t\r\n\f]/g,V=/\r/g,Y=/^(?:input|select|textarea|button|object)$/i,J=/^(?:a|area)$/i,G=/^(?:checked|selected)$/i,Q=x.support.getSetAttribute,K=x.support.input;x.fn.extend({attr:function(e,t){return x.access(this,x.attr,e,t,arguments.length>1)},removeAttr:function(e){return this.each(function(){x.removeAttr(this,e)})},prop:function(e,t){return x.access(this,x.prop,e,t,arguments.length>1)},removeProp:function(e){return e=x.propFix[e]||e,this.each(function(){try{this[e]=t,delete this[e]}catch(n){}})},addClass:function(e){var t,n,r,i,o,a=0,s=this.length,l="string"==typeof e&&e;if(x.isFunction(e))return this.each(function(t){x(this).addClass(e.call(this,t,this.className))});if(l)for(t=(e||"").match(T)||[];s>a;a++)if(n=this[a],r=1===n.nodeType&&(n.className?(" "+n.className+" ").replace(U," "):" ")){o=0;while(i=t[o++])0>r.indexOf(" "+i+" ")&&(r+=i+" ");n.className=x.trim(r)}return this},removeClass:function(e){var t,n,r,i,o,a=0,s=this.length,l=0===arguments.length||"string"==typeof e&&e;if(x.isFunction(e))return this.each(function(t){x(this).removeClass(e.call(this,t,this.className))});if(l)for(t=(e||"").match(T)||[];s>a;a++)if(n=this[a],r=1===n.nodeType&&(n.className?(" "+n.className+" ").replace(U," "):"")){o=0;while(i=t[o++])while(r.indexOf(" "+i+" ")>=0)r=r.replace(" "+i+" "," ");n.className=e?x.trim(r):""}return this},toggleClass:function(e,t){var n=typeof e,r="boolean"==typeof t;return x.isFunction(e)?this.each(function(n){x(this).toggleClass(e.call(this,n,this.className,t),t)}):this.each(function(){if("string"===n){var o,a=0,s=x(this),l=t,u=e.match(T)||[];while(o=u[a++])l=r?l:!s.hasClass(o),s[l?"addClass":"removeClass"](o)}else(n===i||"boolean"===n)&&(this.className&&x._data(this,"__className__",this.className),this.className=this.className||e===!1?"":x._data(this,"__className__")||"")})},hasClass:function(e){var t=" "+e+" ",n=0,r=this.length;for(;r>n;n++)if(1===this[n].nodeType&&(" "+this[n].className+" ").replace(U," ").indexOf(t)>=0)return!0;return!1},val:function(e){var n,r,i,o=this[0];{if(arguments.length)return i=x.isFunction(e),this.each(function(n){var o;1===this.nodeType&&(o=i?e.call(this,n,x(this).val()):e,null==o?o="":"number"==typeof o?o+="":x.isArray(o)&&(o=x.map(o,function(e){return null==e?"":e+""})),r=x.valHooks[this.type]||x.valHooks[this.nodeName.toLowerCase()],r&&"set"in r&&r.set(this,o,"value")!==t||(this.value=o))});if(o)return r=x.valHooks[o.type]||x.valHooks[o.nodeName.toLowerCase()],r&&"get"in r&&(n=r.get(o,"value"))!==t?n:(n=o.value,"string"==typeof n?n.replace(V,""):null==n?"":n)}}}),x.extend({valHooks:{option:{get:function(e){var t=x.find.attr(e,"value");return null!=t?t:e.text}},select:{get:function(e){var t,n,r=e.options,i=e.selectedIndex,o="select-one"===e.type||0>i,a=o?null:[],s=o?i+1:r.length,l=0>i?s:o?i:0;for(;s>l;l++)if(n=r[l],!(!n.selected&&l!==i||(x.support.optDisabled?n.disabled:null!==n.getAttribute("disabled"))||n.parentNode.disabled&&x.nodeName(n.parentNode,"optgroup"))){if(t=x(n).val(),o)return t;a.push(t)}return a},set:function(e,t){var n,r,i=e.options,o=x.makeArray(t),a=i.length;while(a--)r=i[a],(r.selected=x.inArray(x(r).val(),o)>=0)&&(n=!0);return n||(e.selectedIndex=-1),o}}},attr:function(e,n,r){var o,a,s=e.nodeType;if(e&&3!==s&&8!==s&&2!==s)return typeof e.getAttribute===i?x.prop(e,n,r):(1===s&&x.isXMLDoc(e)||(n=n.toLowerCase(),o=x.attrHooks[n]||(x.expr.match.bool.test(n)?X:z)),r===t?o&&"get"in o&&null!==(a=o.get(e,n))?a:(a=x.find.attr(e,n),null==a?t:a):null!==r?o&&"set"in o&&(a=o.set(e,r,n))!==t?a:(e.setAttribute(n,r+""),r):(x.removeAttr(e,n),t))},removeAttr:function(e,t){var n,r,i=0,o=t&&t.match(T);if(o&&1===e.nodeType)while(n=o[i++])r=x.propFix[n]||n,x.expr.match.bool.test(n)?K&&Q||!G.test(n)?e[r]=!1:e[x.camelCase("default-"+n)]=e[r]=!1:x.attr(e,n,""),e.removeAttribute(Q?n:r)},attrHooks:{type:{set:function(e,t){if(!x.support.radioValue&&"radio"===t&&x.nodeName(e,"input")){var n=e.value;return e.setAttribute("type",t),n&&(e.value=n),t}}}},propFix:{"for":"htmlFor","class":"className"},prop:function(e,n,r){var i,o,a,s=e.nodeType;if(e&&3!==s&&8!==s&&2!==s)return a=1!==s||!x.isXMLDoc(e),a&&(n=x.propFix[n]||n,o=x.propHooks[n]),r!==t?o&&"set"in o&&(i=o.set(e,r,n))!==t?i:e[n]=r:o&&"get"in o&&null!==(i=o.get(e,n))?i:e[n]},propHooks:{tabIndex:{get:function(e){var t=x.find.attr(e,"tabindex");return t?parseInt(t,10):Y.test(e.nodeName)||J.test(e.nodeName)&&e.href?0:-1}}}}),X={set:function(e,t,n){return t===!1?x.removeAttr(e,n):K&&Q||!G.test(n)?e.setAttribute(!Q&&x.propFix[n]||n,n):e[x.camelCase("default-"+n)]=e[n]=!0,n}},x.each(x.expr.match.bool.source.match(/\w+/g),function(e,n){var r=x.expr.attrHandle[n]||x.find.attr;x.expr.attrHandle[n]=K&&Q||!G.test(n)?function(e,n,i){var o=x.expr.attrHandle[n],a=i?t:(x.expr.attrHandle[n]=t)!=r(e,n,i)?n.toLowerCase():null;return x.expr.attrHandle[n]=o,a}:function(e,n,r){return r?t:e[x.camelCase("default-"+n)]?n.toLowerCase():null}}),K&&Q||(x.attrHooks.value={set:function(e,n,r){return x.nodeName(e,"input")?(e.defaultValue=n,t):z&&z.set(e,n,r)}}),Q||(z={set:function(e,n,r){var i=e.getAttributeNode(r);return i||e.setAttributeNode(i=e.ownerDocument.createAttribute(r)),i.value=n+="","value"===r||n===e.getAttribute(r)?n:t}},x.expr.attrHandle.id=x.expr.attrHandle.name=x.expr.attrHandle.coords=function(e,n,r){var i;return r?t:(i=e.getAttributeNode(n))&&""!==i.value?i.value:null},x.valHooks.button={get:function(e,n){var r=e.getAttributeNode(n);return r&&r.specified?r.value:t},set:z.set},x.attrHooks.contenteditable={set:function(e,t,n){z.set(e,""===t?!1:t,n)}},x.each(["width","height"],function(e,n){x.attrHooks[n]={set:function(e,r){return""===r?(e.setAttribute(n,"auto"),r):t}}})),x.support.hrefNormalized||x.each(["href","src"],function(e,t){x.propHooks[t]={get:function(e){return e.getAttribute(t,4)}}}),x.support.style||(x.attrHooks.style={get:function(e){return e.style.cssText||t},set:function(e,t){return e.style.cssText=t+""}}),x.support.optSelected||(x.propHooks.selected={get:function(e){var t=e.parentNode;return t&&(t.selectedIndex,t.parentNode&&t.parentNode.selectedIndex),null}}),x.each(["tabIndex","readOnly","maxLength","cellSpacing","cellPadding","rowSpan","colSpan","useMap","frameBorder","contentEditable"],function(){x.propFix[this.toLowerCase()]=this}),x.support.enctype||(x.propFix.enctype="encoding"),x.each(["radio","checkbox"],function(){x.valHooks[this]={set:function(e,n){return x.isArray(n)?e.checked=x.inArray(x(e).val(),n)>=0:t}},x.support.checkOn||(x.valHooks[this].get=function(e){return null===e.getAttribute("value")?"on":e.value})});var Z=/^(?:input|select|textarea)$/i,et=/^key/,tt=/^(?:mouse|contextmenu)|click/,nt=/^(?:focusinfocus|focusoutblur)$/,rt=/^([^.]*)(?:\.(.+)|)$/;function it(){return!0}function ot(){return!1}function at(){try{return a.activeElement}catch(e){}}x.event={global:{},add:function(e,n,r,o,a){var s,l,u,c,p,f,d,h,g,m,y,v=x._data(e);if(v){r.handler&&(c=r,r=c.handler,a=c.selector),r.guid||(r.guid=x.guid++),(l=v.events)||(l=v.events={}),(f=v.handle)||(f=v.handle=function(e){return typeof x===i||e&&x.event.triggered===e.type?t:x.event.dispatch.apply(f.elem,arguments)},f.elem=e),n=(n||"").match(T)||[""],u=n.length;while(u--)s=rt.exec(n[u])||[],g=y=s[1],m=(s[2]||"").split(".").sort(),g&&(p=x.event.special[g]||{},g=(a?p.delegateType:p.bindType)||g,p=x.event.special[g]||{},d=x.extend({type:g,origType:y,data:o,handler:r,guid:r.guid,selector:a,needsContext:a&&x.expr.match.needsContext.test(a),namespace:m.join(".")},c),(h=l[g])||(h=l[g]=[],h.delegateCount=0,p.setup&&p.setup.call(e,o,m,f)!==!1||(e.addEventListener?e.addEventListener(g,f,!1):e.attachEvent&&e.attachEvent("on"+g,f))),p.add&&(p.add.call(e,d),d.handler.guid||(d.handler.guid=r.guid)),a?h.splice(h.delegateCount++,0,d):h.push(d),x.event.global[g]=!0);e=null}},remove:function(e,t,n,r,i){var o,a,s,l,u,c,p,f,d,h,g,m=x.hasData(e)&&x._data(e);if(m&&(c=m.events)){t=(t||"").match(T)||[""],u=t.length;while(u--)if(s=rt.exec(t[u])||[],d=g=s[1],h=(s[2]||"").split(".").sort(),d){p=x.event.special[d]||{},d=(r?p.delegateType:p.bindType)||d,f=c[d]||[],s=s[2]&&RegExp("(^|\\.)"+h.join("\\.(?:.*\\.|)")+"(\\.|$)"),l=o=f.length;while(o--)a=f[o],!i&&g!==a.origType||n&&n.guid!==a.guid||s&&!s.test(a.namespace)||r&&r!==a.selector&&("**"!==r||!a.selector)||(f.splice(o,1),a.selector&&f.delegateCount--,p.remove&&p.remove.call(e,a));l&&!f.length&&(p.teardown&&p.teardown.call(e,h,m.handle)!==!1||x.removeEvent(e,d,m.handle),delete c[d])}else for(d in c)x.event.remove(e,d+t[u],n,r,!0);x.isEmptyObject(c)&&(delete m.handle,x._removeData(e,"events"))}},trigger:function(n,r,i,o){var s,l,u,c,p,f,d,h=[i||a],g=v.call(n,"type")?n.type:n,m=v.call(n,"namespace")?n.namespace.split("."):[];if(u=f=i=i||a,3!==i.nodeType&&8!==i.nodeType&&!nt.test(g+x.event.triggered)&&(g.indexOf(".")>=0&&(m=g.split("."),g=m.shift(),m.sort()),l=0>g.indexOf(":")&&"on"+g,n=n[x.expando]?n:new x.Event(g,"object"==typeof n&&n),n.isTrigger=o?2:3,n.namespace=m.join("."),n.namespace_re=n.namespace?RegExp("(^|\\.)"+m.join("\\.(?:.*\\.|)")+"(\\.|$)"):null,n.result=t,n.target||(n.target=i),r=null==r?[n]:x.makeArray(r,[n]),p=x.event.special[g]||{},o||!p.trigger||p.trigger.apply(i,r)!==!1)){if(!o&&!p.noBubble&&!x.isWindow(i)){for(c=p.delegateType||g,nt.test(c+g)||(u=u.parentNode);u;u=u.parentNode)h.push(u),f=u;f===(i.ownerDocument||a)&&h.push(f.defaultView||f.parentWindow||e)}d=0;while((u=h[d++])&&!n.isPropagationStopped())n.type=d>1?c:p.bindType||g,s=(x._data(u,"events")||{})[n.type]&&x._data(u,"handle"),s&&s.apply(u,r),s=l&&u[l],s&&x.acceptData(u)&&s.apply&&s.apply(u,r)===!1&&n.preventDefault();if(n.type=g,!o&&!n.isDefaultPrevented()&&(!p._default||p._default.apply(h.pop(),r)===!1)&&x.acceptData(i)&&l&&i[g]&&!x.isWindow(i)){f=i[l],f&&(i[l]=null),x.event.triggered=g;try{i[g]()}catch(y){}x.event.triggered=t,f&&(i[l]=f)}return n.result}},dispatch:function(e){e=x.event.fix(e);var n,r,i,o,a,s=[],l=g.call(arguments),u=(x._data(this,"events")||{})[e.type]||[],c=x.event.special[e.type]||{};if(l[0]=e,e.delegateTarget=this,!c.preDispatch||c.preDispatch.call(this,e)!==!1){s=x.event.handlers.call(this,e,u),n=0;while((o=s[n++])&&!e.isPropagationStopped()){e.currentTarget=o.elem,a=0;while((i=o.handlers[a++])&&!e.isImmediatePropagationStopped())(!e.namespace_re||e.namespace_re.test(i.namespace))&&(e.handleObj=i,e.data=i.data,r=((x.event.special[i.origType]||{}).handle||i.handler).apply(o.elem,l),r!==t&&(e.result=r)===!1&&(e.preventDefault(),e.stopPropagation()))}return c.postDispatch&&c.postDispatch.call(this,e),e.result}},handlers:function(e,n){var r,i,o,a,s=[],l=n.delegateCount,u=e.target;if(l&&u.nodeType&&(!e.button||"click"!==e.type))for(;u!=this;u=u.parentNode||this)if(1===u.nodeType&&(u.disabled!==!0||"click"!==e.type)){for(o=[],a=0;l>a;a++)i=n[a],r=i.selector+" ",o[r]===t&&(o[r]=i.needsContext?x(r,this).index(u)>=0:x.find(r,this,null,[u]).length),o[r]&&o.push(i);o.length&&s.push({elem:u,handlers:o})}return n.length>l&&s.push({elem:this,handlers:n.slice(l)}),s},fix:function(e){if(e[x.expando])return e;var t,n,r,i=e.type,o=e,s=this.fixHooks[i];s||(this.fixHooks[i]=s=tt.test(i)?this.mouseHooks:et.test(i)?this.keyHooks:{}),r=s.props?this.props.concat(s.props):this.props,e=new x.Event(o),t=r.length;while(t--)n=r[t],e[n]=o[n];return e.target||(e.target=o.srcElement||a),3===e.target.nodeType&&(e.target=e.target.parentNode),e.metaKey=!!e.metaKey,s.filter?s.filter(e,o):e},props:"altKey bubbles cancelable ctrlKey currentTarget eventPhase metaKey relatedTarget shiftKey target timeStamp view which".split(" "),fixHooks:{},keyHooks:{props:"char charCode key keyCode".split(" "),filter:function(e,t){return null==e.which&&(e.which=null!=t.charCode?t.charCode:t.keyCode),e}},mouseHooks:{props:"button buttons clientX clientY fromElement offsetX offsetY pageX pageY screenX screenY toElement".split(" "),filter:function(e,n){var r,i,o,s=n.button,l=n.fromElement;return null==e.pageX&&null!=n.clientX&&(i=e.target.ownerDocument||a,o=i.documentElement,r=i.body,e.pageX=n.clientX+(o&&o.scrollLeft||r&&r.scrollLeft||0)-(o&&o.clientLeft||r&&r.clientLeft||0),e.pageY=n.clientY+(o&&o.scrollTop||r&&r.scrollTop||0)-(o&&o.clientTop||r&&r.clientTop||0)),!e.relatedTarget&&l&&(e.relatedTarget=l===e.target?n.toElement:l),e.which||s===t||(e.which=1&s?1:2&s?3:4&s?2:0),e}},special:{load:{noBubble:!0},focus:{trigger:function(){if(this!==at()&&this.focus)try{return this.focus(),!1}catch(e){}},delegateType:"focusin"},blur:{trigger:function(){return this===at()&&this.blur?(this.blur(),!1):t},delegateType:"focusout"},click:{trigger:function(){return x.nodeName(this,"input")&&"checkbox"===this.type&&this.click?(this.click(),!1):t},_default:function(e){return x.nodeName(e.target,"a")}},beforeunload:{postDispatch:function(e){e.result!==t&&(e.originalEvent.returnValue=e.result)}}},simulate:function(e,t,n,r){var i=x.extend(new x.Event,n,{type:e,isSimulated:!0,originalEvent:{}});r?x.event.trigger(i,null,t):x.event.dispatch.call(t,i),i.isDefaultPrevented()&&n.preventDefault()}},x.removeEvent=a.removeEventListener?function(e,t,n){e.removeEventListener&&e.removeEventListener(t,n,!1)}:function(e,t,n){var r="on"+t;e.detachEvent&&(typeof e[r]===i&&(e[r]=null),e.detachEvent(r,n))},x.Event=function(e,n){return this instanceof x.Event?(e&&e.type?(this.originalEvent=e,this.type=e.type,this.isDefaultPrevented=e.defaultPrevented||e.returnValue===!1||e.getPreventDefault&&e.getPreventDefault()?it:ot):this.type=e,n&&x.extend(this,n),this.timeStamp=e&&e.timeStamp||x.now(),this[x.expando]=!0,t):new x.Event(e,n)},x.Event.prototype={isDefaultPrevented:ot,isPropagationStopped:ot,isImmediatePropagationStopped:ot,preventDefault:function(){var e=this.originalEvent;this.isDefaultPrevented=it,e&&(e.preventDefault?e.preventDefault():e.returnValue=!1)},stopPropagation:function(){var e=this.originalEvent;this.isPropagationStopped=it,e&&(e.stopPropagation&&e.stopPropagation(),e.cancelBubble=!0)},stopImmediatePropagation:function(){this.isImmediatePropagationStopped=it,this.stopPropagation()}},x.each({mouseenter:"mouseover",mouseleave:"mouseout"},function(e,t){x.event.special[e]={delegateType:t,bindType:t,handle:function(e){var n,r=this,i=e.relatedTarget,o=e.handleObj;return(!i||i!==r&&!x.contains(r,i))&&(e.type=o.origType,n=o.handler.apply(this,arguments),e.type=t),n}}}),x.support.submitBubbles||(x.event.special.submit={setup:function(){return x.nodeName(this,"form")?!1:(x.event.add(this,"click._submit keypress._submit",function(e){var n=e.target,r=x.nodeName(n,"input")||x.nodeName(n,"button")?n.form:t;r&&!x._data(r,"submitBubbles")&&(x.event.add(r,"submit._submit",function(e){e._submit_bubble=!0}),x._data(r,"submitBubbles",!0))}),t)},postDispatch:function(e){e._submit_bubble&&(delete e._submit_bubble,this.parentNode&&!e.isTrigger&&x.event.simulate("submit",this.parentNode,e,!0))},teardown:function(){return x.nodeName(this,"form")?!1:(x.event.remove(this,"._submit"),t)}}),x.support.changeBubbles||(x.event.special.change={setup:function(){return Z.test(this.nodeName)?(("checkbox"===this.type||"radio"===this.type)&&(x.event.add(this,"propertychange._change",function(e){"checked"===e.originalEvent.propertyName&&(this._just_changed=!0)}),x.event.add(this,"click._change",function(e){this._just_changed&&!e.isTrigger&&(this._just_changed=!1),x.event.simulate("change",this,e,!0)})),!1):(x.event.add(this,"beforeactivate._change",function(e){var t=e.target;Z.test(t.nodeName)&&!x._data(t,"changeBubbles")&&(x.event.add(t,"change._change",function(e){!this.parentNode||e.isSimulated||e.isTrigger||x.event.simulate("change",this.parentNode,e,!0)}),x._data(t,"changeBubbles",!0))}),t)},handle:function(e){var n=e.target;return this!==n||e.isSimulated||e.isTrigger||"radio"!==n.type&&"checkbox"!==n.type?e.handleObj.handler.apply(this,arguments):t},teardown:function(){return x.event.remove(this,"._change"),!Z.test(this.nodeName)}}),x.support.focusinBubbles||x.each({focus:"focusin",blur:"focusout"},function(e,t){var n=0,r=function(e){x.event.simulate(t,e.target,x.event.fix(e),!0)};x.event.special[t]={setup:function(){0===n++&&a.addEventListener(e,r,!0)},teardown:function(){0===--n&&a.removeEventListener(e,r,!0)}}}),x.fn.extend({on:function(e,n,r,i,o){var a,s;if("object"==typeof e){"string"!=typeof n&&(r=r||n,n=t);for(a in e)this.on(a,n,r,e[a],o);return this}if(null==r&&null==i?(i=n,r=n=t):null==i&&("string"==typeof n?(i=r,r=t):(i=r,r=n,n=t)),i===!1)i=ot;else if(!i)return this;return 1===o&&(s=i,i=function(e){return x().off(e),s.apply(this,arguments)},i.guid=s.guid||(s.guid=x.guid++)),this.each(function(){x.event.add(this,e,i,r,n)})},one:function(e,t,n,r){return this.on(e,t,n,r,1)},off:function(e,n,r){var i,o;if(e&&e.preventDefault&&e.handleObj)return i=e.handleObj,x(e.delegateTarget).off(i.namespace?i.origType+"."+i.namespace:i.origType,i.selector,i.handler),this;if("object"==typeof e){for(o in e)this.off(o,n,e[o]);return this}return(n===!1||"function"==typeof n)&&(r=n,n=t),r===!1&&(r=ot),this.each(function(){x.event.remove(this,e,r,n)})},trigger:function(e,t){return this.each(function(){x.event.trigger(e,t,this)})},triggerHandler:function(e,n){var r=this[0];return r?x.event.trigger(e,n,r,!0):t}});var st=/^.[^:#\[\.,]*$/,lt=/^(?:parents|prev(?:Until|All))/,ut=x.expr.match.needsContext,ct={children:!0,contents:!0,next:!0,prev:!0};x.fn.extend({find:function(e){var t,n=[],r=this,i=r.length;if("string"!=typeof e)return this.pushStack(x(e).filter(function(){for(t=0;i>t;t++)if(x.contains(r[t],this))return!0}));for(t=0;i>t;t++)x.find(e,r[t],n);return n=this.pushStack(i>1?x.unique(n):n),n.selector=this.selector?this.selector+" "+e:e,n},has:function(e){var t,n=x(e,this),r=n.length;return this.filter(function(){for(t=0;r>t;t++)if(x.contains(this,n[t]))return!0})},not:function(e){return this.pushStack(ft(this,e||[],!0))},filter:function(e){return this.pushStack(ft(this,e||[],!1))},is:function(e){return!!ft(this,"string"==typeof e&&ut.test(e)?x(e):e||[],!1).length},closest:function(e,t){var n,r=0,i=this.length,o=[],a=ut.test(e)||"string"!=typeof e?x(e,t||this.context):0;for(;i>r;r++)for(n=this[r];n&&n!==t;n=n.parentNode)if(11>n.nodeType&&(a?a.index(n)>-1:1===n.nodeType&&x.find.matchesSelector(n,e))){n=o.push(n);break}return this.pushStack(o.length>1?x.unique(o):o)},index:function(e){return e?"string"==typeof e?x.inArray(this[0],x(e)):x.inArray(e.jquery?e[0]:e,this):this[0]&&this[0].parentNode?this.first().prevAll().length:-1},add:function(e,t){var n="string"==typeof e?x(e,t):x.makeArray(e&&e.nodeType?[e]:e),r=x.merge(this.get(),n);return this.pushStack(x.unique(r))},addBack:function(e){return this.add(null==e?this.prevObject:this.prevObject.filter(e))}});function pt(e,t){do e=e[t];while(e&&1!==e.nodeType);return e}x.each({parent:function(e){var t=e.parentNode;return t&&11!==t.nodeType?t:null},parents:function(e){return x.dir(e,"parentNode")},parentsUntil:function(e,t,n){return x.dir(e,"parentNode",n)},next:function(e){return pt(e,"nextSibling")},prev:function(e){return pt(e,"previousSibling")},nextAll:function(e){return x.dir(e,"nextSibling")},prevAll:function(e){return x.dir(e,"previousSibling")},nextUntil:function(e,t,n){return x.dir(e,"nextSibling",n)},prevUntil:function(e,t,n){return x.dir(e,"previousSibling",n)},siblings:function(e){return x.sibling((e.parentNode||{}).firstChild,e)},children:function(e){return x.sibling(e.firstChild)},contents:function(e){return x.nodeName(e,"iframe")?e.contentDocument||e.contentWindow.document:x.merge([],e.childNodes)}},function(e,t){x.fn[e]=function(n,r){var i=x.map(this,t,n);return"Until"!==e.slice(-5)&&(r=n),r&&"string"==typeof r&&(i=x.filter(r,i)),this.length>1&&(ct[e]||(i=x.unique(i)),lt.test(e)&&(i=i.reverse())),this.pushStack(i)}}),x.extend({filter:function(e,t,n){var r=t[0];return n&&(e=":not("+e+")"),1===t.length&&1===r.nodeType?x.find.matchesSelector(r,e)?[r]:[]:x.find.matches(e,x.grep(t,function(e){return 1===e.nodeType}))},dir:function(e,n,r){var i=[],o=e[n];while(o&&9!==o.nodeType&&(r===t||1!==o.nodeType||!x(o).is(r)))1===o.nodeType&&i.push(o),o=o[n];return i},sibling:function(e,t){var n=[];for(;e;e=e.nextSibling)1===e.nodeType&&e!==t&&n.push(e);return n}});function ft(e,t,n){if(x.isFunction(t))return x.grep(e,function(e,r){return!!t.call(e,r,e)!==n});if(t.nodeType)return x.grep(e,function(e){return e===t!==n});if("string"==typeof t){if(st.test(t))return x.filter(t,e,n);t=x.filter(t,e)}return x.grep(e,function(e){return x.inArray(e,t)>=0!==n})}function dt(e){var t=ht.split("|"),n=e.createDocumentFragment();if(n.createElement)while(t.length)n.createElement(t.pop());return n}var ht="abbr|article|aside|audio|bdi|canvas|data|datalist|details|figcaption|figure|footer|header|hgroup|mark|meter|nav|output|progress|section|summary|time|video",gt=/ jQuery\d+="(?:null|\d+)"/g,mt=RegExp("<(?:"+ht+")[\\s/>]","i"),yt=/^\s+/,vt=/<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:]+)[^>]*)\/>/gi,bt=/<([\w:]+)/,xt=/<tbody/i,wt=/<|&#?\w+;/,Tt=/<(?:script|style|link)/i,Ct=/^(?:checkbox|radio)$/i,Nt=/checked\s*(?:[^=]|=\s*.checked.)/i,kt=/^$|\/(?:java|ecma)script/i,Et=/^true\/(.*)/,St=/^\s*<!(?:\[CDATA\[|--)|(?:\]\]|--)>\s*$/g,At={option:[1,"<select multiple='multiple'>","</select>"],legend:[1,"<fieldset>","</fieldset>"],area:[1,"<map>","</map>"],param:[1,"<object>","</object>"],thead:[1,"<table>","</table>"],tr:[2,"<table><tbody>","</tbody></table>"],col:[2,"<table><tbody></tbody><colgroup>","</colgroup></table>"],td:[3,"<table><tbody><tr>","</tr></tbody></table>"],_default:x.support.htmlSerialize?[0,"",""]:[1,"X<div>","</div>"]},jt=dt(a),Dt=jt.appendChild(a.createElement("div"));At.optgroup=At.option,At.tbody=At.tfoot=At.colgroup=At.caption=At.thead,At.th=At.td,x.fn.extend({text:function(e){return x.access(this,function(e){return e===t?x.text(this):this.empty().append((this[0]&&this[0].ownerDocument||a).createTextNode(e))},null,e,arguments.length)},append:function(){return this.domManip(arguments,function(e){if(1===this.nodeType||11===this.nodeType||9===this.nodeType){var t=Lt(this,e);t.appendChild(e)}})},prepend:function(){return this.domManip(arguments,function(e){if(1===this.nodeType||11===this.nodeType||9===this.nodeType){var t=Lt(this,e);t.insertBefore(e,t.firstChild)}})},before:function(){return this.domManip(arguments,function(e){this.parentNode&&this.parentNode.insertBefore(e,this)})},after:function(){return this.domManip(arguments,function(e){this.parentNode&&this.parentNode.insertBefore(e,this.nextSibling)})},remove:function(e,t){var n,r=e?x.filter(e,this):this,i=0;for(;null!=(n=r[i]);i++)t||1!==n.nodeType||x.cleanData(Ft(n)),n.parentNode&&(t&&x.contains(n.ownerDocument,n)&&_t(Ft(n,"script")),n.parentNode.removeChild(n));return this},empty:function(){var e,t=0;for(;null!=(e=this[t]);t++){1===e.nodeType&&x.cleanData(Ft(e,!1));while(e.firstChild)e.removeChild(e.firstChild);e.options&&x.nodeName(e,"select")&&(e.options.length=0)}return this},clone:function(e,t){return e=null==e?!1:e,t=null==t?e:t,this.map(function(){return x.clone(this,e,t)})},html:function(e){return x.access(this,function(e){var n=this[0]||{},r=0,i=this.length;if(e===t)return 1===n.nodeType?n.innerHTML.replace(gt,""):t;if(!("string"!=typeof e||Tt.test(e)||!x.support.htmlSerialize&&mt.test(e)||!x.support.leadingWhitespace&&yt.test(e)||At[(bt.exec(e)||["",""])[1].toLowerCase()])){e=e.replace(vt,"<$1></$2>");try{for(;i>r;r++)n=this[r]||{},1===n.nodeType&&(x.cleanData(Ft(n,!1)),n.innerHTML=e);n=0}catch(o){}}n&&this.empty().append(e)},null,e,arguments.length)},replaceWith:function(){var e=x.map(this,function(e){return[e.nextSibling,e.parentNode]}),t=0;return this.domManip(arguments,function(n){var r=e[t++],i=e[t++];i&&(r&&r.parentNode!==i&&(r=this.nextSibling),x(this).remove(),i.insertBefore(n,r))},!0),t?this:this.remove()},detach:function(e){return this.remove(e,!0)},domManip:function(e,t,n){e=d.apply([],e);var r,i,o,a,s,l,u=0,c=this.length,p=this,f=c-1,h=e[0],g=x.isFunction(h);if(g||!(1>=c||"string"!=typeof h||x.support.checkClone)&&Nt.test(h))return this.each(function(r){var i=p.eq(r);g&&(e[0]=h.call(this,r,i.html())),i.domManip(e,t,n)});if(c&&(l=x.buildFragment(e,this[0].ownerDocument,!1,!n&&this),r=l.firstChild,1===l.childNodes.length&&(l=r),r)){for(a=x.map(Ft(l,"script"),Ht),o=a.length;c>u;u++)i=l,u!==f&&(i=x.clone(i,!0,!0),o&&x.merge(a,Ft(i,"script"))),t.call(this[u],i,u);if(o)for(s=a[a.length-1].ownerDocument,x.map(a,qt),u=0;o>u;u++)i=a[u],kt.test(i.type||"")&&!x._data(i,"globalEval")&&x.contains(s,i)&&(i.src?x._evalUrl(i.src):x.globalEval((i.text||i.textContent||i.innerHTML||"").replace(St,"")));l=r=null}return this}});function Lt(e,t){return x.nodeName(e,"table")&&x.nodeName(1===t.nodeType?t:t.firstChild,"tr")?e.getElementsByTagName("tbody")[0]||e.appendChild(e.ownerDocument.createElement("tbody")):e}function Ht(e){return e.type=(null!==x.find.attr(e,"type"))+"/"+e.type,e}function qt(e){var t=Et.exec(e.type);return t?e.type=t[1]:e.removeAttribute("type"),e}function _t(e,t){var n,r=0;for(;null!=(n=e[r]);r++)x._data(n,"globalEval",!t||x._data(t[r],"globalEval"))}function Mt(e,t){if(1===t.nodeType&&x.hasData(e)){var n,r,i,o=x._data(e),a=x._data(t,o),s=o.events;if(s){delete a.handle,a.events={};for(n in s)for(r=0,i=s[n].length;i>r;r++)x.event.add(t,n,s[n][r])}a.data&&(a.data=x.extend({},a.data))}}function Ot(e,t){var n,r,i;if(1===t.nodeType){if(n=t.nodeName.toLowerCase(),!x.support.noCloneEvent&&t[x.expando]){i=x._data(t);for(r in i.events)x.removeEvent(t,r,i.handle);t.removeAttribute(x.expando)}"script"===n&&t.text!==e.text?(Ht(t).text=e.text,qt(t)):"object"===n?(t.parentNode&&(t.outerHTML=e.outerHTML),x.support.html5Clone&&e.innerHTML&&!x.trim(t.innerHTML)&&(t.innerHTML=e.innerHTML)):"input"===n&&Ct.test(e.type)?(t.defaultChecked=t.checked=e.checked,t.value!==e.value&&(t.value=e.value)):"option"===n?t.defaultSelected=t.selected=e.defaultSelected:("input"===n||"textarea"===n)&&(t.defaultValue=e.defaultValue)}}x.each({appendTo:"append",prependTo:"prepend",insertBefore:"before",insertAfter:"after",replaceAll:"replaceWith"},function(e,t){x.fn[e]=function(e){var n,r=0,i=[],o=x(e),a=o.length-1;for(;a>=r;r++)n=r===a?this:this.clone(!0),x(o[r])[t](n),h.apply(i,n.get());return this.pushStack(i)}});function Ft(e,n){var r,o,a=0,s=typeof e.getElementsByTagName!==i?e.getElementsByTagName(n||"*"):typeof e.querySelectorAll!==i?e.querySelectorAll(n||"*"):t;if(!s)for(s=[],r=e.childNodes||e;null!=(o=r[a]);a++)!n||x.nodeName(o,n)?s.push(o):x.merge(s,Ft(o,n));return n===t||n&&x.nodeName(e,n)?x.merge([e],s):s}function Bt(e){Ct.test(e.type)&&(e.defaultChecked=e.checked)}x.extend({clone:function(e,t,n){var r,i,o,a,s,l=x.contains(e.ownerDocument,e);if(x.support.html5Clone||x.isXMLDoc(e)||!mt.test("<"+e.nodeName+">")?o=e.cloneNode(!0):(Dt.innerHTML=e.outerHTML,Dt.removeChild(o=Dt.firstChild)),!(x.support.noCloneEvent&&x.support.noCloneChecked||1!==e.nodeType&&11!==e.nodeType||x.isXMLDoc(e)))for(r=Ft(o),s=Ft(e),a=0;null!=(i=s[a]);++a)r[a]&&Ot(i,r[a]);if(t)if(n)for(s=s||Ft(e),r=r||Ft(o),a=0;null!=(i=s[a]);a++)Mt(i,r[a]);else Mt(e,o);return r=Ft(o,"script"),r.length>0&&_t(r,!l&&Ft(e,"script")),r=s=i=null,o},buildFragment:function(e,t,n,r){var i,o,a,s,l,u,c,p=e.length,f=dt(t),d=[],h=0;for(;p>h;h++)if(o=e[h],o||0===o)if("object"===x.type(o))x.merge(d,o.nodeType?[o]:o);else if(wt.test(o)){s=s||f.appendChild(t.createElement("div")),l=(bt.exec(o)||["",""])[1].toLowerCase(),c=At[l]||At._default,s.innerHTML=c[1]+o.replace(vt,"<$1></$2>")+c[2],i=c[0];while(i--)s=s.lastChild;if(!x.support.leadingWhitespace&&yt.test(o)&&d.push(t.createTextNode(yt.exec(o)[0])),!x.support.tbody){o="table"!==l||xt.test(o)?"<table>"!==c[1]||xt.test(o)?0:s:s.firstChild,i=o&&o.childNodes.length;while(i--)x.nodeName(u=o.childNodes[i],"tbody")&&!u.childNodes.length&&o.removeChild(u)}x.merge(d,s.childNodes),s.textContent="";while(s.firstChild)s.removeChild(s.firstChild);s=f.lastChild}else d.push(t.createTextNode(o));s&&f.removeChild(s),x.support.appendChecked||x.grep(Ft(d,"input"),Bt),h=0;while(o=d[h++])if((!r||-1===x.inArray(o,r))&&(a=x.contains(o.ownerDocument,o),s=Ft(f.appendChild(o),"script"),a&&_t(s),n)){i=0;while(o=s[i++])kt.test(o.type||"")&&n.push(o)}return s=null,f},cleanData:function(e,t){var n,r,o,a,s=0,l=x.expando,u=x.cache,c=x.support.deleteExpando,f=x.event.special;for(;null!=(n=e[s]);s++)if((t||x.acceptData(n))&&(o=n[l],a=o&&u[o])){if(a.events)for(r in a.events)f[r]?x.event.remove(n,r):x.removeEvent(n,r,a.handle);
 u[o]&&(delete u[o],c?delete n[l]:typeof n.removeAttribute!==i?n.removeAttribute(l):n[l]=null,p.push(o))}},_evalUrl:function(e){return x.ajax({url:e,type:"GET",dataType:"script",async:!1,global:!1,"throws":!0})}}),x.fn.extend({wrapAll:function(e){if(x.isFunction(e))return this.each(function(t){x(this).wrapAll(e.call(this,t))});if(this[0]){var t=x(e,this[0].ownerDocument).eq(0).clone(!0);this[0].parentNode&&t.insertBefore(this[0]),t.map(function(){var e=this;while(e.firstChild&&1===e.firstChild.nodeType)e=e.firstChild;return e}).append(this)}return this},wrapInner:function(e){return x.isFunction(e)?this.each(function(t){x(this).wrapInner(e.call(this,t))}):this.each(function(){var t=x(this),n=t.contents();n.length?n.wrapAll(e):t.append(e)})},wrap:function(e){var t=x.isFunction(e);return this.each(function(n){x(this).wrapAll(t?e.call(this,n):e)})},unwrap:function(){return this.parent().each(function(){x.nodeName(this,"body")||x(this).replaceWith(this.childNodes)}).end()}});var Pt,Rt,Wt,$t=/alpha\([^)]*\)/i,It=/opacity\s*=\s*([^)]*)/,zt=/^(top|right|bottom|left)$/,Xt=/^(none|table(?!-c[ea]).+)/,Ut=/^margin/,Vt=RegExp("^("+w+")(.*)$","i"),Yt=RegExp("^("+w+")(?!px)[a-z%]+$","i"),Jt=RegExp("^([+-])=("+w+")","i"),Gt={BODY:"block"},Qt={position:"absolute",visibility:"hidden",display:"block"},Kt={letterSpacing:0,fontWeight:400},Zt=["Top","Right","Bottom","Left"],en=["Webkit","O","Moz","ms"];function tn(e,t){if(t in e)return t;var n=t.charAt(0).toUpperCase()+t.slice(1),r=t,i=en.length;while(i--)if(t=en[i]+n,t in e)return t;return r}function nn(e,t){return e=t||e,"none"===x.css(e,"display")||!x.contains(e.ownerDocument,e)}function rn(e,t){var n,r,i,o=[],a=0,s=e.length;for(;s>a;a++)r=e[a],r.style&&(o[a]=x._data(r,"olddisplay"),n=r.style.display,t?(o[a]||"none"!==n||(r.style.display=""),""===r.style.display&&nn(r)&&(o[a]=x._data(r,"olddisplay",ln(r.nodeName)))):o[a]||(i=nn(r),(n&&"none"!==n||!i)&&x._data(r,"olddisplay",i?n:x.css(r,"display"))));for(a=0;s>a;a++)r=e[a],r.style&&(t&&"none"!==r.style.display&&""!==r.style.display||(r.style.display=t?o[a]||"":"none"));return e}x.fn.extend({css:function(e,n){return x.access(this,function(e,n,r){var i,o,a={},s=0;if(x.isArray(n)){for(o=Rt(e),i=n.length;i>s;s++)a[n[s]]=x.css(e,n[s],!1,o);return a}return r!==t?x.style(e,n,r):x.css(e,n)},e,n,arguments.length>1)},show:function(){return rn(this,!0)},hide:function(){return rn(this)},toggle:function(e){var t="boolean"==typeof e;return this.each(function(){(t?e:nn(this))?x(this).show():x(this).hide()})}}),x.extend({cssHooks:{opacity:{get:function(e,t){if(t){var n=Wt(e,"opacity");return""===n?"1":n}}}},cssNumber:{columnCount:!0,fillOpacity:!0,fontWeight:!0,lineHeight:!0,opacity:!0,orphans:!0,widows:!0,zIndex:!0,zoom:!0},cssProps:{"float":x.support.cssFloat?"cssFloat":"styleFloat"},style:function(e,n,r,i){if(e&&3!==e.nodeType&&8!==e.nodeType&&e.style){var o,a,s,l=x.camelCase(n),u=e.style;if(n=x.cssProps[l]||(x.cssProps[l]=tn(u,l)),s=x.cssHooks[n]||x.cssHooks[l],r===t)return s&&"get"in s&&(o=s.get(e,!1,i))!==t?o:u[n];if(a=typeof r,"string"===a&&(o=Jt.exec(r))&&(r=(o[1]+1)*o[2]+parseFloat(x.css(e,n)),a="number"),!(null==r||"number"===a&&isNaN(r)||("number"!==a||x.cssNumber[l]||(r+="px"),x.support.clearCloneStyle||""!==r||0!==n.indexOf("background")||(u[n]="inherit"),s&&"set"in s&&(r=s.set(e,r,i))===t)))try{u[n]=r}catch(c){}}},css:function(e,n,r,i){var o,a,s,l=x.camelCase(n);return n=x.cssProps[l]||(x.cssProps[l]=tn(e.style,l)),s=x.cssHooks[n]||x.cssHooks[l],s&&"get"in s&&(a=s.get(e,!0,r)),a===t&&(a=Wt(e,n,i)),"normal"===a&&n in Kt&&(a=Kt[n]),""===r||r?(o=parseFloat(a),r===!0||x.isNumeric(o)?o||0:a):a}}),e.getComputedStyle?(Rt=function(t){return e.getComputedStyle(t,null)},Wt=function(e,n,r){var i,o,a,s=r||Rt(e),l=s?s.getPropertyValue(n)||s[n]:t,u=e.style;return s&&(""!==l||x.contains(e.ownerDocument,e)||(l=x.style(e,n)),Yt.test(l)&&Ut.test(n)&&(i=u.width,o=u.minWidth,a=u.maxWidth,u.minWidth=u.maxWidth=u.width=l,l=s.width,u.width=i,u.minWidth=o,u.maxWidth=a)),l}):a.documentElement.currentStyle&&(Rt=function(e){return e.currentStyle},Wt=function(e,n,r){var i,o,a,s=r||Rt(e),l=s?s[n]:t,u=e.style;return null==l&&u&&u[n]&&(l=u[n]),Yt.test(l)&&!zt.test(n)&&(i=u.left,o=e.runtimeStyle,a=o&&o.left,a&&(o.left=e.currentStyle.left),u.left="fontSize"===n?"1em":l,l=u.pixelLeft+"px",u.left=i,a&&(o.left=a)),""===l?"auto":l});function on(e,t,n){var r=Vt.exec(t);return r?Math.max(0,r[1]-(n||0))+(r[2]||"px"):t}function an(e,t,n,r,i){var o=n===(r?"border":"content")?4:"width"===t?1:0,a=0;for(;4>o;o+=2)"margin"===n&&(a+=x.css(e,n+Zt[o],!0,i)),r?("content"===n&&(a-=x.css(e,"padding"+Zt[o],!0,i)),"margin"!==n&&(a-=x.css(e,"border"+Zt[o]+"Width",!0,i))):(a+=x.css(e,"padding"+Zt[o],!0,i),"padding"!==n&&(a+=x.css(e,"border"+Zt[o]+"Width",!0,i)));return a}function sn(e,t,n){var r=!0,i="width"===t?e.offsetWidth:e.offsetHeight,o=Rt(e),a=x.support.boxSizing&&"border-box"===x.css(e,"boxSizing",!1,o);if(0>=i||null==i){if(i=Wt(e,t,o),(0>i||null==i)&&(i=e.style[t]),Yt.test(i))return i;r=a&&(x.support.boxSizingReliable||i===e.style[t]),i=parseFloat(i)||0}return i+an(e,t,n||(a?"border":"content"),r,o)+"px"}function ln(e){var t=a,n=Gt[e];return n||(n=un(e,t),"none"!==n&&n||(Pt=(Pt||x("<iframe frameborder='0' width='0' height='0'/>").css("cssText","display:block !important")).appendTo(t.documentElement),t=(Pt[0].contentWindow||Pt[0].contentDocument).document,t.write("<!doctype html><html><body>"),t.close(),n=un(e,t),Pt.detach()),Gt[e]=n),n}function un(e,t){var n=x(t.createElement(e)).appendTo(t.body),r=x.css(n[0],"display");return n.remove(),r}x.each(["height","width"],function(e,n){x.cssHooks[n]={get:function(e,r,i){return r?0===e.offsetWidth&&Xt.test(x.css(e,"display"))?x.swap(e,Qt,function(){return sn(e,n,i)}):sn(e,n,i):t},set:function(e,t,r){var i=r&&Rt(e);return on(e,t,r?an(e,n,r,x.support.boxSizing&&"border-box"===x.css(e,"boxSizing",!1,i),i):0)}}}),x.support.opacity||(x.cssHooks.opacity={get:function(e,t){return It.test((t&&e.currentStyle?e.currentStyle.filter:e.style.filter)||"")?.01*parseFloat(RegExp.$1)+"":t?"1":""},set:function(e,t){var n=e.style,r=e.currentStyle,i=x.isNumeric(t)?"alpha(opacity="+100*t+")":"",o=r&&r.filter||n.filter||"";n.zoom=1,(t>=1||""===t)&&""===x.trim(o.replace($t,""))&&n.removeAttribute&&(n.removeAttribute("filter"),""===t||r&&!r.filter)||(n.filter=$t.test(o)?o.replace($t,i):o+" "+i)}}),x(function(){x.support.reliableMarginRight||(x.cssHooks.marginRight={get:function(e,n){return n?x.swap(e,{display:"inline-block"},Wt,[e,"marginRight"]):t}}),!x.support.pixelPosition&&x.fn.position&&x.each(["top","left"],function(e,n){x.cssHooks[n]={get:function(e,r){return r?(r=Wt(e,n),Yt.test(r)?x(e).position()[n]+"px":r):t}}})}),x.expr&&x.expr.filters&&(x.expr.filters.hidden=function(e){return 0>=e.offsetWidth&&0>=e.offsetHeight||!x.support.reliableHiddenOffsets&&"none"===(e.style&&e.style.display||x.css(e,"display"))},x.expr.filters.visible=function(e){return!x.expr.filters.hidden(e)}),x.each({margin:"",padding:"",border:"Width"},function(e,t){x.cssHooks[e+t]={expand:function(n){var r=0,i={},o="string"==typeof n?n.split(" "):[n];for(;4>r;r++)i[e+Zt[r]+t]=o[r]||o[r-2]||o[0];return i}},Ut.test(e)||(x.cssHooks[e+t].set=on)});var cn=/%20/g,pn=/\[\]$/,fn=/\r?\n/g,dn=/^(?:submit|button|image|reset|file)$/i,hn=/^(?:input|select|textarea|keygen)/i;x.fn.extend({serialize:function(){return x.param(this.serializeArray())},serializeArray:function(){return this.map(function(){var e=x.prop(this,"elements");return e?x.makeArray(e):this}).filter(function(){var e=this.type;return this.name&&!x(this).is(":disabled")&&hn.test(this.nodeName)&&!dn.test(e)&&(this.checked||!Ct.test(e))}).map(function(e,t){var n=x(this).val();return null==n?null:x.isArray(n)?x.map(n,function(e){return{name:t.name,value:e.replace(fn,"\r\n")}}):{name:t.name,value:n.replace(fn,"\r\n")}}).get()}}),x.param=function(e,n){var r,i=[],o=function(e,t){t=x.isFunction(t)?t():null==t?"":t,i[i.length]=encodeURIComponent(e)+"="+encodeURIComponent(t)};if(n===t&&(n=x.ajaxSettings&&x.ajaxSettings.traditional),x.isArray(e)||e.jquery&&!x.isPlainObject(e))x.each(e,function(){o(this.name,this.value)});else for(r in e)gn(r,e[r],n,o);return i.join("&").replace(cn,"+")};function gn(e,t,n,r){var i;if(x.isArray(t))x.each(t,function(t,i){n||pn.test(e)?r(e,i):gn(e+"["+("object"==typeof i?t:"")+"]",i,n,r)});else if(n||"object"!==x.type(t))r(e,t);else for(i in t)gn(e+"["+i+"]",t[i],n,r)}x.each("blur focus focusin focusout load resize scroll unload click dblclick mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave change select submit keydown keypress keyup error contextmenu".split(" "),function(e,t){x.fn[t]=function(e,n){return arguments.length>0?this.on(t,null,e,n):this.trigger(t)}}),x.fn.extend({hover:function(e,t){return this.mouseenter(e).mouseleave(t||e)},bind:function(e,t,n){return this.on(e,null,t,n)},unbind:function(e,t){return this.off(e,null,t)},delegate:function(e,t,n,r){return this.on(t,e,n,r)},undelegate:function(e,t,n){return 1===arguments.length?this.off(e,"**"):this.off(t,e||"**",n)}});var mn,yn,vn=x.now(),bn=/\?/,xn=/#.*$/,wn=/([?&])_=[^&]*/,Tn=/^(.*?):[ \t]*([^\r\n]*)\r?$/gm,Cn=/^(?:about|app|app-storage|.+-extension|file|res|widget):$/,Nn=/^(?:GET|HEAD)$/,kn=/^\/\//,En=/^([\w.+-]+:)(?:\/\/([^\/?#:]*)(?::(\d+)|)|)/,Sn=x.fn.load,An={},jn={},Dn="*/".concat("*");try{yn=o.href}catch(Ln){yn=a.createElement("a"),yn.href="",yn=yn.href}mn=En.exec(yn.toLowerCase())||[];function Hn(e){return function(t,n){"string"!=typeof t&&(n=t,t="*");var r,i=0,o=t.toLowerCase().match(T)||[];if(x.isFunction(n))while(r=o[i++])"+"===r[0]?(r=r.slice(1)||"*",(e[r]=e[r]||[]).unshift(n)):(e[r]=e[r]||[]).push(n)}}function qn(e,n,r,i){var o={},a=e===jn;function s(l){var u;return o[l]=!0,x.each(e[l]||[],function(e,l){var c=l(n,r,i);return"string"!=typeof c||a||o[c]?a?!(u=c):t:(n.dataTypes.unshift(c),s(c),!1)}),u}return s(n.dataTypes[0])||!o["*"]&&s("*")}function _n(e,n){var r,i,o=x.ajaxSettings.flatOptions||{};for(i in n)n[i]!==t&&((o[i]?e:r||(r={}))[i]=n[i]);return r&&x.extend(!0,e,r),e}x.fn.load=function(e,n,r){if("string"!=typeof e&&Sn)return Sn.apply(this,arguments);var i,o,a,s=this,l=e.indexOf(" ");return l>=0&&(i=e.slice(l,e.length),e=e.slice(0,l)),x.isFunction(n)?(r=n,n=t):n&&"object"==typeof n&&(a="POST"),s.length>0&&x.ajax({url:e,type:a,dataType:"html",data:n}).done(function(e){o=arguments,s.html(i?x("<div>").append(x.parseHTML(e)).find(i):e)}).complete(r&&function(e,t){s.each(r,o||[e.responseText,t,e])}),this},x.each(["ajaxStart","ajaxStop","ajaxComplete","ajaxError","ajaxSuccess","ajaxSend"],function(e,t){x.fn[t]=function(e){return this.on(t,e)}}),x.extend({active:0,lastModified:{},etag:{},ajaxSettings:{url:yn,type:"GET",isLocal:Cn.test(mn[1]),global:!0,processData:!0,async:!0,contentType:"application/x-www-form-urlencoded; charset=UTF-8",accepts:{"*":Dn,text:"text/plain",html:"text/html",xml:"application/xml, text/xml",json:"application/json, text/javascript"},contents:{xml:/xml/,html:/html/,json:/json/},responseFields:{xml:"responseXML",text:"responseText",json:"responseJSON"},converters:{"* text":String,"text html":!0,"text json":x.parseJSON,"text xml":x.parseXML},flatOptions:{url:!0,context:!0}},ajaxSetup:function(e,t){return t?_n(_n(e,x.ajaxSettings),t):_n(x.ajaxSettings,e)},ajaxPrefilter:Hn(An),ajaxTransport:Hn(jn),ajax:function(e,n){"object"==typeof e&&(n=e,e=t),n=n||{};var r,i,o,a,s,l,u,c,p=x.ajaxSetup({},n),f=p.context||p,d=p.context&&(f.nodeType||f.jquery)?x(f):x.event,h=x.Deferred(),g=x.Callbacks("once memory"),m=p.statusCode||{},y={},v={},b=0,w="canceled",C={readyState:0,getResponseHeader:function(e){var t;if(2===b){if(!c){c={};while(t=Tn.exec(a))c[t[1].toLowerCase()]=t[2]}t=c[e.toLowerCase()]}return null==t?null:t},getAllResponseHeaders:function(){return 2===b?a:null},setRequestHeader:function(e,t){var n=e.toLowerCase();return b||(e=v[n]=v[n]||e,y[e]=t),this},overrideMimeType:function(e){return b||(p.mimeType=e),this},statusCode:function(e){var t;if(e)if(2>b)for(t in e)m[t]=[m[t],e[t]];else C.always(e[C.status]);return this},abort:function(e){var t=e||w;return u&&u.abort(t),k(0,t),this}};if(h.promise(C).complete=g.add,C.success=C.done,C.error=C.fail,p.url=((e||p.url||yn)+"").replace(xn,"").replace(kn,mn[1]+"//"),p.type=n.method||n.type||p.method||p.type,p.dataTypes=x.trim(p.dataType||"*").toLowerCase().match(T)||[""],null==p.crossDomain&&(r=En.exec(p.url.toLowerCase()),p.crossDomain=!(!r||r[1]===mn[1]&&r[2]===mn[2]&&(r[3]||("http:"===r[1]?"80":"443"))===(mn[3]||("http:"===mn[1]?"80":"443")))),p.data&&p.processData&&"string"!=typeof p.data&&(p.data=x.param(p.data,p.traditional)),qn(An,p,n,C),2===b)return C;l=p.global,l&&0===x.active++&&x.event.trigger("ajaxStart"),p.type=p.type.toUpperCase(),p.hasContent=!Nn.test(p.type),o=p.url,p.hasContent||(p.data&&(o=p.url+=(bn.test(o)?"&":"?")+p.data,delete p.data),p.cache===!1&&(p.url=wn.test(o)?o.replace(wn,"$1_="+vn++):o+(bn.test(o)?"&":"?")+"_="+vn++)),p.ifModified&&(x.lastModified[o]&&C.setRequestHeader("If-Modified-Since",x.lastModified[o]),x.etag[o]&&C.setRequestHeader("If-None-Match",x.etag[o])),(p.data&&p.hasContent&&p.contentType!==!1||n.contentType)&&C.setRequestHeader("Content-Type",p.contentType),C.setRequestHeader("Accept",p.dataTypes[0]&&p.accepts[p.dataTypes[0]]?p.accepts[p.dataTypes[0]]+("*"!==p.dataTypes[0]?", "+Dn+"; q=0.01":""):p.accepts["*"]);for(i in p.headers)C.setRequestHeader(i,p.headers[i]);if(p.beforeSend&&(p.beforeSend.call(f,C,p)===!1||2===b))return C.abort();w="abort";for(i in{success:1,error:1,complete:1})C[i](p[i]);if(u=qn(jn,p,n,C)){C.readyState=1,l&&d.trigger("ajaxSend",[C,p]),p.async&&p.timeout>0&&(s=setTimeout(function(){C.abort("timeout")},p.timeout));try{b=1,u.send(y,k)}catch(N){if(!(2>b))throw N;k(-1,N)}}else k(-1,"No Transport");function k(e,n,r,i){var c,y,v,w,T,N=n;2!==b&&(b=2,s&&clearTimeout(s),u=t,a=i||"",C.readyState=e>0?4:0,c=e>=200&&300>e||304===e,r&&(w=Mn(p,C,r)),w=On(p,w,C,c),c?(p.ifModified&&(T=C.getResponseHeader("Last-Modified"),T&&(x.lastModified[o]=T),T=C.getResponseHeader("etag"),T&&(x.etag[o]=T)),204===e||"HEAD"===p.type?N="nocontent":304===e?N="notmodified":(N=w.state,y=w.data,v=w.error,c=!v)):(v=N,(e||!N)&&(N="error",0>e&&(e=0))),C.status=e,C.statusText=(n||N)+"",c?h.resolveWith(f,[y,N,C]):h.rejectWith(f,[C,N,v]),C.statusCode(m),m=t,l&&d.trigger(c?"ajaxSuccess":"ajaxError",[C,p,c?y:v]),g.fireWith(f,[C,N]),l&&(d.trigger("ajaxComplete",[C,p]),--x.active||x.event.trigger("ajaxStop")))}return C},getJSON:function(e,t,n){return x.get(e,t,n,"json")},getScript:function(e,n){return x.get(e,t,n,"script")}}),x.each(["get","post"],function(e,n){x[n]=function(e,r,i,o){return x.isFunction(r)&&(o=o||i,i=r,r=t),x.ajax({url:e,type:n,dataType:o,data:r,success:i})}});function Mn(e,n,r){var i,o,a,s,l=e.contents,u=e.dataTypes;while("*"===u[0])u.shift(),o===t&&(o=e.mimeType||n.getResponseHeader("Content-Type"));if(o)for(s in l)if(l[s]&&l[s].test(o)){u.unshift(s);break}if(u[0]in r)a=u[0];else{for(s in r){if(!u[0]||e.converters[s+" "+u[0]]){a=s;break}i||(i=s)}a=a||i}return a?(a!==u[0]&&u.unshift(a),r[a]):t}function On(e,t,n,r){var i,o,a,s,l,u={},c=e.dataTypes.slice();if(c[1])for(a in e.converters)u[a.toLowerCase()]=e.converters[a];o=c.shift();while(o)if(e.responseFields[o]&&(n[e.responseFields[o]]=t),!l&&r&&e.dataFilter&&(t=e.dataFilter(t,e.dataType)),l=o,o=c.shift())if("*"===o)o=l;else if("*"!==l&&l!==o){if(a=u[l+" "+o]||u["* "+o],!a)for(i in u)if(s=i.split(" "),s[1]===o&&(a=u[l+" "+s[0]]||u["* "+s[0]])){a===!0?a=u[i]:u[i]!==!0&&(o=s[0],c.unshift(s[1]));break}if(a!==!0)if(a&&e["throws"])t=a(t);else try{t=a(t)}catch(p){return{state:"parsererror",error:a?p:"No conversion from "+l+" to "+o}}}return{state:"success",data:t}}x.ajaxSetup({accepts:{script:"text/javascript, application/javascript, application/ecmascript, application/x-ecmascript"},contents:{script:/(?:java|ecma)script/},converters:{"text script":function(e){return x.globalEval(e),e}}}),x.ajaxPrefilter("script",function(e){e.cache===t&&(e.cache=!1),e.crossDomain&&(e.type="GET",e.global=!1)}),x.ajaxTransport("script",function(e){if(e.crossDomain){var n,r=a.head||x("head")[0]||a.documentElement;return{send:function(t,i){n=a.createElement("script"),n.async=!0,e.scriptCharset&&(n.charset=e.scriptCharset),n.src=e.url,n.onload=n.onreadystatechange=function(e,t){(t||!n.readyState||/loaded|complete/.test(n.readyState))&&(n.onload=n.onreadystatechange=null,n.parentNode&&n.parentNode.removeChild(n),n=null,t||i(200,"success"))},r.insertBefore(n,r.firstChild)},abort:function(){n&&n.onload(t,!0)}}}});var Fn=[],Bn=/(=)\?(?=&|$)|\?\?/;x.ajaxSetup({jsonp:"callback",jsonpCallback:function(){var e=Fn.pop()||x.expando+"_"+vn++;return this[e]=!0,e}}),x.ajaxPrefilter("json jsonp",function(n,r,i){var o,a,s,l=n.jsonp!==!1&&(Bn.test(n.url)?"url":"string"==typeof n.data&&!(n.contentType||"").indexOf("application/x-www-form-urlencoded")&&Bn.test(n.data)&&"data");return l||"jsonp"===n.dataTypes[0]?(o=n.jsonpCallback=x.isFunction(n.jsonpCallback)?n.jsonpCallback():n.jsonpCallback,l?n[l]=n[l].replace(Bn,"$1"+o):n.jsonp!==!1&&(n.url+=(bn.test(n.url)?"&":"?")+n.jsonp+"="+o),n.converters["script json"]=function(){return s||x.error(o+" was not called"),s[0]},n.dataTypes[0]="json",a=e[o],e[o]=function(){s=arguments},i.always(function(){e[o]=a,n[o]&&(n.jsonpCallback=r.jsonpCallback,Fn.push(o)),s&&x.isFunction(a)&&a(s[0]),s=a=t}),"script"):t});var Pn,Rn,Wn=0,$n=e.ActiveXObject&&function(){var e;for(e in Pn)Pn[e](t,!0)};function In(){try{return new e.XMLHttpRequest}catch(t){}}function zn(){try{return new e.ActiveXObject("Microsoft.XMLHTTP")}catch(t){}}x.ajaxSettings.xhr=e.ActiveXObject?function(){return!this.isLocal&&In()||zn()}:In,Rn=x.ajaxSettings.xhr(),x.support.cors=!!Rn&&"withCredentials"in Rn,Rn=x.support.ajax=!!Rn,Rn&&x.ajaxTransport(function(n){if(!n.crossDomain||x.support.cors){var r;return{send:function(i,o){var a,s,l=n.xhr();if(n.username?l.open(n.type,n.url,n.async,n.username,n.password):l.open(n.type,n.url,n.async),n.xhrFields)for(s in n.xhrFields)l[s]=n.xhrFields[s];n.mimeType&&l.overrideMimeType&&l.overrideMimeType(n.mimeType),n.crossDomain||i["X-Requested-With"]||(i["X-Requested-With"]="XMLHttpRequest");try{for(s in i)l.setRequestHeader(s,i[s])}catch(u){}l.send(n.hasContent&&n.data||null),r=function(e,i){var s,u,c,p;try{if(r&&(i||4===l.readyState))if(r=t,a&&(l.onreadystatechange=x.noop,$n&&delete Pn[a]),i)4!==l.readyState&&l.abort();else{p={},s=l.status,u=l.getAllResponseHeaders(),"string"==typeof l.responseText&&(p.text=l.responseText);try{c=l.statusText}catch(f){c=""}s||!n.isLocal||n.crossDomain?1223===s&&(s=204):s=p.text?200:404}}catch(d){i||o(-1,d)}p&&o(s,c,p,u)},n.async?4===l.readyState?setTimeout(r):(a=++Wn,$n&&(Pn||(Pn={},x(e).unload($n)),Pn[a]=r),l.onreadystatechange=r):r()},abort:function(){r&&r(t,!0)}}}});var Xn,Un,Vn=/^(?:toggle|show|hide)$/,Yn=RegExp("^(?:([+-])=|)("+w+")([a-z%]*)$","i"),Jn=/queueHooks$/,Gn=[nr],Qn={"*":[function(e,t){var n=this.createTween(e,t),r=n.cur(),i=Yn.exec(t),o=i&&i[3]||(x.cssNumber[e]?"":"px"),a=(x.cssNumber[e]||"px"!==o&&+r)&&Yn.exec(x.css(n.elem,e)),s=1,l=20;if(a&&a[3]!==o){o=o||a[3],i=i||[],a=+r||1;do s=s||".5",a/=s,x.style(n.elem,e,a+o);while(s!==(s=n.cur()/r)&&1!==s&&--l)}return i&&(a=n.start=+a||+r||0,n.unit=o,n.end=i[1]?a+(i[1]+1)*i[2]:+i[2]),n}]};function Kn(){return setTimeout(function(){Xn=t}),Xn=x.now()}function Zn(e,t,n){var r,i=(Qn[t]||[]).concat(Qn["*"]),o=0,a=i.length;for(;a>o;o++)if(r=i[o].call(n,t,e))return r}function er(e,t,n){var r,i,o=0,a=Gn.length,s=x.Deferred().always(function(){delete l.elem}),l=function(){if(i)return!1;var t=Xn||Kn(),n=Math.max(0,u.startTime+u.duration-t),r=n/u.duration||0,o=1-r,a=0,l=u.tweens.length;for(;l>a;a++)u.tweens[a].run(o);return s.notifyWith(e,[u,o,n]),1>o&&l?n:(s.resolveWith(e,[u]),!1)},u=s.promise({elem:e,props:x.extend({},t),opts:x.extend(!0,{specialEasing:{}},n),originalProperties:t,originalOptions:n,startTime:Xn||Kn(),duration:n.duration,tweens:[],createTween:function(t,n){var r=x.Tween(e,u.opts,t,n,u.opts.specialEasing[t]||u.opts.easing);return u.tweens.push(r),r},stop:function(t){var n=0,r=t?u.tweens.length:0;if(i)return this;for(i=!0;r>n;n++)u.tweens[n].run(1);return t?s.resolveWith(e,[u,t]):s.rejectWith(e,[u,t]),this}}),c=u.props;for(tr(c,u.opts.specialEasing);a>o;o++)if(r=Gn[o].call(u,e,c,u.opts))return r;return x.map(c,Zn,u),x.isFunction(u.opts.start)&&u.opts.start.call(e,u),x.fx.timer(x.extend(l,{elem:e,anim:u,queue:u.opts.queue})),u.progress(u.opts.progress).done(u.opts.done,u.opts.complete).fail(u.opts.fail).always(u.opts.always)}function tr(e,t){var n,r,i,o,a;for(n in e)if(r=x.camelCase(n),i=t[r],o=e[n],x.isArray(o)&&(i=o[1],o=e[n]=o[0]),n!==r&&(e[r]=o,delete e[n]),a=x.cssHooks[r],a&&"expand"in a){o=a.expand(o),delete e[r];for(n in o)n in e||(e[n]=o[n],t[n]=i)}else t[r]=i}x.Animation=x.extend(er,{tweener:function(e,t){x.isFunction(e)?(t=e,e=["*"]):e=e.split(" ");var n,r=0,i=e.length;for(;i>r;r++)n=e[r],Qn[n]=Qn[n]||[],Qn[n].unshift(t)},prefilter:function(e,t){t?Gn.unshift(e):Gn.push(e)}});function nr(e,t,n){var r,i,o,a,s,l,u=this,c={},p=e.style,f=e.nodeType&&nn(e),d=x._data(e,"fxshow");n.queue||(s=x._queueHooks(e,"fx"),null==s.unqueued&&(s.unqueued=0,l=s.empty.fire,s.empty.fire=function(){s.unqueued||l()}),s.unqueued++,u.always(function(){u.always(function(){s.unqueued--,x.queue(e,"fx").length||s.empty.fire()})})),1===e.nodeType&&("height"in t||"width"in t)&&(n.overflow=[p.overflow,p.overflowX,p.overflowY],"inline"===x.css(e,"display")&&"none"===x.css(e,"float")&&(x.support.inlineBlockNeedsLayout&&"inline"!==ln(e.nodeName)?p.zoom=1:p.display="inline-block")),n.overflow&&(p.overflow="hidden",x.support.shrinkWrapBlocks||u.always(function(){p.overflow=n.overflow[0],p.overflowX=n.overflow[1],p.overflowY=n.overflow[2]}));for(r in t)if(i=t[r],Vn.exec(i)){if(delete t[r],o=o||"toggle"===i,i===(f?"hide":"show"))continue;c[r]=d&&d[r]||x.style(e,r)}if(!x.isEmptyObject(c)){d?"hidden"in d&&(f=d.hidden):d=x._data(e,"fxshow",{}),o&&(d.hidden=!f),f?x(e).show():u.done(function(){x(e).hide()}),u.done(function(){var t;x._removeData(e,"fxshow");for(t in c)x.style(e,t,c[t])});for(r in c)a=Zn(f?d[r]:0,r,u),r in d||(d[r]=a.start,f&&(a.end=a.start,a.start="width"===r||"height"===r?1:0))}}function rr(e,t,n,r,i){return new rr.prototype.init(e,t,n,r,i)}x.Tween=rr,rr.prototype={constructor:rr,init:function(e,t,n,r,i,o){this.elem=e,this.prop=n,this.easing=i||"swing",this.options=t,this.start=this.now=this.cur(),this.end=r,this.unit=o||(x.cssNumber[n]?"":"px")},cur:function(){var e=rr.propHooks[this.prop];return e&&e.get?e.get(this):rr.propHooks._default.get(this)},run:function(e){var t,n=rr.propHooks[this.prop];return this.pos=t=this.options.duration?x.easing[this.easing](e,this.options.duration*e,0,1,this.options.duration):e,this.now=(this.end-this.start)*t+this.start,this.options.step&&this.options.step.call(this.elem,this.now,this),n&&n.set?n.set(this):rr.propHooks._default.set(this),this}},rr.prototype.init.prototype=rr.prototype,rr.propHooks={_default:{get:function(e){var t;return null==e.elem[e.prop]||e.elem.style&&null!=e.elem.style[e.prop]?(t=x.css(e.elem,e.prop,""),t&&"auto"!==t?t:0):e.elem[e.prop]},set:function(e){x.fx.step[e.prop]?x.fx.step[e.prop](e):e.elem.style&&(null!=e.elem.style[x.cssProps[e.prop]]||x.cssHooks[e.prop])?x.style(e.elem,e.prop,e.now+e.unit):e.elem[e.prop]=e.now}}},rr.propHooks.scrollTop=rr.propHooks.scrollLeft={set:function(e){e.elem.nodeType&&e.elem.parentNode&&(e.elem[e.prop]=e.now)}},x.each(["toggle","show","hide"],function(e,t){var n=x.fn[t];x.fn[t]=function(e,r,i){return null==e||"boolean"==typeof e?n.apply(this,arguments):this.animate(ir(t,!0),e,r,i)}}),x.fn.extend({fadeTo:function(e,t,n,r){return this.filter(nn).css("opacity",0).show().end().animate({opacity:t},e,n,r)},animate:function(e,t,n,r){var i=x.isEmptyObject(e),o=x.speed(t,n,r),a=function(){var t=er(this,x.extend({},e),o);(i||x._data(this,"finish"))&&t.stop(!0)};return a.finish=a,i||o.queue===!1?this.each(a):this.queue(o.queue,a)},stop:function(e,n,r){var i=function(e){var t=e.stop;delete e.stop,t(r)};return"string"!=typeof e&&(r=n,n=e,e=t),n&&e!==!1&&this.queue(e||"fx",[]),this.each(function(){var t=!0,n=null!=e&&e+"queueHooks",o=x.timers,a=x._data(this);if(n)a[n]&&a[n].stop&&i(a[n]);else for(n in a)a[n]&&a[n].stop&&Jn.test(n)&&i(a[n]);for(n=o.length;n--;)o[n].elem!==this||null!=e&&o[n].queue!==e||(o[n].anim.stop(r),t=!1,o.splice(n,1));(t||!r)&&x.dequeue(this,e)})},finish:function(e){return e!==!1&&(e=e||"fx"),this.each(function(){var t,n=x._data(this),r=n[e+"queue"],i=n[e+"queueHooks"],o=x.timers,a=r?r.length:0;for(n.finish=!0,x.queue(this,e,[]),i&&i.stop&&i.stop.call(this,!0),t=o.length;t--;)o[t].elem===this&&o[t].queue===e&&(o[t].anim.stop(!0),o.splice(t,1));for(t=0;a>t;t++)r[t]&&r[t].finish&&r[t].finish.call(this);delete n.finish})}});function ir(e,t){var n,r={height:e},i=0;for(t=t?1:0;4>i;i+=2-t)n=Zt[i],r["margin"+n]=r["padding"+n]=e;return t&&(r.opacity=r.width=e),r}x.each({slideDown:ir("show"),slideUp:ir("hide"),slideToggle:ir("toggle"),fadeIn:{opacity:"show"},fadeOut:{opacity:"hide"},fadeToggle:{opacity:"toggle"}},function(e,t){x.fn[e]=function(e,n,r){return this.animate(t,e,n,r)}}),x.speed=function(e,t,n){var r=e&&"object"==typeof e?x.extend({},e):{complete:n||!n&&t||x.isFunction(e)&&e,duration:e,easing:n&&t||t&&!x.isFunction(t)&&t};return r.duration=x.fx.off?0:"number"==typeof r.duration?r.duration:r.duration in x.fx.speeds?x.fx.speeds[r.duration]:x.fx.speeds._default,(null==r.queue||r.queue===!0)&&(r.queue="fx"),r.old=r.complete,r.complete=function(){x.isFunction(r.old)&&r.old.call(this),r.queue&&x.dequeue(this,r.queue)},r},x.easing={linear:function(e){return e},swing:function(e){return.5-Math.cos(e*Math.PI)/2}},x.timers=[],x.fx=rr.prototype.init,x.fx.tick=function(){var e,n=x.timers,r=0;for(Xn=x.now();n.length>r;r++)e=n[r],e()||n[r]!==e||n.splice(r--,1);n.length||x.fx.stop(),Xn=t},x.fx.timer=function(e){e()&&x.timers.push(e)&&x.fx.start()},x.fx.interval=13,x.fx.start=function(){Un||(Un=setInterval(x.fx.tick,x.fx.interval))},x.fx.stop=function(){clearInterval(Un),Un=null},x.fx.speeds={slow:600,fast:200,_default:400},x.fx.step={},x.expr&&x.expr.filters&&(x.expr.filters.animated=function(e){return x.grep(x.timers,function(t){return e===t.elem}).length}),x.fn.offset=function(e){if(arguments.length)return e===t?this:this.each(function(t){x.offset.setOffset(this,e,t)});var n,r,o={top:0,left:0},a=this[0],s=a&&a.ownerDocument;if(s)return n=s.documentElement,x.contains(n,a)?(typeof a.getBoundingClientRect!==i&&(o=a.getBoundingClientRect()),r=or(s),{top:o.top+(r.pageYOffset||n.scrollTop)-(n.clientTop||0),left:o.left+(r.pageXOffset||n.scrollLeft)-(n.clientLeft||0)}):o},x.offset={setOffset:function(e,t,n){var r=x.css(e,"position");"static"===r&&(e.style.position="relative");var i=x(e),o=i.offset(),a=x.css(e,"top"),s=x.css(e,"left"),l=("absolute"===r||"fixed"===r)&&x.inArray("auto",[a,s])>-1,u={},c={},p,f;l?(c=i.position(),p=c.top,f=c.left):(p=parseFloat(a)||0,f=parseFloat(s)||0),x.isFunction(t)&&(t=t.call(e,n,o)),null!=t.top&&(u.top=t.top-o.top+p),null!=t.left&&(u.left=t.left-o.left+f),"using"in t?t.using.call(e,u):i.css(u)}},x.fn.extend({position:function(){if(this[0]){var e,t,n={top:0,left:0},r=this[0];return"fixed"===x.css(r,"position")?t=r.getBoundingClientRect():(e=this.offsetParent(),t=this.offset(),x.nodeName(e[0],"html")||(n=e.offset()),n.top+=x.css(e[0],"borderTopWidth",!0),n.left+=x.css(e[0],"borderLeftWidth",!0)),{top:t.top-n.top-x.css(r,"marginTop",!0),left:t.left-n.left-x.css(r,"marginLeft",!0)}}},offsetParent:function(){return this.map(function(){var e=this.offsetParent||s;while(e&&!x.nodeName(e,"html")&&"static"===x.css(e,"position"))e=e.offsetParent;return e||s})}}),x.each({scrollLeft:"pageXOffset",scrollTop:"pageYOffset"},function(e,n){var r=/Y/.test(n);x.fn[e]=function(i){return x.access(this,function(e,i,o){var a=or(e);return o===t?a?n in a?a[n]:a.document.documentElement[i]:e[i]:(a?a.scrollTo(r?x(a).scrollLeft():o,r?o:x(a).scrollTop()):e[i]=o,t)},e,i,arguments.length,null)}});function or(e){return x.isWindow(e)?e:9===e.nodeType?e.defaultView||e.parentWindow:!1}x.each({Height:"height",Width:"width"},function(e,n){x.each({padding:"inner"+e,content:n,"":"outer"+e},function(r,i){x.fn[i]=function(i,o){var a=arguments.length&&(r||"boolean"!=typeof i),s=r||(i===!0||o===!0?"margin":"border");return x.access(this,function(n,r,i){var o;return x.isWindow(n)?n.document.documentElement["client"+e]:9===n.nodeType?(o=n.documentElement,Math.max(n.body["scroll"+e],o["scroll"+e],n.body["offset"+e],o["offset"+e],o["client"+e])):i===t?x.css(n,r,s):x.style(n,r,i,s)},n,a?i:t,a,null)}})}),x.fn.size=function(){return this.length},x.fn.andSelf=x.fn.addBack,"object"==typeof module&&module&&"object"==typeof module.exports?module.exports=x:(e.jQuery=e.$=x,"function"==typeof define&&define.amd&&define("jquery",[],function(){return x}))})(window);
  
-(function() {
-
-	var translate = function(text)
-	{
-		var xlate = translateLookup(text);
-		
-		if (typeof xlate == "function")
-		{
-			xlate = xlate.apply(this, arguments);
-		}
-		else if (arguments.length > 1)
-		{
-			var aps = Array.prototype.slice;
-			var args = aps.call( arguments, 1 );
-  
-			xlate = formatter(xlate, args);
-		}
-		
-		return xlate;
-	};
-	
-	// I want it available explicity as well as via the object
-	translate.translate = translate;
-	
-	//from https://gist.github.com/776196 via http://davedash.com/2010/11/19/pythonic-string-formatting-in-javascript/ 
-	var defaultFormatter = (function() {
-		var re = /\{([^}]+)\}/g;
-		return function(s, args) {
-			return s.replace(re, function(_, match){ return args[match]; });
-		};
-	}());
-	var formatter = defaultFormatter;
-	translate.setFormatter = function(newFormatter)
-	{
-		formatter = newFormatter;
-	};
-	
-	translate.format = function()
-	{
-		var aps = Array.prototype.slice;
-		var s = arguments[0];
-		var args = aps.call( arguments, 1 );
-  
-		return formatter(s, args);
-	};
-
-	var dynoTrans = null;
-	translate.setDynamicTranslator = function(newDynoTrans)
-	{
-		dynoTrans = newDynoTrans;
-	};
-
-	var translation = null;
-	translate.setTranslation = function(newTranslation)
-	{
-		translation = newTranslation;
-	};
-	
-	function translateLookup(target)
-	{
-		if (translation == null || target == null)
-		{
-			return target;
-		}
-		
-		if (target in translation === false)
-		{
-			if (dynoTrans != null)
-			{
-				return dynoTrans(target);
-			}
-			return target;
-		}
-		
-		var result = translation[target];
-		if (result == null)
-		{
-			return target;
-		}
-		
-		return result;
-	}
-	
-	window._ = translate;
-
-})();
- 
-/**
-*
-*  Base64 encode / decode
-*  http://www.webtoolkit.info/
-*
-**/
-var Base64 = {
-
-	// private property
-	_keyStr : "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
-
-	// public method for encoding
-	encode : function (input) {
-		var output = "";
-		var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
-		var i = 0;
-
-		input = Base64._utf8_encode(input);
-
-		while (i < input.length) {
-
-			chr1 = input.charCodeAt(i++);
-			chr2 = input.charCodeAt(i++);
-			chr3 = input.charCodeAt(i++);
-
-			enc1 = chr1 >> 2;
-			enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
-			enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
-			enc4 = chr3 & 63;
-
-			if (isNaN(chr2)) {
-				enc3 = enc4 = 64;
-			} else if (isNaN(chr3)) {
-				enc4 = 64;
-			}
-
-			output = output +
-			this._keyStr.charAt(enc1) + this._keyStr.charAt(enc2) +
-			this._keyStr.charAt(enc3) + this._keyStr.charAt(enc4);
-
-		}
-
-		return output;
-	},
-
-	// public method for decoding
-	decode : function (input) {
-		var output = "";
-		var chr1, chr2, chr3;
-		var enc1, enc2, enc3, enc4;
-		var i = 0;
-
-		input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
-
-		while (i < input.length) {
-
-			enc1 = this._keyStr.indexOf(input.charAt(i++));
-			enc2 = this._keyStr.indexOf(input.charAt(i++));
-			enc3 = this._keyStr.indexOf(input.charAt(i++));
-			enc4 = this._keyStr.indexOf(input.charAt(i++));
-
-			chr1 = (enc1 << 2) | (enc2 >> 4);
-			chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
-			chr3 = ((enc3 & 3) << 6) | enc4;
-
-			output = output + String.fromCharCode(chr1);
-
-			if (enc3 != 64) {
-				output = output + String.fromCharCode(chr2);
-			}
-			if (enc4 != 64) {
-				output = output + String.fromCharCode(chr3);
-			}
-
-		}
-
-		output = Base64._utf8_decode(output);
-	
-		return output;
-
-	},
-
-	// private method for UTF-8 encoding
-	_utf8_encode : function (string) {
-		string = string.replace(/\r\n/g,"\n");
-		var utftext = "";
-
-		for (var n = 0; n < string.length; n++) {
-
-			var c = string.charCodeAt(n);
-
-			if (c < 128) {
-				utftext += String.fromCharCode(c);
-			}
-			else if((c > 127) && (c < 2048)) {
-				utftext += String.fromCharCode((c >> 6) | 192);
-				utftext += String.fromCharCode((c & 63) | 128);
-			}
-			else {
-				utftext += String.fromCharCode((c >> 12) | 224);
-				utftext += String.fromCharCode(((c >> 6) & 63) | 128);
-				utftext += String.fromCharCode((c & 63) | 128);
-			}
-
-		}
-
-		return utftext;
-	},
-
-	// private method for UTF-8 decoding
-	_utf8_decode : function (utftext) {
-		var string = "";
-		var i = 0;
-		var c = c2 = 0;
-
-		while ( i < utftext.length ) {
-
-			c = utftext.charCodeAt(i);
-
-			if (c < 128) {
-				string += String.fromCharCode(c);
-				i++;
-			}
-			else if((c > 191) && (c < 224)) {
-				c2 = utftext.charCodeAt(i+1);
-				string += String.fromCharCode(((c & 31) << 6) | (c2 & 63));
-				i += 2;
-			}
-			else {
-				c2 = utftext.charCodeAt(i+1);
-				c3 = utftext.charCodeAt(i+2);
-				string += String.fromCharCode(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63));
-				i += 3;
-			}
-
-		}
-
-		return string;
-	}
-
-};
- 
-(function() {
-
-	var dfs = {"am_pm":["AM","PM"],"day_name":["dimanche","lundi","mardi","mercredi","jeudi","vendredi","samedi"],"day_short":["dim.","lun.","mar.","mer.","jeu.","ven.","sam."],"era":["av. J.-C.","ap. J.-C."],"era_name":["avant J├⌐sus-Christ","apr├¿s J├⌐sus-Christ"],"month_name":["janvier","f├⌐vrier","mars","avril","mai","juin","juillet","ao├╗t","septembre","octobre","novembre","d├⌐cembre"],"month_short":["janv.","f├⌐vr.","mars","avr.","mai","juin","juil.","ao├╗t","sept.","oct.","nov.","d├⌐c."],"order_full":"DMY","order_long":"DMY","order_medium":"DMY","order_short":"DMY"};
-	var nfs = {"decimal_separator":",","grouping_separator":"┬á","minus":"-"};
-	var df = {SHORT_PADDED_CENTURY:function(d){if(d){return(((d.getDate()+101)+'').substring(1)+'/'+((d.getMonth()+101)+'').substring(1)+'/'+d.getFullYear());}},SHORT:function(d){if(d){return(((d.getDate()+101)+'').substring(1)+'/'+((d.getMonth()+101)+'').substring(1)+'/'+(d.getFullYear()+'').substring(2));}},SHORT_NOYEAR:function(d){if(d){return(((d.getDate()+101)+'').substring(1)+'/'+((d.getMonth()+101)+'').substring(1));}},SHORT_NODAY:function(d){if(d){return(((d.getMonth()+101)+'').substring(1)+'/'+(d.getFullYear()+'').substring(2));}},MEDIUM:function(d){if(d){return(d.getDate()+' '+dfs.month_short[d.getMonth()]+' '+d.getFullYear());}},MEDIUM_NOYEAR:function(d){if(d){return(d.getDate()+' '+dfs.month_short[d.getMonth()]);}},MEDIUM_WEEKDAY_NOYEAR:function(d){if(d){return(dfs.day_short[d.getDay()]+' '+d.getDate()+' '+dfs.month_short[d.getMonth()]);}},LONG_NODAY:function(d){if(d){return(dfs.month_name[d.getMonth()]+' '+d.getFullYear());}},LONG:function(d){if(d){return(d.getDate()+' '+dfs.month_name[d.getMonth()]+' '+d.getFullYear());}},FULL:function(d){if(d){return(dfs.day_name[d.getDay()]+' '+d.getDate()+' '+dfs.month_name[d.getMonth()]+' '+d.getFullYear());}}};
-	
-	window.icu = window.icu || new Object();
-	var icu = window.icu;	
-		
-	icu.getCountry = function() { return ""; };
-	icu.getCountryName = function() { return ""; };
-	icu.getDateFormat = function(formatCode) { var retVal = {}; retVal.format = df[formatCode]; return retVal; };
-	icu.getDateFormats = function() { return df; };
-	icu.getDateFormatSymbols = function() { return dfs; };
-	icu.getDecimalFormat = function(places) { var retVal = {}; retVal.format = function(n) { var ns = n < 0 ? Math.abs(n).toFixed(places) : n.toFixed(places); var ns2 = ns.split('.'); s = ns2[0]; var d = ns2[1]; var rgx = /(\d+)(\d{3})/;while(rgx.test(s)){s = s.replace(rgx, '$1' + nfs["grouping_separator"] + '$2');} return (n < 0 ? nfs["minus"] : "") + s + nfs["decimal_separator"] + d;}; return retVal; };
-	icu.getDecimalFormatSymbols = function() { return nfs; };
-	icu.getIntegerFormat = function() { var retVal = {}; retVal.format = function(i) { var s = i < 0 ? Math.abs(i).toString() : i.toString(); var rgx = /(\d+)(\d{3})/;while(rgx.test(s)){s = s.replace(rgx, '$1' + nfs["grouping_separator"] + '$2');} return i < 0 ? nfs["minus"] + s : s;}; return retVal; };
-	icu.getLanguage = function() { return "fr"; };
-	icu.getLanguageName = function() { return "fran├ºais"; };
-	icu.getLocale = function() { return "fr"; };
-	icu.getLocaleName = function() { return "fran├ºais"; };
-
-})();
- 
-/*! jQuery Color v@2.1.2 http://github.com/jquery/jquery-color | jquery.org/license */
-(function(a,b){function m(a,b,c){var d=h[b.type]||{};return a==null?c||!b.def?null:b.def:(a=d.floor?~~a:parseFloat(a),isNaN(a)?b.def:d.mod?(a+d.mod)%d.mod:0>a?0:d.max<a?d.max:a)}function n(b){var c=f(),d=c._rgba=[];return b=b.toLowerCase(),l(e,function(a,e){var f,h=e.re.exec(b),i=h&&e.parse(h),j=e.space||"rgba";if(i)return f=c[j](i),c[g[j].cache]=f[g[j].cache],d=c._rgba=f._rgba,!1}),d.length?(d.join()==="0,0,0,0"&&a.extend(d,k.transparent),c):k[b]}function o(a,b,c){return c=(c+1)%1,c*6<1?a+(b-a)*c*6:c*2<1?b:c*3<2?a+(b-a)*(2/3-c)*6:a}var c="backgroundColor borderBottomColor borderLeftColor borderRightColor borderTopColor color columnRuleColor outlineColor textDecorationColor textEmphasisColor",d=/^([\-+])=\s*(\d+\.?\d*)/,e=[{re:/rgba?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*(?:,\s*(\d?(?:\.\d+)?)\s*)?\)/,parse:function(a){return[a[1],a[2],a[3],a[4]]}},{re:/rgba?\(\s*(\d+(?:\.\d+)?)\%\s*,\s*(\d+(?:\.\d+)?)\%\s*,\s*(\d+(?:\.\d+)?)\%\s*(?:,\s*(\d?(?:\.\d+)?)\s*)?\)/,parse:function(a){return[a[1]*2.55,a[2]*2.55,a[3]*2.55,a[4]]}},{re:/#([a-f0-9]{2})([a-f0-9]{2})([a-f0-9]{2})/,parse:function(a){return[parseInt(a[1],16),parseInt(a[2],16),parseInt(a[3],16)]}},{re:/#([a-f0-9])([a-f0-9])([a-f0-9])/,parse:function(a){return[parseInt(a[1]+a[1],16),parseInt(a[2]+a[2],16),parseInt(a[3]+a[3],16)]}},{re:/hsla?\(\s*(\d+(?:\.\d+)?)\s*,\s*(\d+(?:\.\d+)?)\%\s*,\s*(\d+(?:\.\d+)?)\%\s*(?:,\s*(\d?(?:\.\d+)?)\s*)?\)/,space:"hsla",parse:function(a){return[a[1],a[2]/100,a[3]/100,a[4]]}}],f=a.Color=function(b,c,d,e){return new a.Color.fn.parse(b,c,d,e)},g={rgba:{props:{red:{idx:0,type:"byte"},green:{idx:1,type:"byte"},blue:{idx:2,type:"byte"}}},hsla:{props:{hue:{idx:0,type:"degrees"},saturation:{idx:1,type:"percent"},lightness:{idx:2,type:"percent"}}}},h={"byte":{floor:!0,max:255},percent:{max:1},degrees:{mod:360,floor:!0}},i=f.support={},j=a("<p>")[0],k,l=a.each;j.style.cssText="background-color:rgba(1,1,1,.5)",i.rgba=j.style.backgroundColor.indexOf("rgba")>-1,l(g,function(a,b){b.cache="_"+a,b.props.alpha={idx:3,type:"percent",def:1}}),f.fn=a.extend(f.prototype,{parse:function(c,d,e,h){if(c===b)return this._rgba=[null,null,null,null],this;if(c.jquery||c.nodeType)c=a(c).css(d),d=b;var i=this,j=a.type(c),o=this._rgba=[];d!==b&&(c=[c,d,e,h],j="array");if(j==="string")return this.parse(n(c)||k._default);if(j==="array")return l(g.rgba.props,function(a,b){o[b.idx]=m(c[b.idx],b)}),this;if(j==="object")return c instanceof f?l(g,function(a,b){c[b.cache]&&(i[b.cache]=c[b.cache].slice())}):l(g,function(b,d){var e=d.cache;l(d.props,function(a,b){if(!i[e]&&d.to){if(a==="alpha"||c[a]==null)return;i[e]=d.to(i._rgba)}i[e][b.idx]=m(c[a],b,!0)}),i[e]&&a.inArray(null,i[e].slice(0,3))<0&&(i[e][3]=1,d.from&&(i._rgba=d.from(i[e])))}),this},is:function(a){var b=f(a),c=!0,d=this;return l(g,function(a,e){var f,g=b[e.cache];return g&&(f=d[e.cache]||e.to&&e.to(d._rgba)||[],l(e.props,function(a,b){if(g[b.idx]!=null)return c=g[b.idx]===f[b.idx],c})),c}),c},_space:function(){var a=[],b=this;return l(g,function(c,d){b[d.cache]&&a.push(c)}),a.pop()},transition:function(a,b){var c=f(a),d=c._space(),e=g[d],i=this.alpha()===0?f("transparent"):this,j=i[e.cache]||e.to(i._rgba),k=j.slice();return c=c[e.cache],l(e.props,function(a,d){var e=d.idx,f=j[e],g=c[e],i=h[d.type]||{};if(g===null)return;f===null?k[e]=g:(i.mod&&(g-f>i.mod/2?f+=i.mod:f-g>i.mod/2&&(f-=i.mod)),k[e]=m((g-f)*b+f,d))}),this[d](k)},blend:function(b){if(this._rgba[3]===1)return this;var c=this._rgba.slice(),d=c.pop(),e=f(b)._rgba;return f(a.map(c,function(a,b){return(1-d)*e[b]+d*a}))},toRgbaString:function(){var b="rgba(",c=a.map(this._rgba,function(a,b){return a==null?b>2?1:0:a});return c[3]===1&&(c.pop(),b="rgb("),b+c.join()+")"},toHslaString:function(){var b="hsla(",c=a.map(this.hsla(),function(a,b){return a==null&&(a=b>2?1:0),b&&b<3&&(a=Math.round(a*100)+"%"),a});return c[3]===1&&(c.pop(),b="hsl("),b+c.join()+")"},toHexString:function(b){var c=this._rgba.slice(),d=c.pop();return b&&c.push(~~(d*255)),"#"+a.map(c,function(a){return a=(a||0).toString(16),a.length===1?"0"+a:a}).join("")},toString:function(){return this._rgba[3]===0?"transparent":this.toRgbaString()}}),f.fn.parse.prototype=f.fn,g.hsla.to=function(a){if(a[0]==null||a[1]==null||a[2]==null)return[null,null,null,a[3]];var b=a[0]/255,c=a[1]/255,d=a[2]/255,e=a[3],f=Math.max(b,c,d),g=Math.min(b,c,d),h=f-g,i=f+g,j=i*.5,k,l;return g===f?k=0:b===f?k=60*(c-d)/h+360:c===f?k=60*(d-b)/h+120:k=60*(b-c)/h+240,h===0?l=0:j<=.5?l=h/i:l=h/(2-i),[Math.round(k)%360,l,j,e==null?1:e]},g.hsla.from=function(a){if(a[0]==null||a[1]==null||a[2]==null)return[null,null,null,a[3]];var b=a[0]/360,c=a[1],d=a[2],e=a[3],f=d<=.5?d*(1+c):d+c-d*c,g=2*d-f;return[Math.round(o(g,f,b+1/3)*255),Math.round(o(g,f,b)*255),Math.round(o(g,f,b-1/3)*255),e]},l(g,function(c,e){var g=e.props,h=e.cache,i=e.to,j=e.from;f.fn[c]=function(c){i&&!this[h]&&(this[h]=i(this._rgba));if(c===b)return this[h].slice();var d,e=a.type(c),k=e==="array"||e==="object"?c:arguments,n=this[h].slice();return l(g,function(a,b){var c=k[e==="object"?a:b.idx];c==null&&(c=n[b.idx]),n[b.idx]=m(c,b)}),j?(d=f(j(n)),d[h]=n,d):f(n)},l(g,function(b,e){if(f.fn[b])return;f.fn[b]=function(f){var g=a.type(f),h=b==="alpha"?this._hsla?"hsla":"rgba":c,i=this[h](),j=i[e.idx],k;return g==="undefined"?j:(g==="function"&&(f=f.call(this,j),g=a.type(f)),f==null&&e.empty?this:(g==="string"&&(k=d.exec(f),k&&(f=j+parseFloat(k[2])*(k[1]==="+"?1:-1))),i[e.idx]=f,this[h](i)))}})}),f.hook=function(b){var c=b.split(" ");l(c,function(b,c){a.cssHooks[c]={set:function(b,d){var e,g,h="";if(d!=="transparent"&&(a.type(d)!=="string"||(e=n(d)))){d=f(e||d);if(!i.rgba&&d._rgba[3]!==1){g=c==="backgroundColor"?b.parentNode:b;while((h===""||h==="transparent")&&g&&g.style)try{h=a.css(g,"backgroundColor"),g=g.parentNode}catch(j){}d=d.blend(h&&h!=="transparent"?h:"_default")}d=d.toRgbaString()}try{b.style[c]=d}catch(j){}}},a.fx.step[c]=function(b){b.colorInit||(b.start=f(b.elem,c),b.end=f(b.end),b.colorInit=!0),a.cssHooks[c].set(b.elem,b.start.transition(b.end,b.pos))}})},f.hook(c),a.cssHooks.borderColor={expand:function(a){var b={};return l(["Top","Right","Bottom","Left"],function(c,d){b["border"+d+"Color"]=a}),b}},k=a.Color.names={aqua:"#00ffff",black:"#000000",blue:"#0000ff",fuchsia:"#ff00ff",gray:"#808080",green:"#008000",lime:"#00ff00",maroon:"#800000",navy:"#000080",olive:"#808000",purple:"#800080",red:"#ff0000",silver:"#c0c0c0",teal:"#008080",white:"#ffffff",yellow:"#ffff00",transparent:[null,null,null,0],_default:"#ffffff"}})(jQuery); 
 // jquery.event.move
 //
 // 1.3.1
@@ -972,6 +586,368 @@ var Base64 = {
 	};
 });
  
+// jQuery.event.swipe
+// 0.5
+// Stephen Band
+
+// Dependencies
+// jQuery.event.move 1.2
+
+// One of swipeleft, swiperight, swipeup or swipedown is triggered on
+// moveend, when the move has covered a threshold ratio of the dimension
+// of the target node, or has gone really fast. Threshold and velocity
+// sensitivity changed with:
+//
+// jQuery.event.special.swipe.settings.threshold
+// jQuery.event.special.swipe.settings.sensitivity
+
+(function (module) {
+	if (typeof define === 'function' && define.amd) {
+		// AMD. Register as an anonymous module.
+		define(['jquery'], module);
+	} else {
+		// Browser globals
+		module(jQuery);
+	}
+})(function(jQuery, undefined){
+	var add = jQuery.event.add,
+	   
+	    remove = jQuery.event.remove,
+
+	    // Just sugar, so we can have arguments in the same order as
+	    // add and remove.
+	    trigger = function(node, type, data) {
+	    	jQuery.event.trigger(type, data, node);
+	    },
+
+	    settings = {
+	    	// Ratio of distance over target finger must travel to be
+	    	// considered a swipe.
+	    	threshold: 0.4,
+	    	// Faster fingers can travel shorter distances to be considered
+	    	// swipes. 'sensitivity' controls how much. Bigger is shorter.
+	    	sensitivity: 6
+	    };
+
+	function moveend(e) {
+		var w, h, event;
+
+		w = e.target.offsetWidth;
+		h = e.target.offsetHeight;
+
+		// Copy over some useful properties from the move event
+		event = {
+			distX: e.distX,
+			distY: e.distY,
+			velocityX: e.velocityX,
+			velocityY: e.velocityY,
+			finger: e.finger
+		};
+
+		// Find out which of the four directions was swiped
+		if (e.distX > e.distY) {
+			if (e.distX > -e.distY) {
+				if (e.distX/w > settings.threshold || e.velocityX * e.distX/w * settings.sensitivity > 1) {
+					event.type = 'swiperight';
+					trigger(e.currentTarget, event);
+				}
+			}
+			else {
+				if (-e.distY/h > settings.threshold || e.velocityY * e.distY/w * settings.sensitivity > 1) {
+					event.type = 'swipeup';
+					trigger(e.currentTarget, event);
+				}
+			}
+		}
+		else {
+			if (e.distX > -e.distY) {
+				if (e.distY/h > settings.threshold || e.velocityY * e.distY/w * settings.sensitivity > 1) {
+					event.type = 'swipedown';
+					trigger(e.currentTarget, event);
+				}
+			}
+			else {
+				if (-e.distX/w > settings.threshold || e.velocityX * e.distX/w * settings.sensitivity > 1) {
+					event.type = 'swipeleft';
+					trigger(e.currentTarget, event);
+				}
+			}
+		}
+	}
+
+	function getData(node) {
+		var data = jQuery.data(node, 'event_swipe');
+		
+		if (!data) {
+			data = { count: 0 };
+			jQuery.data(node, 'event_swipe', data);
+		}
+		
+		return data;
+	}
+
+	jQuery.event.special.swipe =
+	jQuery.event.special.swipeleft =
+	jQuery.event.special.swiperight =
+	jQuery.event.special.swipeup =
+	jQuery.event.special.swipedown = {
+		setup: function( data, namespaces, eventHandle ) {
+			var data = getData(this);
+
+			// If another swipe event is already setup, don't setup again.
+			if (data.count++ > 0) { return; }
+
+			add(this, 'moveend', moveend);
+
+			return true;
+		},
+
+		teardown: function() {
+			var data = getData(this);
+
+			// If another swipe event is still setup, don't teardown.
+			if (--data.count > 0) { return; }
+
+			remove(this, 'moveend', moveend);
+
+			return true;
+		},
+
+		settings: settings
+	};
+}); 
+(function() {
+
+	var translate = function(text)
+	{
+		var xlate = translateLookup(text);
+		
+		if (typeof xlate == "function")
+		{
+			xlate = xlate.apply(this, arguments);
+		}
+		else if (arguments.length > 1)
+		{
+			var aps = Array.prototype.slice;
+			var args = aps.call( arguments, 1 );
+  
+			xlate = formatter(xlate, args);
+		}
+		
+		return xlate;
+	};
+	
+	// I want it available explicity as well as via the object
+	translate.translate = translate;
+	
+	//from https://gist.github.com/776196 via http://davedash.com/2010/11/19/pythonic-string-formatting-in-javascript/ 
+	var defaultFormatter = (function() {
+		var re = /\{([^}]+)\}/g;
+		return function(s, args) {
+			return s.replace(re, function(_, match){ return args[match]; });
+		};
+	}());
+	var formatter = defaultFormatter;
+	translate.setFormatter = function(newFormatter)
+	{
+		formatter = newFormatter;
+	};
+	
+	translate.format = function()
+	{
+		var aps = Array.prototype.slice;
+		var s = arguments[0];
+		var args = aps.call( arguments, 1 );
+  
+		return formatter(s, args);
+	};
+
+	var dynoTrans = null;
+	translate.setDynamicTranslator = function(newDynoTrans)
+	{
+		dynoTrans = newDynoTrans;
+	};
+
+	var translation = null;
+	translate.setTranslation = function(newTranslation)
+	{
+		translation = newTranslation;
+	};
+	
+	function translateLookup(target)
+	{
+		if (translation == null || target == null)
+		{
+			return target;
+		}
+		
+		if (target in translation === false)
+		{
+			if (dynoTrans != null)
+			{
+				return dynoTrans(target);
+			}
+			return target;
+		}
+		
+		var result = translation[target];
+		if (result == null)
+		{
+			return target;
+		}
+		
+		return result;
+	}
+	
+	window._ = translate;
+
+})();
+ 
+/**
+*
+*  Base64 encode / decode
+*  http://www.webtoolkit.info/
+*
+**/
+var Base64 = {
+
+	// private property
+	_keyStr : "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
+
+	// public method for encoding
+	encode : function (input) {
+		var output = "";
+		var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
+		var i = 0;
+
+		input = Base64._utf8_encode(input);
+
+		while (i < input.length) {
+
+			chr1 = input.charCodeAt(i++);
+			chr2 = input.charCodeAt(i++);
+			chr3 = input.charCodeAt(i++);
+
+			enc1 = chr1 >> 2;
+			enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
+			enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
+			enc4 = chr3 & 63;
+
+			if (isNaN(chr2)) {
+				enc3 = enc4 = 64;
+			} else if (isNaN(chr3)) {
+				enc4 = 64;
+			}
+
+			output = output +
+			this._keyStr.charAt(enc1) + this._keyStr.charAt(enc2) +
+			this._keyStr.charAt(enc3) + this._keyStr.charAt(enc4);
+
+		}
+
+		return output;
+	},
+
+	// public method for decoding
+	decode : function (input) {
+		var output = "";
+		var chr1, chr2, chr3;
+		var enc1, enc2, enc3, enc4;
+		var i = 0;
+
+		input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
+
+		while (i < input.length) {
+
+			enc1 = this._keyStr.indexOf(input.charAt(i++));
+			enc2 = this._keyStr.indexOf(input.charAt(i++));
+			enc3 = this._keyStr.indexOf(input.charAt(i++));
+			enc4 = this._keyStr.indexOf(input.charAt(i++));
+
+			chr1 = (enc1 << 2) | (enc2 >> 4);
+			chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
+			chr3 = ((enc3 & 3) << 6) | enc4;
+
+			output = output + String.fromCharCode(chr1);
+
+			if (enc3 != 64) {
+				output = output + String.fromCharCode(chr2);
+			}
+			if (enc4 != 64) {
+				output = output + String.fromCharCode(chr3);
+			}
+
+		}
+
+		output = Base64._utf8_decode(output);
+	
+		return output;
+
+	},
+
+	// private method for UTF-8 encoding
+	_utf8_encode : function (string) {
+		string = string.replace(/\r\n/g,"\n");
+		var utftext = "";
+
+		for (var n = 0; n < string.length; n++) {
+
+			var c = string.charCodeAt(n);
+
+			if (c < 128) {
+				utftext += String.fromCharCode(c);
+			}
+			else if((c > 127) && (c < 2048)) {
+				utftext += String.fromCharCode((c >> 6) | 192);
+				utftext += String.fromCharCode((c & 63) | 128);
+			}
+			else {
+				utftext += String.fromCharCode((c >> 12) | 224);
+				utftext += String.fromCharCode(((c >> 6) & 63) | 128);
+				utftext += String.fromCharCode((c & 63) | 128);
+			}
+
+		}
+
+		return utftext;
+	},
+
+	// private method for UTF-8 decoding
+	_utf8_decode : function (utftext) {
+		var string = "";
+		var i = 0;
+		var c = c2 = 0;
+
+		while ( i < utftext.length ) {
+
+			c = utftext.charCodeAt(i);
+
+			if (c < 128) {
+				string += String.fromCharCode(c);
+				i++;
+			}
+			else if((c > 191) && (c < 224)) {
+				c2 = utftext.charCodeAt(i+1);
+				string += String.fromCharCode(((c & 31) << 6) | (c2 & 63));
+				i += 2;
+			}
+			else {
+				c2 = utftext.charCodeAt(i+1);
+				c3 = utftext.charCodeAt(i+2);
+				string += String.fromCharCode(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63));
+				i += 3;
+			}
+
+		}
+
+		return string;
+	}
+
+}
+ 
+/*! jQuery Color v@2.1.2 http://github.com/jquery/jquery-color | jquery.org/license */
+(function(a,b){function m(a,b,c){var d=h[b.type]||{};return a==null?c||!b.def?null:b.def:(a=d.floor?~~a:parseFloat(a),isNaN(a)?b.def:d.mod?(a+d.mod)%d.mod:0>a?0:d.max<a?d.max:a)}function n(b){var c=f(),d=c._rgba=[];return b=b.toLowerCase(),l(e,function(a,e){var f,h=e.re.exec(b),i=h&&e.parse(h),j=e.space||"rgba";if(i)return f=c[j](i),c[g[j].cache]=f[g[j].cache],d=c._rgba=f._rgba,!1}),d.length?(d.join()==="0,0,0,0"&&a.extend(d,k.transparent),c):k[b]}function o(a,b,c){return c=(c+1)%1,c*6<1?a+(b-a)*c*6:c*2<1?b:c*3<2?a+(b-a)*(2/3-c)*6:a}var c="backgroundColor borderBottomColor borderLeftColor borderRightColor borderTopColor color columnRuleColor outlineColor textDecorationColor textEmphasisColor",d=/^([\-+])=\s*(\d+\.?\d*)/,e=[{re:/rgba?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*(?:,\s*(\d?(?:\.\d+)?)\s*)?\)/,parse:function(a){return[a[1],a[2],a[3],a[4]]}},{re:/rgba?\(\s*(\d+(?:\.\d+)?)\%\s*,\s*(\d+(?:\.\d+)?)\%\s*,\s*(\d+(?:\.\d+)?)\%\s*(?:,\s*(\d?(?:\.\d+)?)\s*)?\)/,parse:function(a){return[a[1]*2.55,a[2]*2.55,a[3]*2.55,a[4]]}},{re:/#([a-f0-9]{2})([a-f0-9]{2})([a-f0-9]{2})/,parse:function(a){return[parseInt(a[1],16),parseInt(a[2],16),parseInt(a[3],16)]}},{re:/#([a-f0-9])([a-f0-9])([a-f0-9])/,parse:function(a){return[parseInt(a[1]+a[1],16),parseInt(a[2]+a[2],16),parseInt(a[3]+a[3],16)]}},{re:/hsla?\(\s*(\d+(?:\.\d+)?)\s*,\s*(\d+(?:\.\d+)?)\%\s*,\s*(\d+(?:\.\d+)?)\%\s*(?:,\s*(\d?(?:\.\d+)?)\s*)?\)/,space:"hsla",parse:function(a){return[a[1],a[2]/100,a[3]/100,a[4]]}}],f=a.Color=function(b,c,d,e){return new a.Color.fn.parse(b,c,d,e)},g={rgba:{props:{red:{idx:0,type:"byte"},green:{idx:1,type:"byte"},blue:{idx:2,type:"byte"}}},hsla:{props:{hue:{idx:0,type:"degrees"},saturation:{idx:1,type:"percent"},lightness:{idx:2,type:"percent"}}}},h={"byte":{floor:!0,max:255},percent:{max:1},degrees:{mod:360,floor:!0}},i=f.support={},j=a("<p>")[0],k,l=a.each;j.style.cssText="background-color:rgba(1,1,1,.5)",i.rgba=j.style.backgroundColor.indexOf("rgba")>-1,l(g,function(a,b){b.cache="_"+a,b.props.alpha={idx:3,type:"percent",def:1}}),f.fn=a.extend(f.prototype,{parse:function(c,d,e,h){if(c===b)return this._rgba=[null,null,null,null],this;if(c.jquery||c.nodeType)c=a(c).css(d),d=b;var i=this,j=a.type(c),o=this._rgba=[];d!==b&&(c=[c,d,e,h],j="array");if(j==="string")return this.parse(n(c)||k._default);if(j==="array")return l(g.rgba.props,function(a,b){o[b.idx]=m(c[b.idx],b)}),this;if(j==="object")return c instanceof f?l(g,function(a,b){c[b.cache]&&(i[b.cache]=c[b.cache].slice())}):l(g,function(b,d){var e=d.cache;l(d.props,function(a,b){if(!i[e]&&d.to){if(a==="alpha"||c[a]==null)return;i[e]=d.to(i._rgba)}i[e][b.idx]=m(c[a],b,!0)}),i[e]&&a.inArray(null,i[e].slice(0,3))<0&&(i[e][3]=1,d.from&&(i._rgba=d.from(i[e])))}),this},is:function(a){var b=f(a),c=!0,d=this;return l(g,function(a,e){var f,g=b[e.cache];return g&&(f=d[e.cache]||e.to&&e.to(d._rgba)||[],l(e.props,function(a,b){if(g[b.idx]!=null)return c=g[b.idx]===f[b.idx],c})),c}),c},_space:function(){var a=[],b=this;return l(g,function(c,d){b[d.cache]&&a.push(c)}),a.pop()},transition:function(a,b){var c=f(a),d=c._space(),e=g[d],i=this.alpha()===0?f("transparent"):this,j=i[e.cache]||e.to(i._rgba),k=j.slice();return c=c[e.cache],l(e.props,function(a,d){var e=d.idx,f=j[e],g=c[e],i=h[d.type]||{};if(g===null)return;f===null?k[e]=g:(i.mod&&(g-f>i.mod/2?f+=i.mod:f-g>i.mod/2&&(f-=i.mod)),k[e]=m((g-f)*b+f,d))}),this[d](k)},blend:function(b){if(this._rgba[3]===1)return this;var c=this._rgba.slice(),d=c.pop(),e=f(b)._rgba;return f(a.map(c,function(a,b){return(1-d)*e[b]+d*a}))},toRgbaString:function(){var b="rgba(",c=a.map(this._rgba,function(a,b){return a==null?b>2?1:0:a});return c[3]===1&&(c.pop(),b="rgb("),b+c.join()+")"},toHslaString:function(){var b="hsla(",c=a.map(this.hsla(),function(a,b){return a==null&&(a=b>2?1:0),b&&b<3&&(a=Math.round(a*100)+"%"),a});return c[3]===1&&(c.pop(),b="hsl("),b+c.join()+")"},toHexString:function(b){var c=this._rgba.slice(),d=c.pop();return b&&c.push(~~(d*255)),"#"+a.map(c,function(a){return a=(a||0).toString(16),a.length===1?"0"+a:a}).join("")},toString:function(){return this._rgba[3]===0?"transparent":this.toRgbaString()}}),f.fn.parse.prototype=f.fn,g.hsla.to=function(a){if(a[0]==null||a[1]==null||a[2]==null)return[null,null,null,a[3]];var b=a[0]/255,c=a[1]/255,d=a[2]/255,e=a[3],f=Math.max(b,c,d),g=Math.min(b,c,d),h=f-g,i=f+g,j=i*.5,k,l;return g===f?k=0:b===f?k=60*(c-d)/h+360:c===f?k=60*(d-b)/h+120:k=60*(b-c)/h+240,h===0?l=0:j<=.5?l=h/i:l=h/(2-i),[Math.round(k)%360,l,j,e==null?1:e]},g.hsla.from=function(a){if(a[0]==null||a[1]==null||a[2]==null)return[null,null,null,a[3]];var b=a[0]/360,c=a[1],d=a[2],e=a[3],f=d<=.5?d*(1+c):d+c-d*c,g=2*d-f;return[Math.round(o(g,f,b+1/3)*255),Math.round(o(g,f,b)*255),Math.round(o(g,f,b-1/3)*255),e]},l(g,function(c,e){var g=e.props,h=e.cache,i=e.to,j=e.from;f.fn[c]=function(c){i&&!this[h]&&(this[h]=i(this._rgba));if(c===b)return this[h].slice();var d,e=a.type(c),k=e==="array"||e==="object"?c:arguments,n=this[h].slice();return l(g,function(a,b){var c=k[e==="object"?a:b.idx];c==null&&(c=n[b.idx]),n[b.idx]=m(c,b)}),j?(d=f(j(n)),d[h]=n,d):f(n)},l(g,function(b,e){if(f.fn[b])return;f.fn[b]=function(f){var g=a.type(f),h=b==="alpha"?this._hsla?"hsla":"rgba":c,i=this[h](),j=i[e.idx],k;return g==="undefined"?j:(g==="function"&&(f=f.call(this,j),g=a.type(f)),f==null&&e.empty?this:(g==="string"&&(k=d.exec(f),k&&(f=j+parseFloat(k[2])*(k[1]==="+"?1:-1))),i[e.idx]=f,this[h](i)))}})}),f.hook=function(b){var c=b.split(" ");l(c,function(b,c){a.cssHooks[c]={set:function(b,d){var e,g,h="";if(d!=="transparent"&&(a.type(d)!=="string"||(e=n(d)))){d=f(e||d);if(!i.rgba&&d._rgba[3]!==1){g=c==="backgroundColor"?b.parentNode:b;while((h===""||h==="transparent")&&g&&g.style)try{h=a.css(g,"backgroundColor"),g=g.parentNode}catch(j){}d=d.blend(h&&h!=="transparent"?h:"_default")}d=d.toRgbaString()}try{b.style[c]=d}catch(j){}}},a.fx.step[c]=function(b){b.colorInit||(b.start=f(b.elem,c),b.end=f(b.end),b.colorInit=!0),a.cssHooks[c].set(b.elem,b.start.transition(b.end,b.pos))}})},f.hook(c),a.cssHooks.borderColor={expand:function(a){var b={};return l(["Top","Right","Bottom","Left"],function(c,d){b["border"+d+"Color"]=a}),b}},k=a.Color.names={aqua:"#00ffff",black:"#000000",blue:"#0000ff",fuchsia:"#ff00ff",gray:"#808080",green:"#008000",lime:"#00ff00",maroon:"#800000",navy:"#000080",olive:"#808000",purple:"#800080",red:"#ff0000",silver:"#c0c0c0",teal:"#008080",white:"#ffffff",yellow:"#ffff00",transparent:[null,null,null,0],_default:"#ffffff"}})(jQuery); 
+
 var langs = {
 	'cs':'czech',
 	'de':'deutsch',
@@ -999,6 +975,516 @@ var langs = {
 	'vi':'tiß║┐ng viß╗çt',
 	'zh_cn':'τ«ÇΣ╜ôΣ╕¡µûç',
 	'zh_tw':'τ╣üΘ½öΣ╕¡µûç'
+};
+
+/**
+ * Module that defines all audio files
+ */
+var AudioLibrary = {
+    MUSIC_DUSTY_PATH: 'audio/dusty-path.flac',
+    MUSIC_SILENT_FOREST: 'audio/silent-forest.flac',
+    MUSIC_LONELY_HUT: 'audio/lonely-hut.flac',
+    MUSIC_TINY_VILLAGE: 'audio/tiny-village.flac',
+    MUSIC_MODEST_VILLAGE: 'audio/modest-village.flac',
+    MUSIC_LARGE_VILLAGE: 'audio/large-village.flac',
+    MUSIC_RAUCOUS_VILLAGE: 'audio/raucous-village.flac',
+    MUSIC_FIRE_DEAD: 'audio/fire-dead.flac',
+    MUSIC_FIRE_SMOLDERING: 'audio/fire-smoldering.flac',
+    MUSIC_FIRE_FLICKERING: 'audio/fire-flickering.flac',
+    MUSIC_FIRE_BURNING: 'audio/fire-burning.flac',
+    MUSIC_FIRE_ROARING: 'audio/fire-roaring.flac',
+    MUSIC_WORLD: 'audio/world.flac',
+    MUSIC_SPACE: 'audio/space.flac',
+    MUSIC_ENDING: 'audio/ending.flac',
+    MUSIC_SHIP: 'audio/ship.flac',
+    EVENT_NOMAD: 'audio/event-nomad.flac',
+    EVENT_NOISES_OUTSIDE: 'audio/event-noises-outside.flac',
+    EVENT_NOISES_INSIDE: 'audio/event-noises-inside.flac',
+    EVENT_BEGGAR: 'audio/event-beggar.flac',
+    EVENT_SHADY_BUILDER: 'audio/event-shady-builder.flac',
+    EVENT_MYSTERIOUS_WANDERER: 'audio/event-mysterious-wanderer.flac',
+    EVENT_SCOUT: 'audio/event-scout.flac',
+    EVENT_WANDERING_MASTER: 'audio/event-wandering-master.flac',
+    EVENT_SICK_MAN: 'audio/event-sick-man.flac',
+    EVENT_RUINED_TRAP: 'audio/event-ruined-trap.flac',
+    EVENT_HUT_FIRE: 'audio/event-hut-fire.flac',
+    EVENT_SICKNESS: 'audio/event-sickness.flac',
+    EVENT_PLAGUE: 'audio/event-plague.flac',
+    EVENT_BEAST_ATTACK: 'audio/event-beast-attack.flac',
+    EVENT_SOLDIER_ATTACK: 'audio/event-soldier-attack.flac',
+    EVENT_THIEF: 'audio/event-thief.flac',
+    LANDMARK_FRIENDLY_OUTPOST: 'audio/landmark-friendly-outpost.flac',
+    LANDMARK_SWAMP: 'audio/landmark-swamp.flac',
+    LANDMARK_CAVE: 'audio/landmark-cave.flac',
+    LANDMARK_TOWN: 'audio/landmark-town.flac',
+    LANDMARK_CITY: 'audio/landmark-city.flac',
+    LANDMARK_HOUSE: 'audio/landmark-house.flac',
+    LANDMARK_BATTLEFIELD: 'audio/landmark-battlefield.flac',
+    LANDMARK_BOREHOLE: 'audio/landmark-borehole.flac',
+    LANDMARK_CRASHED_SHIP: 'audio/landmark-crashed-ship.flac',
+    LANDMARK_SULPHUR_MINE: 'audio/landmark-sulphurmine.flac',
+    LANDMARK_COAL_MINE: 'audio/landmark-coalmine.flac',
+    LANDMARK_IRON_MINE: 'audio/landmark-ironmine.flac',
+    LANDMARK_DESTROYED_VILLAGE: 'audio/landmark-destroyed-village.flac',
+    ENCOUNTER_TIER_1: 'audio/encounter-tier-1.flac',
+    ENCOUNTER_TIER_2: 'audio/encounter-tier-2.flac',
+    ENCOUNTER_TIER_3: 'audio/encounter-tier-3.flac',
+    LIGHT_FIRE: 'audio/light-fire.flac',
+    STOKE_FIRE: 'audio/stoke-fire.flac',
+    BUILD: 'audio/build.flac',
+    CRAFT: 'audio/craft.flac',
+    BUY: 'audio/buy.flac',
+    GATHER_WOOD: 'audio/gather-wood.flac',
+    CHECK_TRAPS: 'audio/check-traps.flac',
+    EMBARK: 'audio/embark.flac',
+    FOOTSTEPS_1: 'audio/footsteps-1.flac',
+    FOOTSTEPS_2: 'audio/footsteps-2.flac',
+    FOOTSTEPS_3: 'audio/footsteps-3.flac',
+    FOOTSTEPS_4: 'audio/footsteps-4.flac',
+    FOOTSTEPS_5: 'audio/footsteps-5.flac',
+    FOOTSTEPS_6: 'audio/footsteps-6.flac',
+    EAT_MEAT: 'audio/eat-meat.flac',
+    USE_MEDS: 'audio/use-meds.flac',
+    WEAPON_UNARMED_1: 'audio/weapon-unarmed-1.flac',
+    WEAPON_UNARMED_2: 'audio/weapon-unarmed-2.flac',
+    WEAPON_UNARMED_3: 'audio/weapon-unarmed-3.flac',
+    WEAPON_MELEE_1: 'audio/weapon-melee-1.flac',
+    WEAPON_MELEE_2: 'audio/weapon-melee-2.flac',
+    WEAPON_MELEE_3: 'audio/weapon-melee-3.flac',
+    WEAPON_RANGED_1: 'audio/weapon-ranged-1.flac',
+    WEAPON_RANGED_2: 'audio/weapon-ranged-2.flac',
+    WEAPON_RANGED_3: 'audio/weapon-ranged-3.flac',
+    DEATH: 'audio/death.flac',
+    REINFORCE_HULL: 'audio/reinforce-hull.flac',
+    UPGRADE_ENGINE: 'audio/upgrade-engine.flac',
+    LIFT_OFF: 'audio/lift-off.flac',
+    ASTEROID_HIT_1: 'audio/asteroid-hit-1.flac',
+    ASTEROID_HIT_2: 'audio/asteroid-hit-2.flac',
+    ASTEROID_HIT_3: 'audio/asteroid-hit-3.flac',
+    ASTEROID_HIT_4: 'audio/asteroid-hit-4.flac',
+    ASTEROID_HIT_5: 'audio/asteroid-hit-5.flac',
+    ASTEROID_HIT_6: 'audio/asteroid-hit-6.flac',
+    ASTEROID_HIT_7: 'audio/asteroid-hit-7.flac',
+    ASTEROID_HIT_8: 'audio/asteroid-hit-8.flac',
+    CRASH: 'audio/crash.flac',
+}; 
+var Button = {
+	Button: function(options) {
+		if(typeof options.cooldown == 'number') {
+			this.data_cooldown = options.cooldown;
+		}
+		this.data_remaining = 0;
+		if(typeof options.click == 'function') {
+			this.data_handler = options.click;
+		}
+
+		var el = $('<div>')
+			.attr('id', typeof(options.id) != 'undefined' ? options.id : "BTN_" + Engine.getGuid())
+			.addClass('button')
+			.text(typeof(options.text) != 'undefined' ? options.text : "button")
+			.click(function() {
+				if(!$(this).hasClass('disabled')) {
+					Button.cooldown($(this));
+					$(this).data("handler")($(this));
+				}
+			})
+			.data("handler",  typeof options.click == 'function' ? options.click : function() { Engine.log("click"); })
+			.data("remaining", 0)
+			.data("cooldown", typeof options.cooldown == 'number' ? options.cooldown : 0)
+			.data('boosted', options.boosted ?? (() => false));
+
+		el.append($("<div>").addClass('cooldown'));
+
+		// waiting for expiry of residual cooldown detected in state
+		Button.cooldown(el, 'state');
+
+		if(options.cost) {
+			var ttPos = options.ttPos ? options.ttPos : "bottom right";
+			var costTooltip = $('<div>').addClass('tooltip ' + ttPos);
+			for(var k in options.cost) {
+				$("<div>").addClass('row_key').text(_(k)).appendTo(costTooltip);
+				$("<div>").addClass('row_val').text(options.cost[k]).appendTo(costTooltip);
+			}
+			if(costTooltip.children().length > 0) {
+				costTooltip.appendTo(el);
+			}
+		}
+
+		if(options.width) {
+			el.css('width', options.width);
+		}
+
+		return el;
+	},
+
+	saveCooldown: true,
+
+	setDisabled: function(btn, disabled) {
+		if(btn) {
+			if(!disabled && !btn.data('onCooldown')) {
+				btn.removeClass('disabled');
+			} else if(disabled) {
+				btn.addClass('disabled');
+			}
+			btn.data('disabled', disabled);
+		}
+	},
+
+	isDisabled: function(btn) {
+		if(btn) {
+			return btn.data('disabled') === true;
+		}
+		return false;
+	},
+
+	cooldown: function(btn, option) {
+		var cd = btn.data("cooldown");
+		if (btn.data('boosted')()) {
+			cd /= 2;
+		}
+		var id = 'cooldown.'+ btn.attr('id');
+		if(cd > 0) {
+			if(typeof option == 'number') {
+				cd = option;
+			}
+			// param "start" takes value from cooldown time if not specified
+			var start, left;
+			switch(option){
+				// a switch will allow for several uses of cooldown function
+				case 'state':
+					if(!$SM.get(id)){
+						return;
+					}
+					start = Math.min($SM.get(id), cd);
+					left = (start / cd).toFixed(4);
+					break;
+				default:
+					start = cd;
+					left = 1;
+			}
+			Button.clearCooldown(btn);
+			if(Button.saveCooldown){
+				$SM.set(id,start);
+				// residual value is measured in seconds
+				// saves program performance
+				btn.data('countdown', Engine.setInterval(function(){
+					$SM.set(id, $SM.get(id, true) - 0.5, true);
+				},500));
+			}
+			var time = start;
+			if (Engine.options.doubleTime){
+				time /= 2;
+			}
+			$('div.cooldown', btn).width(left * 100 +"%").animate({width: '0%'}, time * 1000, 'linear', function() {
+				Button.clearCooldown(btn, true);
+			});
+			btn.addClass('disabled');
+			btn.data('onCooldown', true);
+		}
+	},
+
+	clearCooldown: function(btn, cooldownEnded) {
+		var ended = cooldownEnded || false;
+		if(!ended){
+			$('div.cooldown', btn).stop(true, true);
+		}
+		btn.data('onCooldown', false);
+		if(btn.data('countdown')){
+			window.clearInterval(btn.data('countdown'));
+			$SM.remove('cooldown.'+ btn.attr('id'));
+			btn.removeData('countdown');
+		}
+		if(!btn.data('disabled')) {
+			btn.removeClass('disabled');
+		}
+	}
+};
+
+/**
+ * Module that takes care of audio playback
+ */
+var AudioEngine = {
+    FADE_TIME: 1,
+    AUDIO_BUFFER_CACHE: {},
+    _audioContext: null,
+    _master: null,
+    _currentBackgroundMusic: null,
+    _currentEventAudio: null,
+    _currentSoundEffectAudio: null,
+    _initialized: false,
+    init: function () {
+        AudioEngine._initAudioContext();
+        // AudioEngine._preloadAudio(); // removed to save bandwidth
+        AudioEngine._initialized = true;
+    },
+    _preloadAudio: function () {
+        // start loading music and events early
+        // ** could be used later if we specify a better set of
+        // audio files to preload -- i.e. we probably don't need to load
+        // the later villages or events audio, and esp. not the ending
+        for (var key in AudioLibrary) {
+            if (
+            key.toString().indexOf('MUSIC_') > -1 ||
+            key.toString().indexOf('EVENT_') > -1) {
+                AudioEngine.loadAudioFile(AudioLibrary[key]);
+            }
+        }
+    },
+    _initAudioContext: function () {
+        AudioEngine._audioContext = new (window.AudioContext || window.webkitAudioContext);
+        AudioEngine._createMasterChannel();
+    },
+    _createMasterChannel: function () {
+        // create master
+        AudioEngine._master = AudioEngine._audioContext.createGain();
+        AudioEngine._master.gain.setValueAtTime(1.0, AudioEngine._audioContext.currentTime);
+        AudioEngine._master.connect(AudioEngine._audioContext.destination);
+    },
+    _getMissingAudioBuffer: function () {
+        // plays beeping sound to indicate missing audio
+        var buffer = AudioEngine._audioContext.createBuffer(
+            1,
+            AudioEngine._audioContext.sampleRate,
+            AudioEngine._audioContext.sampleRate
+        );
+        // Fill the buffer
+        var bufferData = buffer.getChannelData(0);
+        for (var i = 0; i < buffer.length / 2; i++) {
+            bufferData[i] = Math.sin(i * 0.05) / 4; // max .25 gain value
+        }
+        return buffer;
+    },
+    _playSound: function (buffer) {
+        if (AudioEngine._currentSoundEffectAudio &&
+            AudioEngine._currentSoundEffectAudio.source.buffer == buffer) {
+            return;
+        }
+
+        var source = AudioEngine._audioContext.createBufferSource();
+        source.buffer = buffer;
+        source.onended = function(event) {
+            // dereference current sound effect when finished
+            if (AudioEngine._currentSoundEffectAudio &&
+                AudioEngine._currentSoundEffectAudio.source.buffer == buffer) {
+                AudioEngine._currentSoundEffectAudio = null;
+            }
+        };
+
+        source.connect(AudioEngine._master);
+        source.start();
+
+        AudioEngine._currentSoundEffectAudio = {
+            source: source
+        };
+    },
+    _playBackgroundMusic: function (buffer) {
+        var source = AudioEngine._audioContext.createBufferSource();
+        source.buffer = buffer;
+        source.loop = true;
+
+        var envelope = AudioEngine._audioContext.createGain();
+        envelope.gain.setValueAtTime(0.0, AudioEngine._audioContext.currentTime);
+        
+        var fadeTime = AudioEngine._audioContext.currentTime + AudioEngine.FADE_TIME;
+
+        // fade out current background music
+        if (AudioEngine._currentBackgroundMusic && 
+            AudioEngine._currentBackgroundMusic.source &&
+            AudioEngine._currentBackgroundMusic.source.playbackState !== 0) {
+            var currentBackgroundGainValue = AudioEngine._currentBackgroundMusic.envelope.gain.value;
+            AudioEngine._currentBackgroundMusic.envelope.gain.cancelScheduledValues(AudioEngine._audioContext.currentTime);
+            AudioEngine._currentBackgroundMusic.envelope.gain.setValueAtTime(currentBackgroundGainValue, AudioEngine._audioContext.currentTime);
+            AudioEngine._currentBackgroundMusic.envelope.gain.linearRampToValueAtTime(0.0, fadeTime);
+            AudioEngine._currentBackgroundMusic.source.stop(fadeTime + 0.3); // make sure fade has completed
+        }
+
+        // fade in new backgorund music
+        source.connect(envelope);
+        envelope.connect(AudioEngine._master);
+        source.start();
+        envelope.gain.linearRampToValueAtTime(1.0, fadeTime);
+
+        // update current background music
+        AudioEngine._currentBackgroundMusic = {
+            source: source,
+            envelope: envelope
+        };
+    },
+    _playEventMusic: function (buffer) {
+        var source = AudioEngine._audioContext.createBufferSource();
+        source.buffer = buffer;
+        source.loop = true;
+
+        var envelope = AudioEngine._audioContext.createGain();
+        envelope.gain.setValueAtTime(0.0, AudioEngine._audioContext.currentTime);
+
+        var fadeTime = AudioEngine._audioContext.currentTime + AudioEngine.FADE_TIME * 2;
+
+        // turn down current background music
+        if (AudioEngine._currentBackgroundMusic != null) {
+            var currentBackgroundGainValue = AudioEngine._currentBackgroundMusic.envelope.gain.value;
+            AudioEngine._currentBackgroundMusic.envelope.gain.cancelScheduledValues(AudioEngine._audioContext.currentTime);
+            AudioEngine._currentBackgroundMusic.envelope.gain.setValueAtTime(currentBackgroundGainValue, AudioEngine._audioContext.currentTime);
+            AudioEngine._currentBackgroundMusic.envelope.gain.linearRampToValueAtTime(0.2, fadeTime);
+        }
+
+        // fade in event music
+        source.connect(envelope);
+        envelope.connect(AudioEngine._master);
+        source.start();
+        envelope.gain.linearRampToValueAtTime(1.0, fadeTime);
+
+        // update reference
+        AudioEngine._currentEventAudio = {
+            source: source,
+            envelope: envelope
+        };
+    },
+    _stopEventMusic: function () {
+        var fadeTime = AudioEngine._audioContext.currentTime + AudioEngine.FADE_TIME * 2;
+
+        // fade out event music and stop
+        if (AudioEngine._currentEventAudio && 
+            AudioEngine._currentEventAudio.source && 
+            AudioEngine._currentEventAudio.source.buffer) {
+            var currentEventGainValue = AudioEngine._currentEventAudio.envelope.gain.value;
+            AudioEngine._currentEventAudio.envelope.gain.cancelScheduledValues(AudioEngine._audioContext.currentTime);
+            AudioEngine._currentEventAudio.envelope.gain.setValueAtTime(currentEventGainValue, AudioEngine._audioContext.currentTime);
+            AudioEngine._currentEventAudio.envelope.gain.linearRampToValueAtTime(0.0, fadeTime);
+            AudioEngine._currentEventAudio.source.stop(fadeTime + 1); // make sure fade has completed
+            AudioEngine._currentEventAudio = null;
+        }
+
+        // turn up background music
+        if (AudioEngine._currentBackgroundMusic) {
+          var currentBackgroundGainValue = AudioEngine._currentBackgroundMusic.envelope.gain.value;
+          AudioEngine._currentBackgroundMusic.envelope.gain.cancelScheduledValues(AudioEngine._audioContext.currentTime);
+          AudioEngine._currentBackgroundMusic.envelope.gain.setValueAtTime(currentBackgroundGainValue, AudioEngine._audioContext.currentTime);
+          AudioEngine._currentBackgroundMusic.envelope.gain.linearRampToValueAtTime(1.0, fadeTime);
+        }
+    },
+    isAudioContextRunning: function () {
+        return AudioEngine._audioContext.state !== 'suspended';
+    },
+    tryResumingAudioContext: function() {
+        if (AudioEngine._audioContext.state === 'suspended') {
+            AudioEngine._audioContext.resume();
+        }
+    },
+    playBackgroundMusic: function (src) {
+        if (!AudioEngine._initialized) {
+          return;
+        }
+        AudioEngine.loadAudioFile(src)
+            .then(function (buffer) {
+                AudioEngine._playBackgroundMusic(buffer);
+            });
+    },
+    playEventMusic: function (src) {
+        if (!AudioEngine._initialized) {
+          return;
+        }
+        AudioEngine.loadAudioFile(src)
+            .then(function (buffer) {
+                AudioEngine._playEventMusic(buffer);
+            });
+    },
+    stopEventMusic: function () {
+        if (!AudioEngine._initialized) {
+          return;
+        }
+        AudioEngine._stopEventMusic();
+    },
+    playSound: function (src) {
+        if (!AudioEngine._initialized) {
+          return;
+        }
+        AudioEngine.loadAudioFile(src)
+            .then(function (buffer) {
+                AudioEngine._playSound(buffer);
+            });
+    },
+    loadAudioFile: function (src) {
+        if (src.indexOf('http') === -1) {
+            var path = window.location.protocol + '//' + window.location.hostname + (window.location.port ?(':' + window.location.port) : '') + window.location.pathname;
+            if(path.endsWith('index.html')){
+                path = path.slice(0, - 10); 
+            }
+            src = path + src;
+        }
+        if (AudioEngine.AUDIO_BUFFER_CACHE[src]) {
+            return new Promise(function (resolve, reject) {
+                resolve(AudioEngine.AUDIO_BUFFER_CACHE[src]);
+            });
+        } else {
+            var request = new Request(src);
+            return fetch(request).then(function (response) {
+                return response.arrayBuffer();
+            }).then(function (buffer) {
+                if (buffer.byteLength === 0) {
+                    console.error('cannot load audio from ' + src);
+                    return AudioEngine._getMissingAudioBuffer();
+                }
+
+                var decodeAudioDataPromise = AudioEngine._audioContext.decodeAudioData(buffer, function (decodedData) {
+                    AudioEngine.AUDIO_BUFFER_CACHE[src] = decodedData;
+                    return AudioEngine.AUDIO_BUFFER_CACHE[src];
+                });
+
+                // Safari WebAudio does not return a promise based API for
+                // decodeAudioData, so we need to fake it if we want to play
+                // audio immediately on first fetch
+                if (decodeAudioDataPromise) {
+                    return decodeAudioDataPromise;
+                } else {
+                    return new Promise(function (resolve, reject) {
+                        var fakePromiseId = setInterval(function() {
+                            if (AudioEngine.AUDIO_BUFFER_CACHE[src]) {
+                                resolve(AudioEngine.AUDIO_BUFFER_CACHE[src]);
+                                clearInterval(fakePromiseId);
+                            }
+                        }, 20);
+                    });
+                }
+            });
+        }
+    },
+    setBackgroundMusicVolume: function (volume, s) {
+        if (AudioEngine._master == null) return;  // master may not be ready yet
+        if (volume === undefined) {
+            volume = 1.0;
+        }
+        if (s === undefined) {
+            s = 1.0;
+        }
+
+        // cancel any current schedules and then ramp
+        var currentBackgroundGainValue = AudioEngine._currentBackgroundMusic.envelope.gain.value;
+        AudioEngine._currentBackgroundMusic.envelope.gain.cancelScheduledValues(AudioEngine._audioContext.currentTime);
+        AudioEngine._currentBackgroundMusic.envelope.gain.setValueAtTime(currentBackgroundGainValue, AudioEngine._audioContext.currentTime);
+        AudioEngine._currentBackgroundMusic.envelope.gain.linearRampToValueAtTime(
+            volume,
+            AudioEngine._audioContext.currentTime + s
+        );
+    },
+    setMasterVolume: function (volume, s) {
+        if (AudioEngine._master == null) return;  // master may not be ready yet
+        if (volume === undefined) {
+            volume = 1.0;
+        }
+        if (s === undefined) {
+            s = 1.0;
+        }
+
+        // cancel any current schedules and then ramp
+        var currentGainValue = AudioEngine._master.gain.value;
+        AudioEngine._master.gain.cancelScheduledValues(AudioEngine._audioContext.currentTime);
+        AudioEngine._master.gain.setValueAtTime(currentGainValue, AudioEngine._audioContext.currentTime);
+        AudioEngine._master.gain.linearRampToValueAtTime(
+            volume,
+            AudioEngine._audioContext.currentTime + s
+        );
+    }
 };
  
 (function() {
@@ -1945,1771 +2431,290 @@ $(function() {
 });
  
 /**
- * Module that handles the random event system
+ * Module that takes care of audio playback
  */
-var Events = {
-
-	_EVENT_TIME_RANGE: [3, 6], // range, in minutes
-	_PANEL_FADE: 200,
-	_FIGHT_SPEED: 100,
-	_EAT_COOLDOWN: 5,
-	_MEDS_COOLDOWN: 7,
-	_HYPO_COOLDOWN: 7,
-	_SHIELD_COOLDOWN: 10,
-	_STIM_COOLDOWN: 10,
-	_LEAVE_COOLDOWN: 1,
-	STUN_DURATION: 4000,
-	ENERGISE_MULTIPLIER: 4,
-	EXPLOSION_DURATION: 3000,
-	ENRAGE_DURATION: 4000,
-	MEDITATE_DURATION: 5000,
-	BOOST_DURATION: 3000,
-	BOOST_DAMAGE: 10,
-	DOT_TICK: 1000,
-	BLINK_INTERVAL: false,
-	init: function(options) {
-		this.options = $.extend(
-			this.options,
-			options
-		);
-
-		// Build the Event Pool
-		Events.EventPool = [].concat(
-			Events.Global,
-			Events.Room,
-			Events.Outside,
-      Events.Marketing
-		);
-
-		Events.eventStack = [];
-
-		Events.scheduleNextEvent();
-
-		//subscribe to stateUpdates
-		$.Dispatch('stateUpdate').subscribe(Events.handleStateUpdates);
-
-		//check for stored delayed events
-		Events.initDelay();
-	},
-
-	options: {}, // Nothing for now
-
-	delayState: 'wait',
-	activeScene: null,
-
-	loadScene: function(name) {
-		Engine.log('loading scene: ' + name);
-		Events.activeScene = name;
-		var scene = Events.activeEvent().scenes[name];
-
-		// onLoad
-		if(scene.onLoad) {
-			scene.onLoad();
-		}
-
-		// Notify the scene change
-		if(scene.notification) {
-			Notifications.notify(null, scene.notification);
-		}
-
-		// Scene reward
-		if(scene.reward) {
-			$SM.addM('stores', scene.reward);
-		}
-
-		$('#description', Events.eventPanel()).empty();
-		$('#buttons', Events.eventPanel()).empty();
-		if(scene.combat) {
-			Events.startCombat(scene);
-		} else {
-			Events.startStory(scene);
-		}
-	},
-
-	startCombat: function(scene) {
-		Engine.event('game event', 'combat');
-		Events.fought = false;
-		Events.won = false;
-		var desc = $('#description', Events.eventPanel());
-
-		$('<div>').text(scene.notification).appendTo(desc);
-
-		// Draw pause button
-		/* Disable for now, because it doesn't work and looks weird
-		var pauseBox = $('<div>').attr('id', 'pauseButton').appendTo(desc);
-		var pause = new Button.Button({
-			id: 'pause',
-			text: '',
-			cooldown: Events._PAUSE_COOLDOWN,
-			click: Events.togglePause
-		}).appendTo(pauseBox);
-		$('<span>').addClass('text').insertBefore(pause.children('.cooldown'));
-		$('<div>').addClass('clear').appendTo(pauseBox);
-		Events.setPause(pause, 'set');
-		Events.removePause(pause, 'set');
-		*/
-
-		var fightBox = $('<div>').attr('id', 'fight').appendTo(desc);
-		// Draw the wanderer
-		Events.createFighterDiv('@', World.health, World.getMaxHealth()).attr('id', 'wanderer').appendTo(fightBox);
-		// Draw the enemy
-		Events.createFighterDiv(scene.chara, scene.health, scene.health).attr('id', 'enemy').appendTo(fightBox);
-
-		// Draw the action buttons
-		var btns = $('#buttons', Events.eventPanel());
-
-		var attackBtns = $('<div>').appendTo(btns).attr('id','attackButtons');
-		var numWeapons = 0;
-		for(var k in World.Weapons) {
-			var weapon = World.Weapons[k];
-			if(typeof Path.outfit[k] == 'number' && Path.outfit[k] > 0) {
-				if(typeof weapon.damage != 'number' || weapon.damage === 0) {
-					// Weapons that deal no damage don't count
-					numWeapons--;
-				} else if(weapon.cost){
-					for(var c in weapon.cost) {
-						var num = weapon.cost[c];
-						if(typeof Path.outfit[c] != 'number' || Path.outfit[c] < num) {
-							// Can't use this weapon, so don't count it
-							numWeapons--;
-						}
-					}
-				}
-				numWeapons++;
-				Events.createAttackButton(k).appendTo(attackBtns);
-			}
-		}
-		if(numWeapons === 0) {
-			// No weapons? You can punch stuff!
-			Events.createAttackButton('fists').prependTo(attackBtns);
-		}
-		$('<div>').addClass('clear').appendTo(attackBtns);
-
-		var healBtns = $('<div>').appendTo(btns).attr('id','healButtons');
-		Events.createEatMeatButton().appendTo(healBtns);
-		if((Path.outfit['medicine'] || 0) !== 0) {
-			Events.createUseMedsButton().appendTo(healBtns);
-		}
-		if((Path.outfit['hypo'] || 0) !== 0) {
-			Events.createUseHypoButton().appendTo(healBtns);
-		}
-		if ((Path.outfit['stim'] ?? 0) > 0) {
-			Events.createStimButton().appendTo(healBtns);
-		}
-		if($SM.get('stores["kinetic armour"]', true) > 0) {
-			Events.createShieldButton().appendTo(healBtns);
-		}
-		$('<div>').addClass('clear').appendTo(healBtns);
-		Events.setHeal(healBtns);
-		
-		// Set up the enemy attack timers
-		Events.startEnemyAttacks();
-		Events._specialTimers = (scene.specials ?? []).map(s => Engine.setInterval(
-			() => {
-				const enemy = $('#enemy');
-				const text = s.action(enemy);
-				Events.updateFighterDiv(enemy);
-				if (text) {
-					Events.drawFloatText(text, $('.hp', enemy))
-				}
-			}, 
-			s.delay * 1000
-		));
-	},
-
-	startEnemyAttacks: (delay) => {
-		clearInterval(Events._enemyAttackTimer);
-		const scene = Events.activeEvent().scenes[Events.activeScene];
-		Events._enemyAttackTimer = Engine.setInterval(Events.enemyAttack, (delay ?? scene.attackDelay) * 1000);
-	},
-
-	setStatus: (fighter, status) => {
-		fighter.data('status', status);
-		if (status === 'enraged' && fighter.attr('id') === 'enemy') {
-			Events.startEnemyAttacks(0.5);
-			setTimeout(() => {
-				fighter.data('status', 'none');
-				Events.startEnemyAttacks();
-			}, Events.ENRAGE_DURATION);
-		}
-		if (status === 'meditation') {
-			Events._meditateDmg = 0;
-			setTimeout(() => {
-				fighter.data('status', 'none');
-			}, Events.MEDITATE_DURATION);
-		}
-		if (status === 'boost') {
-			setTimeout(() => {
-				fighter.data('status', 'none');
-			}, Events.BOOST_DURATION);
-		}
-	},
-
-	setPause: function(btn, state){
-		if(!btn) {
-			btn = $('#pause');
-		}
-		var event = btn.closest('#event');
-		var string, log;
-		if(state == 'set') {
-			string = 'start.';
-			log = 'loaded';
-		} else {
-			string = 'resume.';
-			log = 'paused';
-		}
-		btn.children('.text').first().text( _(string) );
-		Events.paused = (state == 'auto') ? 'auto' : true;
-		event.addClass('paused');
-		Button.clearCooldown(btn);
-		$('#buttons').find('.button').each(function(i){
-			if($(this).data('onCooldown')){
-				$(this).children('.cooldown').stop(true,false);
-			}
-		});
-		Engine.log('fight '+ log +'.');
-	},
-
-	removePause: function(btn, state){
-		if(!btn) {
-			btn = $('#pause');
-		}
-		var event = btn.closest('#event');
-		var log, time, target;
-		if(state == 'auto' && Events.paused != 'auto') {
-			return;
-		}
-		switch(state){
-			case 'set':
-				Button.cooldown(btn, Events._LEAVE_COOLDOWN);
-				log = 'started';
-				time = Events._LEAVE_COOLDOWN * 1000;
-				target = $();
-				break;
-			case 'end':
-				Button.setDisabled(btn, true);
-				log = 'ended';
-				time = Events._FIGHT_SPEED;
-				target = $();
-				break;
-			case 'auto':
-				Button.cooldown(btn);
-				/* falls through */
-			default:
-				log = 'resumed';
-				time = Events._PAUSE_COOLDOWN * 1000;
-				target = $('#buttons').find('.button');
-				break;
-		}
-		Engine.setTimeout(function(){
-			btn.children('.text').first().text( _('pause.') );
-			Events.paused = false;
-			event.removeClass('paused');
-			target.each(function(i){
-				if($(this).data('onCooldown')){
-					Button.cooldown($(this), 'pause');
-				}
-			});
-			Engine.log('Event '+ log);
-		}, time);
-	},
-
-	togglePause: function(btn, auto){
-		if(!btn) {
-			btn = $('#pause');
-		}
-		if((auto) && (document.hasFocus() == !Events.paused)) {
-			return;
-		}
-		var f = (Events.paused) ? Events.removePause : Events.setPause;
-		var state = (auto) ? 'auto' : false;
-		f(btn, state);
-	},
-
-	createEatMeatButton: function(cooldown) {
-		if (cooldown == null) {
-			cooldown = Events._EAT_COOLDOWN;
-		}
-
-		var btn = new Button.Button({
-			id: 'eat',
-			text: _('eat meat'),
-			cooldown: cooldown,
-			click: Events.eatMeat,
-			cost: { 'cured meat': 1 }
-		});
-
-		if(Path.outfit['cured meat'] === 0) {
-			Button.setDisabled(btn, true);
-		}
-
-		return btn;
-	},
-
-	createUseMedsButton: function(cooldown) {
-		if (cooldown == null) {
-			cooldown = Events._MEDS_COOLDOWN;
-		}
-
-		var btn = new Button.Button({
-			id: 'meds',
-			text: _('use meds'),
-			cooldown: cooldown,
-			click: Events.useMeds,
-			cost: { 'medicine': 1 }
-		});
-
-		if((Path.outfit['medicine'] || 0) === 0) {
-			Button.setDisabled(btn, true);
-		}
-
-		return btn;
-	},
-
-	createUseHypoButton: function(cooldown) {
-		if (cooldown == null) {
-			cooldown = Events._HYPO_COOLDOWN;
-		}
-
-		var btn = new Button.Button({
-			id: 'hypo',
-			text: _('use hypo'),
-			cooldown: cooldown,
-			click: Events.useHypo,
-			cost: { 'hypo': 1 }
-		});
-
-		if((Path.outfit['hypo'] ?? 0) > 0) {
-			Button.setDisabled(btn, true);
-		}
-
-		return btn;
-	},
-
-	createShieldButton: function() {
-		var btn = new Button.Button({
-			id: 'shld',
-			text: _('shield'),
-			cooldown: Events._SHIELD_COOLDOWN,
-			click: Events.useShield
-		});
-		return btn;
-	},
-
-	createStimButton: () => new Button.Button({
-		id: 'use-stim',
-		text: _('boost'),
-		cooldown: Events._STIM_COOLDOWN,
-		click: Events.useStim
-	}),
-
-	createAttackButton: function(weaponName) {
-		var weapon = World.Weapons[weaponName];
-		var cd = weapon.cooldown;
-		if(weapon.type == 'unarmed') {
-			if($SM.hasPerk('unarmed master')) {
-				cd /= 2;
-			}
-		}
-		var btn = new Button.Button({
-			id: 'attack_' + weaponName.replace(/ /g, '-'),
-			text: weapon.verb,
-			cooldown: cd,
-			click: Events.useWeapon,
-			boosted: () => $('#wanderer').data('status') === 'boost',
-			cost: weapon.cost
-		});
-		if(typeof weapon.damage == 'number' && weapon.damage > 0) {
-			btn.addClass('weaponButton');
-		}
-
-		for(var k in weapon.cost) {
-			if(typeof Path.outfit[k] != 'number' || Path.outfit[k] < weapon.cost[k]) {
-				Button.setDisabled(btn, true);
-				break;
-			}
-		}
-
-		return btn;
-	},
-
-	drawFloatText: function(text, parent, cb) {
-		$('<div>').text(text).addClass('damageText').appendTo(parent).animate({
-			'bottom': '70px',
-			'opacity': '0'
-		},
-		700,
-		'linear',
-		function() {
-			$(this).remove();
-			cb && cb();
-		});
-	},
-
-	setHeal: function(healBtns) {
-		if(!healBtns){
-			healBtns = $('#healButtons');
-		}
-		healBtns = healBtns.children('.button');
-		var canHeal = (World.health < World.getMaxHealth());
-		healBtns.each(function(i){
-			const btn = $(this);
-			Button.setDisabled(btn, !canHeal && btn.attr('id') !== 'shld');
-		});
-		return canHeal;
-	},
-
-	doHeal: function(healing, cured, btn) {
-		if(Path.outfit[healing] > 0) {
-			Path.outfit[healing]--;
-			World.updateSupplies();
-			if(Path.outfit[healing] === 0) {
-				Button.setDisabled(btn, true);
-			}
-
-			var hp = World.health + cured;
-			hp = Math.min(World.getMaxHealth(),hp);
-			World.setHp(hp);
-			Events.setHeal();
-
-			if(Events.activeEvent()) {
-				var w = $('#wanderer');
-				w.data('hp', hp);
-				Events.updateFighterDiv(w);
-				Events.drawFloatText('+' + cured, '#wanderer .hp');
-				var takeETbutton = Events.setTakeAll();
-				Events.canLeave(takeETbutton);
-			}
-		}
-	},
-
-	eatMeat: function(btn) {
-		Events.doHeal('cured meat', World.meatHeal(), btn);
-		AudioEngine.playSound(AudioLibrary.EAT_MEAT);
-	},
-
-	useMeds: function(btn) {
-		Events.doHeal('medicine', World.medsHeal(), btn);
-		AudioEngine.playSound(AudioLibrary.USE_MEDS);
-	},
-
-	useHypo: btn => {
-		Events.doHeal('hypo', World.hypoHeal(), btn);
-		AudioEngine.playSound(AudioLibrary.USE_MEDS);
-	},
-
-	useShield: btn => {
-		const player = $('#wanderer');
-		player.data('status', 'shield');
-		Events.updateFighterDiv(player);
-	},
-
-	useStim: btn => {
-		const player = $('#wanderer');
-		player.data('status', 'boost');
-		Events.dotDamage(player, Events.BOOST_DAMAGE);
-		Events.updateFighterDiv(player);
-	},
-
-	useWeapon: function(btn) {
-		if(Events.activeEvent()) {
-			var weaponName = btn.attr('id').substring(7).replace(/-/g, ' ');
-			var weapon = World.Weapons[weaponName];
-			if(weapon.type == 'unarmed') {
-				if(!$SM.get('character.punches')) $SM.set('character.punches', 0);
-				$SM.add('character.punches', 1);
-				if($SM.get('character.punches') == 50 && !$SM.hasPerk('boxer')) {
-					$SM.addPerk('boxer');
-				} else if($SM.get('character.punches') == 150 && !$SM.hasPerk('martial artist')) {
-					$SM.addPerk('martial artist');
-				} else if($SM.get('character.punches') == 300 && !$SM.hasPerk('unarmed master')) {
-					$SM.addPerk('unarmed master');
-				}
-
-			}
-			if(weapon.cost) {
-				var mod = {};
-				var out = false;
-				for(var k in weapon.cost) {
-					if(typeof Path.outfit[k] != 'number' || Path.outfit[k] < weapon.cost[k]) {
-						return;
-					}
-					mod[k] = -weapon.cost[k];
-					if(Path.outfit[k] - weapon.cost[k] < weapon.cost[k]) {
-						out = true;
-					}
-				}
-				for(var m in mod) {
-					Path.outfit[m] += mod[m];
-				}
-				if(out) {
-					Button.setDisabled(btn, true);
-					var validWeapons = false;
-					$('.weaponButton').each(function(){
-						if(!Button.isDisabled($(this)) && $(this).attr('id') != 'attack_fists') {
-							validWeapons = true;
-							return false;
-						}
-					});
-					if(!validWeapons) {
-						// enable or create the punch button
-						var fists = $('#attack_fists');
-						if(fists.length === 0) {
-							Events.createAttackButton('fists').prependTo('#buttons', Events.eventPanel());
-						} else {
-							Button.setDisabled(fists, false);
-						}
-					}
-				}
-				World.updateSupplies();
-			}
-			var dmg = -1;
-			if(Math.random() <= World.getHitChance()) {
-				dmg = weapon.damage;
-				if(typeof dmg == 'number') {
-					if(weapon.type == 'unarmed' && $SM.hasPerk('boxer')) {
-						dmg *= 2;
-					}
-					if(weapon.type == 'unarmed' && $SM.hasPerk('martial artist')) {
-						dmg *= 3;
-					}
-					if(weapon.type == 'unarmed' && $SM.hasPerk('unarmed master')) {
-						dmg *= 2;
-					}
-					if(weapon.type == 'melee' && $SM.hasPerk('barbarian')) {
-						dmg = Math.floor(dmg * 1.5);
-					}
-				}
-			}
-			
-			var attackFn = weapon.type == 'ranged' ? Events.animateRanged : Events.animateMelee;
-			
-			// play variation audio for weapon type
-			var r = Math.floor(Math.random() * 2) + 1;
-			switch (weapon.type) {
-				case 'unarmed':
-					AudioEngine.playSound(AudioLibrary['WEAPON_UNARMED_' + r]);
-					break;
-				case 'melee':
-					AudioEngine.playSound(AudioLibrary['WEAPON_MELEE_' + r]);
-					break;
-				case 'ranged':
-					AudioEngine.playSound(AudioLibrary['WEAPON_RANGED_' + r]);
-					break;
-			}
-
-			attackFn($('#wanderer'), dmg, function() {
-				const enemy = $('#enemy');
-				const enemyHp = enemy.data('hp');
-				const scene = Events.activeEvent().scenes[Events.activeScene];
-				const atHealth = scene.atHealth ?? {};
-				const explosion = scene.explosion;
-
-				for (const [k, action] of Object.entries(atHealth)) {
-					const hpThreshold = Number(k);
-					if (enemyHp <= hpThreshold && enemyHp + dmg > hpThreshold) {
-						action(enemy);
-					}
-				}
-
-				if(enemyHp <= 0 && !Events.won) {
-					// Success!
-					Events.won = true;
-					if (explosion) {
-						Events.explode(enemy, $('#wanderer'), explosion);
-					}
-					else {
-						Events.winFight();
-					}
-				}
-			});
-		}
-	},
-
-	explode: (enemy, player, dmg) => {
-		Events.clearTimeouts();
-		enemy.addClass('exploding');
-		setTimeout(() => {
-			enemy.removeClass('exploding');
-			$('.label', enemy).text('*');
-			Events.damage(enemy, player, dmg, 'ranged', () => {
-				if (!Events.checkPlayerDeath()) {
-					Events.winFight();
-				}
-			});
-		}, Events.EXPLOSION_DURATION);
-	},
-
-	dotDamage: (target, dmg) => {
-		const hp = Math.max(0, target.data('hp') - dmg);
-		target.data('hp', hp);
-		if(target.attr('id') == 'wanderer') {
-			World.setHp(hp);
-			Events.setHeal();
-			Events.checkPlayerDeath();
-		}
-		else if(hp <= 0 && !Events.won) {
-			Events.won = true;
-			Events.winFight();
-		}
-		Events.updateFighterDiv(target);
-		Events.drawFloatText(`-${dmg}`, $('.hp', target));
-	},
-
-	damage: function(fighter, enemy, dmg, type, cb) {
-		var enemyHp = enemy.data('hp');
-		const maxHp = enemy.data('maxHp');
-		var msg = "";
-		const shielded = enemy.data('status') === 'shield';
-		const energised = fighter.data('status') === 'energised';
-		const venomous = fighter.data('status') === 'venomous';
-		const meditating = enemy.data('status') === 'meditation';
-		if(typeof dmg == 'number') {
-			if(dmg < 0) {
-				msg = _('miss');
-				dmg = 0;
-			} else {
-				if (energised) {
-					dmg *= this.ENERGISE_MULTIPLIER;
-				}
-
-				if (meditating) {
-					Events._meditateDmg = (Events._meditateDmg ?? 0) + dmg;
-					msg = dmg;
-				}
-				else {
-					msg = (shielded ? '+' : '-') + dmg;
-					enemyHp = Math.min(maxHp, Math.max(0, enemyHp + (shielded ? dmg : -dmg)));
-					enemy.data('hp', enemyHp);
-					if(fighter.attr('id') == 'enemy') {
-						World.setHp(enemyHp);
-						Events.setHeal();
-					}
-				}
-
-				if (venomous && !shielded) {
-					clearInterval(Events._dotTimer);
-					Events._dotTimer = setInterval(() => {
-						Events.dotDamage(enemy, Math.floor(dmg / 2));
-					}, Events.DOT_TICK);
-				}
-				
-				if (shielded) {
-					// shields break in one hit
-					enemy.data('status', 'none');
-				}
-				
-				Events.updateFighterDiv(enemy);
-
-				// play variation audio for weapon type
-				var r = Math.floor(Math.random() * 2) + 1;
-				switch (type) {
-					case 'unarmed':
-						AudioEngine.playSound(AudioLibrary['WEAPON_UNARMED_' + r]);
-						break;
-					case 'melee':
-						AudioEngine.playSound(AudioLibrary['WEAPON_MELEE_' + r]);
-						break;
-					case 'ranged':
-						AudioEngine.playSound(AudioLibrary['WEAPON_RANGED_' + r]);
-						break;
-				}
-			}
-		} else {
-			if(dmg == 'stun') {
-				msg = _('stunned');
-				enemy.data('stunned', true);
-				setTimeout(() => enemy.data('stunned', false), Events.STUN_DURATION);
-			}
-		}
-
-		if (energised || venomous) {
-			// attack buffs only applies to one hit
-			fighter.data('status', 'none');
-			Events.updateFighterDiv(fighter);
-		}
-
-		Events.drawFloatText(msg, $('.hp', enemy), cb);
-	},
-
-	animateMelee: function(fighter, dmg, callback) {
-		var start, end, enemy;
-		if(fighter.attr('id') == 'wanderer') {
-			start = {'left': '50%'};
-			end = {'left': '25%'};
-			enemy = $('#enemy');
-		} else {
-			start = {'right': '50%'};
-			end = {'right': '25%'};
-			enemy = $('#wanderer');
-		}
-
-		fighter.stop(true, true).animate(start, Events._FIGHT_SPEED, function() {
-
-			Events.damage(fighter, enemy, dmg, 'melee');
-
-			$(this).animate(end, Events._FIGHT_SPEED, callback);
-		});
-	},
-
-	animateRanged: function(fighter, dmg, callback) {
-		var start, end, enemy;
-		if(fighter.attr('id') == 'wanderer') {
-			start = {'left': '25%'};
-			end = {'left': '50%'};
-			enemy = $('#enemy');
-		} else {
-			start = {'right': '25%'};
-			end = {'right': '50%'};
-			enemy = $('#wanderer');
-		}
-
-		$('<div>').css(start).addClass('bullet').text('o').appendTo('#description')
-			.animate(end, Events._FIGHT_SPEED * 2, 'linear', function() {
-
-			Events.damage(fighter, enemy, dmg, 'ranged');
-
-			$(this).remove();
-			if(typeof callback == 'function') {
-				callback();
-			}
-		});
-	},
-
-	enemyAttack: function() {
-		// Events.togglePause($('#pause'),'auto');
-
-		var scene = Events.activeEvent().scenes[Events.activeScene];
-		const enemy = $('#enemy');
-		const stunned = enemy.data('stunned');
-		const meditating = enemy.data('status') === 'meditation';
-
-		if(!stunned && !meditating) {
-			var toHit = scene.hit;
-			toHit *= $SM.hasPerk('evasive') ? 0.8 : 1;
-			var dmg = -1;
-			if ((Events._meditateDmg ?? 0) > 0) {
-				dmg = Events._meditateDmg;
-				Events._meditateDmg = 0;
-			}
-			else if(Math.random() <= toHit) {
-				dmg = scene.damage;
-			}
-
-			var attackFn = scene.ranged ? Events.animateRanged : Events.animateMelee;
-
-			attackFn($('#enemy'), dmg, Events.checkPlayerDeath);
-		}
-	},
-
-	checkPlayerDeath: () => {
-		if($('#wanderer').data('hp') <= 0) {
-			Events.clearTimeouts();
-			Events.endEvent();
-			World.die();
-			return true;
-		}
-		return false;
-	},
-
-	clearTimeouts: () => {
-		clearInterval(Events._enemyAttackTimer);
-		Events._specialTimers.forEach(clearInterval);
-		clearInterval(Events._dotTimer);
-	},
-
-	endFight: function() {
-		Events.fought = true;
-		Events.clearTimeouts();
-		Events.removePause($('#pause'), 'end');
-	},
-
-	winFight: function() {
-		Engine.setTimeout(function() {
-			if(Events.fought) {
-				return;
-			}
-			Events.endFight();
-			// AudioEngine.playSound(AudioLibrary.WIN_FIGHT);
-			$('#enemy').animate({opacity: 0}, 300, 'linear', function() {
-				Engine.setTimeout(function() {
-					var scene = Events.activeEvent().scenes[Events.activeScene];
-					var leaveBtn = false;
-					var desc = $('#description', Events.eventPanel());
-					var btns = $('#buttons', Events.eventPanel());
-					desc.empty();
-					btns.empty();
-					$('<div>').text(scene.deathMessage).appendTo(desc);
-
-					var takeETbtn = Events.drawLoot(scene.loot);
-
-					var exitBtns = $('<div>').appendTo(btns).attr('id','exitButtons');
-					if(scene.buttons) {
-						// Draw the buttons
-						leaveBtn = Events.drawButtons(scene);
-					} else {
-						leaveBtn = new Button.Button({
-							id: 'leaveBtn',
-							cooldown: Events._LEAVE_COOLDOWN,
-							click: function() {
-								if(scene.nextScene && scene.nextScene != 'end') {
-									Events.loadScene(scene.nextScene);
-								} else {
-									Events.endEvent();
-								}
-							},
-							text: _('leave')
-						});
-						Button.cooldown(leaveBtn.appendTo(exitBtns));
-
-						var healBtns = $('<div>').appendTo(btns).attr('id','healButtons');
-						Events.createEatMeatButton(0).appendTo(healBtns);
-						if((Path.outfit['medicine'] || 0) !== 0) {
-							Events.createUseMedsButton(0).appendTo(healBtns);
-						}
-						if (Path.outfit['hypo'] ?? 0 > 0) {
-							Events.createUseHypoButton(0).appendTo(healBtns);
-						}
-						$('<div>').addClass('clear').appendTo(healBtns);
-						Events.setHeal(healBtns);
-					}
-					$('<div>').addClass('clear').appendTo(exitBtns);
-
-					Events.allowLeave(takeETbtn, leaveBtn);
-				}, 1000, true);
-			});
-		}, Events._FIGHT_SPEED);
-	},
-
-	loseFight: function(){
-		Events.endFight();
-		Events.endEvent();
-		World.die();
-	},
-
-	drawDrop:function(btn) {
-		var name = btn.attr('id').substring(5).replace(/-/g, ' ');
-		var needsAppend = false;
-		var weight = Path.getWeight(name);
-		var freeSpace = Path.getFreeSpace();
-		if(weight > freeSpace) {
-			// Draw the drop menu
-			Engine.log('drop menu');
-			var dropMenu;
-			if($('#dropMenu').length){
-				dropMenu = $('#dropMenu');
-				$('#dropMenu').empty();
-			} else {
-				dropMenu = $('<div>').attr({'id': 'dropMenu', 'data-legend': _('drop:')});
-				needsAppend = true;
-			}
-			for(var k in Path.outfit) {
-				if(name == k) continue;
-				var itemWeight = Path.getWeight(k);
-				if(itemWeight > 0) {
-					var numToDrop = Math.ceil((weight - freeSpace) / itemWeight);
-					if(numToDrop > Path.outfit[k]) {
-						numToDrop = Path.outfit[k];
-					}
-					if(numToDrop > 0) {
-						var dropRow = $('<div>').attr('id', 'drop_' + k.replace(/ /g, '-'))
-							.text(_(k) + ' x' + numToDrop)
-							.data('thing', k)
-							.data('num', numToDrop)
-							.click(Events.dropStuff)
-							.mouseenter(function(e){
-								e.stopPropagation();
-							});
-						dropRow.appendTo(dropMenu);
-					}
-				}
-			}
-			$('<div>').attr('id','no_drop')
-				.text(_('nothing'))
-				.mouseenter(function(e){
-					e.stopPropagation();
-				})
-				.click(function(e){
-					e.stopPropagation();
-					dropMenu.remove();
-				})
-				.appendTo(dropMenu);
-			if(needsAppend){
-				dropMenu.appendTo(btn);
-			}
-			btn.one("mouseleave", function() {
-				$('#dropMenu').remove();
-			});
-		}
-	},
-
-	drawLootRow: function(name, num){
-		var id = name.replace(/ /g, '-');
-		var lootRow = $('<div>').attr('id','loot_' + id).data('item', name).addClass('lootRow');
-		var take = new Button.Button({
-			id: 'take_' + id,
-			text: _(name) + ' [' + num + ']',
-			click: Events.getLoot
-		}).addClass('lootTake').data('numLeft', num).appendTo(lootRow);
-		take.mouseenter(function(){
-			Events.drawDrop(take);
-		});
-		var takeall = new Button.Button({
-			id: 'all_take_' + id,
-			text: _('take') + ' ',
-			click: Events.takeAll
-		}).addClass('lootTakeAll').appendTo(lootRow);
-		$('<span>').insertBefore(takeall.children('.cooldown'));
-		$('<div>').addClass('clear').appendTo(lootRow);
-		return lootRow;
-	},
-
-	drawLoot: function(lootList) {
-		var desc = $('#description', Events.eventPanel());
-		var lootButtons = $('<div>').attr({'id': 'lootButtons', 'data-legend': _('take:')});
-		for(var k in lootList) {
-			var loot = lootList[k];
-			if(Math.random() < loot.chance) {
-				var num = Math.floor(Math.random() * (loot.max - loot.min)) + loot.min;
-				var lootRow = Events.drawLootRow(k, num);
-				lootRow.appendTo(lootButtons);
-			}
-		}
-		lootButtons.appendTo(desc);
-		var takeET = null;
-		if(lootButtons.children().length > 0) {
-			var takeETrow = $('<div>').addClass('takeETrow');
-			takeET = new Button.Button({
-				id: 'loot_takeEverything',
-				text: '',
-				cooldown: Events._LEAVE_COOLDOWN,
-				click: Events.takeEverything
-			}).appendTo(takeETrow);
-			$('<span>').insertBefore(takeET.children('.cooldown'));
-			$('<div>').addClass('clear').appendTo(takeETrow);
-			takeETrow.appendTo(lootButtons);
-			Events.setTakeAll(lootButtons);
-		} else {
-			var noLoot = $('<div>').addClass('noLoot').text( _('nothing to take') );
-			noLoot.appendTo(lootButtons);
-		}
-		return takeET || false;
-	},
-
-	setTakeAll: function(lootButtons){
-		if(!lootButtons) {
-			lootButtons = $('#lootButtons');
-		}
-		var canTakeSomething = false;
-		var free = Path.getFreeSpace();
-		var takeETbutton = lootButtons.find('#loot_takeEverything');
-		lootButtons.children('.lootRow').each(function(i){
-			var name = $(this).data('item');
-			var take = $(this).children('.lootTake').first();
-			var takeAll = $(this).children('.lootTakeAll').first();
-			var numLeft = take.data('numLeft');
-			var num = Math.min(Math.floor(Path.getFreeSpace() / Path.getWeight(name)), numLeft);
-			takeAll.data('numLeft', num);
-			free -= numLeft * Path.getWeight(name);
-			if(num > 0){
-				takeAll.removeClass('disabled');
-				canTakeSomething = true;
-			} else {
-				takeAll.addClass('disabled');
-			}
-			if(num < numLeft){
-				takeAll.children('span').first().text(num);
-			} else {
-				takeAll.children('span').first().text(_('all'));
-			}
-		});
-		Button.setDisabled(takeETbutton, !canTakeSomething);
-		takeETbutton.data('canTakeEverything', (free >= 0) ? true : false);
-		return takeETbutton;
-	},
-
-	allowLeave: function(takeETbtn, leaveBtn){
-		if(takeETbtn){
-			if(leaveBtn){
-				takeETbtn.data('leaveBtn', leaveBtn);
-			}
-			Events.canLeave(takeETbtn);
-		}
-	},
-
-	canLeave: function(btn){
-		var basetext = (btn.data('canTakeEverything')) ? _('take everything') : _('take all you can');
-		var textbox = btn.children('span');
-		var takeAndLeave = (btn.data('leaveBtn')) ? btn.data('canTakeEverything') : false;
-		var text = _(basetext);
-		if(takeAndLeave){
-			Button.cooldown(btn);
-			text += _(' and ') + btn.data('leaveBtn').text();
-		}
-		textbox.text( text );
-		btn.data('canLeave', takeAndLeave);
-	},
-
-	dropStuff: function(e) {
-		e.stopPropagation();
-		var btn = $(this);
-		var target = btn.closest('.button');
-		var thing = btn.data('thing');
-		var id = 'take_' + thing.replace(/ /g, '-');
-		var num = btn.data('num');
-		var lootButtons = $('#lootButtons');
-		Engine.log('dropping ' + num + ' ' + thing);
-
-		var lootBtn = $('#' + id, lootButtons);
-		if(lootBtn.length > 0) {
-			var curNum = lootBtn.data('numLeft');
-			curNum += num;
-			lootBtn.text(_(thing) + ' [' + curNum + ']').data('numLeft', curNum);
-		} else {
-			var lootRow = Events.drawLootRow(thing, num);
-			lootRow.insertBefore($('.takeETrow', lootButtons));
-		}
-		Path.outfit[thing] -= num;
-		Events.getLoot(target);
-		World.updateSupplies();
-	},
-
-	getLoot: function(btn, stateSkipButtonSet) {
-		var name = btn.attr('id').substring(5).replace(/-/g, ' ');
-		if(btn.data('numLeft') > 0) {
-			var skipButtonSet = stateSkipButtonSet || false;
-			var weight = Path.getWeight(name);
-			var freeSpace = Path.getFreeSpace();
-			if(weight <= freeSpace) {
-				var num = btn.data('numLeft');
-				num--;
-				btn.data('numLeft', num);
-				// #dropMenu gets removed by this.
-				btn.text(_(name) + ' [' + num + ']');
-				if(num === 0) {
-					Button.setDisabled(btn);
-					btn.animate({'opacity':0}, 300, 'linear', function() {
-						$(this).parent().remove();
-						if($('#lootButtons').children().length == 1) {
-							$('#lootButtons').remove();
-						}
-					});
-				}
-				var curNum = Path.outfit[name];
-				curNum = typeof curNum == 'number' ? curNum : 0;
-				curNum++;
-				Path.outfit[name] = curNum;
-				World.updateSupplies();
-
-				if(!skipButtonSet){
-					Events.setTakeAll();
-				}
-			}
-			if(!skipButtonSet){
-				Events.drawDrop(btn);
-			}
-		}
-	},
-
-	takeAll: function(btn){
-		var target = $('#'+ btn.attr('id').substring(4));
-		for(var k = 0; k < btn.data('numLeft'); k++){
-			Events.getLoot(target, true);
-		}
-		Events.setTakeAll();
-	},
-
-	takeEverything: function(btn){
-		$('#lootButtons').children('.lootRow').each(function(i){
-			var target = $(this).children('.lootTakeAll').first();
-			if(!target.hasClass('disabled')){
-				Events.takeAll(target);
-			}
-		});
-		if(btn.data('canLeave')){
-			btn.data('leaveBtn').click();
-		}
-	},
-
-	createFighterDiv: function(chara, hp, maxhp) {
-		var fighter = $('<div>')
-			.addClass('fighter')
-			.data('hp', hp)
-			.data('maxHp', maxhp)
-			.data('refname',chara);
-		$('<div>').addClass('label').text(_(chara)).appendTo(fighter);
-		$('<div>').addClass('hp').text(hp+'/'+maxhp).appendTo(fighter);
-		return fighter;
-	},
-
-	updateFighterDiv: function(fighter) {
-		$('.hp', fighter).text(fighter.data('hp') + '/' + fighter.data('maxHp'));
-		const status = fighter.data('status');
-		const hasStatus = status && status !== 'none';
-		fighter.attr('class', `fighter${hasStatus ? ` ${status}` : ''}`);
-	},
-
-	startStory: function(scene) {
-		// Write the text
-		var desc = $('#description', Events.eventPanel());
-		var leaveBtn = false;
-		for(var i in scene.text) {
-			$('<div>').text(scene.text[i]).appendTo(desc);
-		}
-
-		if(scene.textarea != null) {
-			var ta = $('<textarea>').val(scene.textarea).appendTo(desc);
-			if(scene.readonly) {
-				ta.attr('readonly', true);
-			}
-			Engine.autoSelect('#description textarea');
-		}
-
-		// Draw any loot
-		var takeETbtn;
-		if(scene.loot) {
-			takeETbtn = Events.drawLoot(scene.loot);
-		}
-
-		// Draw the buttons
-		var exitBtns = $('<div>').attr('id','exitButtons').appendTo($('#buttons', Events.eventPanel()));
-		leaveBtn = Events.drawButtons(scene);
-		$('<div>').addClass('clear').appendTo(exitBtns);
-
-
-		Events.allowLeave(takeETbtn, leaveBtn);
-	},
-
-	drawButtons: function(scene) {
-		var btns = $('#exitButtons', Events.eventPanel());
-		var btnsList = [];
-		for(var id in scene.buttons) {
-			var info = scene.buttons[id];
-			const cost = {
-				...info.cost
-			};
-			if (Path.outfit && Path.outfit['glowstone']) {
-				delete cost.torch;
-			}
-			var b = new Button.Button({
-				id,
-				text: info.text,
-				cost,
-				click: Events.buttonClick,
-				cooldown: info.cooldown
-			}).appendTo(btns);
-			if(typeof info.available == 'function' && !info.available()) {
-				Button.setDisabled(b, true);
-			}
-			if(typeof info.cooldown == 'number') {
-				Button.cooldown(b);
-			}
-			btnsList.push(b);
-		}
-
-		Events.updateButtons();
-		return (btnsList.length == 1) ? btnsList[0] : false;
-	},
-
-	getQuantity: function(store) {
-		if (store === 'water') {
-			return World.water;
-		}
-		if (store === 'hp') {
-			return World.health;
-		}
-		var num = Engine.activeModule == World ? Path.outfit[store] : $SM.get('stores["'+store+'"]', true);
-		return isNaN(num) || num < 0 ? 0 : num;
-	},
-
-	updateButtons: function() {
-		var btns = Events.activeEvent().scenes[Events.activeScene].buttons;
-		for(var bId in btns) {
-			var b = btns[bId];
-			var btnEl = $('#'+bId, Events.eventPanel());
-			if(typeof b.available == 'function' && !b.available()) {
-				Button.setDisabled(btnEl, true);
-			} else if(b.cost) {
-				const cost = {
-					...b.cost
-				};
-				if (Path.outfit && Path.outfit['glowstone']) {
-					delete cost.torch;
-				}
-				var disabled = false;
-				for(var store in cost) {
-					var num = Events.getQuantity(store);
-					if(num < cost[store]) {
-						// Too expensive
-						disabled = true;
-						break;
-					}
-				}
-				Button.setDisabled(btnEl, disabled);
-			}
-		}
-	},
-
-	buttonClick: function(btn) {
-		var info = Events.activeEvent().scenes[Events.activeScene].buttons[btn.attr('id')];
-		// Cost
-		var costMod = {};
-		if(info.cost) {
-			const cost = {
-				...info.cost
-			};
-			if (Path.outfit && Path.outfit['glowstone']) {
-				delete cost.torch;
-			}
-			for(var store in cost) {
-				var num = Events.getQuantity(store);
-				if(num < cost[store]) {
-					// Too expensive
-					return;
-				}
-				if (store === 'water') {
-					World.setWater(World.water - cost[store]);
-				}
-				else if (store === 'hp') {
-					World.setHp(World.hp - cost[store]);
-				}
-				else {
-					costMod[store] = -cost[store];
-				}
-			}
-			if(Engine.activeModule == World) {
-				for(var k in costMod) {
-					Path.outfit[k] += costMod[k];
-				}
-				World.updateSupplies();
-			} else {
-				$SM.addM('stores', costMod);
-			}
-		}
-
-		if(typeof info.onChoose == 'function') {
-			var textarea = Events.eventPanel().find('textarea');
-			info.onChoose(textarea.length > 0 ? textarea.val() : null);
-		}
-
-		// Reward
-		if(info.reward) {
-			$SM.addM('stores', info.reward);
-		}
-
-		Events.updateButtons();
-
-		// Notification
-		if(info.notification) {
-			Notifications.notify(null, info.notification);
-		}
-
-    info.onClick && info.onClick();
-
-    // Link
-    if (info.link) {
-      Events.endEvent();
-      window.open(info.link);
-			return;
-    }
-
-		// Next Event
-		if (info.nextEvent) {
-			const eventData = Events.Setpieces[info.nextEvent] || Events.Executioner[info.nextEvent];
-			Events.switchEvent(eventData);
-			return;
-		}
-
-		// Next Scene
-		if(info.nextScene) {
-			if(info.nextScene == 'end') {
-				Events.endEvent();
-			} else {
-				var r = Math.random();
-				var lowestMatch = null;
-				for(var i in info.nextScene) {
-					if(r < i && (lowestMatch == null || i < lowestMatch)) {
-						lowestMatch = i;
-					}
-				}
-				if(lowestMatch != null) {
-					Events.loadScene(info.nextScene[lowestMatch]);
-					return;
-				}
-				Engine.log('ERROR: no suitable scene found');
-				Events.endEvent();
-			}
-		}
-	},
-
-	// blinks the browser window title
-	blinkTitle: function() {
-		var title = document.title;
-
-		// every 3 seconds change title to '*** EVENT ***', then 1.5 seconds later, change it back to the original title.
-		Events.BLINK_INTERVAL = setInterval(function() {
-			document.title = _('*** EVENT ***');
-			Engine.setTimeout(function() {document.title = title;}, 1500, true);
-		}, 3000);
-	},
-
-	stopTitleBlink: function() {
-		clearInterval(Events.BLINK_INTERVAL);
-		Events.BLINK_INTERVAL = false;
-	},
-
-	// Makes an event happen!
-	triggerEvent: function() {
-		if(Events.activeEvent() == null) {
-			var possibleEvents = [];
-			for(var i in Events.EventPool) {
-				var event = Events.EventPool[i];
-				if(event.isAvailable()) {
-					possibleEvents.push(event);
-				}
-			}
-
-			if(possibleEvents.length === 0) {
-				Events.scheduleNextEvent(0.5);
-				return;
-			} else {
-				var r = Math.floor(Math.random()*(possibleEvents.length));
-				Events.startEvent(possibleEvents[r]);
-			}
-		}
-
-		Events.scheduleNextEvent();
-	},
-
-	triggerFight: function() {
-		var possibleFights = [];
-		for(var i in Events.Encounters) {
-			var fight = Events.Encounters[i];
-			if(fight.isAvailable()) {
-				possibleFights.push(fight);
-			}
-		}
-
-		var r = Math.floor(Math.random()*(possibleFights.length));
-		Events.startEvent(possibleFights[r]);
-		
-		// play audio only when fight is possible
-		if (possibleFights.length > 0) {
-			if (World.getDistance() > 20) {
-				// Tier 3
-				AudioEngine.playEventMusic(AudioLibrary.ENCOUNTER_TIER_3);
-			} else if (World.getDistance() > 10) {
-				// Tier 2
-				AudioEngine.playEventMusic(AudioLibrary.ENCOUNTER_TIER_2);
-			} else {
-				// Tier 1
-				AudioEngine.playEventMusic(AudioLibrary.ENCOUNTER_TIER_1);
-			}
-		}
-	},
-
-	activeEvent: function() {
-		if(Events.eventStack && Events.eventStack.length > 0) {
-			return Events.eventStack[0];
-		}
-		return null;
-	},
-
-	eventPanel: function() {
-		return Events.activeEvent().eventPanel;
-	},
-
-	switchEvent: event => {
-		if (!event) {
-			return;
-		}
-		AudioEngine.stopEventMusic();
-		Events.eventPanel().remove();
-		Events.activeEvent().eventPanel = null;
-		Events.eventStack.shift();
-		Events.startEvent(event);
-	},
-
-	startEvent: function(event, options) {
-		if(!event) {
-			return;
-		}
-		event.audio && AudioEngine.playEventMusic(event.audio);
-		Engine.event('game event', 'event');
-		Engine.keyLock = true;
-		Engine.tabNavigation = false;
-		Button.saveCooldown = false;
-		Events.eventStack.unshift(event);
-		event.eventPanel = $('<div>').attr('id', 'event').addClass('eventPanel').css('opacity', '0');
-		if(options != null && options.width != null) {
-			Events.eventPanel().css('width', options.width);
-		}
-		$('<div>').addClass('eventTitle').text(Events.activeEvent().title).appendTo(Events.eventPanel());
-		$('<div>').attr('id', 'description').appendTo(Events.eventPanel());
-		$('<div>').attr('id', 'buttons').appendTo(Events.eventPanel());
-		Events.loadScene('start');
-		$('div#wrapper').append(Events.eventPanel());
-		Events.eventPanel().animate({opacity: 1}, Events._PANEL_FADE, 'linear');
-		var currentSceneInformation = Events.activeEvent().scenes[Events.activeScene];
-		if (currentSceneInformation.blink) {
-			Events.blinkTitle();
-		}
-	},
-
-	scheduleNextEvent: function(scale) {
-		var nextEvent = Math.floor(Math.random()*(Events._EVENT_TIME_RANGE[1] - Events._EVENT_TIME_RANGE[0])) + Events._EVENT_TIME_RANGE[0];
-		if(scale > 0) { nextEvent *= scale; }
-		Engine.log('next event scheduled in ' + nextEvent + ' minutes');
-		Events._eventTimeout = Engine.setTimeout(Events.triggerEvent, nextEvent * 60 * 1000);
-	},
-
-	endEvent: function() {
-		AudioEngine.stopEventMusic();
-		Events.eventPanel().animate({opacity:0}, Events._PANEL_FADE, 'linear', function() {
-			Events.eventPanel().remove();
-			Events.activeEvent().eventPanel = null;
-			Events.eventStack.shift();
-			Engine.log(Events.eventStack.length + ' events remaining');
-			Engine.keyLock = false;
-			Engine.tabNavigation = true;
-			Button.saveCooldown = true;
-			if (Events.BLINK_INTERVAL) {
-				Events.stopTitleBlink();
-			}
-			// Force refocus on the body. I hate you, IE.
-			$('body').focus();
-		});
-	},
-
-	handleStateUpdates: function(e){
-		if((e.category == 'stores' || e.category == 'income') && Events.activeEvent() != null){
-			Events.updateButtons();
-		}
-	},
-
-	initDelay: function(){
-		if($SM.get(Events.delayState)){
-			Events.recallDelay(Events.delayState, Events);
-		}
-	},
-
-	recallDelay: function(stateName, target){
-		var state = $SM.get(stateName);
-		for(var i in state){
-			if(typeof(state[i]) == 'object'){
-				Events.recallDelay(stateName +'["'+ i +'"]', target[i]);
-			} else {
-				if(target && typeof target[i] == 'function'){
-					target[i]();
-				} else {
-					$SM.remove(stateName);
-				}
-			}
-		}
-		if($.isEmptyObject(state)){
-			$SM.remove(stateName);
-		}
-	},
-
-	saveDelay: function(action, stateName, delay){
-		var state = Events.delayState + '.' + stateName;
-		if(delay){
-			$SM.set(state, delay);
-		} else {
-			delay = $SM.get(state, true);
-		}
-		var time = Engine.setInterval(function(){
-			// update state every half second
-			$SM.set(state, ($SM.get(state) - 0.5), true);
-		}, 500);
-		Engine.setTimeout(function(){
-			// outcome realizes. erase countdown
-			window.clearInterval(time);
-			$SM.remove(state);
-			$SM.removeBranch(Events.delayState);
-			action();
-		}, delay * 1000);
-	}
-};
- 
-/**
- * Module that registers the fabricator functionality
- */
-const Fabricator = {
-  _STORES_OFFSET: 0,
-  name: _('Fabricator'),
-  Craftables: {
-    'energy blade': {
-      name: _('energy blade'),
-      type: 'weapon',
-      buildMsg: _("the blade hums, charged particles sparking and fizzing."),
-      cost: () => ({
-        'alien alloy': 1
-      })
+var AudioEngine = {
+    FADE_TIME: 1,
+    AUDIO_BUFFER_CACHE: {},
+    _audioContext: null,
+    _master: null,
+    _currentBackgroundMusic: null,
+    _currentEventAudio: null,
+    _currentSoundEffectAudio: null,
+    _initialized: false,
+    init: function () {
+        AudioEngine._initAudioContext();
+        // AudioEngine._preloadAudio(); // removed to save bandwidth
+        AudioEngine._initialized = true;
     },
-    'fluid recycler': {
-      name: _('fluid recycler'),
-      type: 'upgrade',
-      maximum: 1,
-      buildMsg: _('water out, water in. waste not, want not.'),
-      cost: () => ({
-        'alien alloy': 2
-      })
-    },
-    'cargo drone': {
-      name: _('cargo drone'),
-      type: 'upgrade',
-      maximum: 1,
-      buildMsg: _('the workhorse of the wanderer fleet.'),
-      cost: () => ({
-        'alien alloy': 2
-      })
-    },
-    'kinetic armour': {
-      name: _('kinetic armour'),
-      type: 'upgrade',
-      maximum: 1,
-      blueprintRequired: true,
-      buildMsg: _('wanderer soldiers succeed by subverting the enemy\'s rage.'),
-      cost: () => ({
-        'alien alloy': 2
-      })
-    },
-    'disruptor': {
-      name: _('disruptor'),
-      type: 'weapon',
-      blueprintRequired: true,
-      buildMsg: _("somtimes it is best not to fight."),
-      cost: () => ({
-        'alien alloy': 1
-      })
-    },
-    'hypo': {
-      name: _('hypo'),
-      type: 'tool',
-      blueprintRequired: true,
-      buildMsg: _('a handful of hypos. life in a vial.'),
-      cost: () => ({
-        'alien alloy': 1
-      }),
-      quantity: 5
-    },
-    'stim': {
-      name: _('stim'),
-      type: 'tool',
-      blueprintRequired: true,
-      buildMsg: _('sometimes it is best to fight without restraint.'),
-      cost: () => ({
-        'alien alloy': 1
-      })
-    },
-    'plasma rifle': {
-      name: _('plasma rifle'),
-      type: 'weapon',
-      blueprintRequired: true,
-      buildMsg: _("the peak of wanderer weapons technology, sleek and deadly."),
-      cost: () => ({
-        'alien alloy': 1
-      })
-    },
-    'glowstone': {
-      name: _('glow stone'),
-      type: 'tool',
-      blueprintRequired: true,
-      buildMsg: _('a smooth, perfect sphere. its light is inextinguishable.'),
-      cost: () => ({
-        'alien alloy': 1
-      })
-    }
-  },
-
-  init: () => {
-
-    if (!$SM.get('features.location.fabricator')) {
-      $SM.set('features.location.fabricator', true);
-    }
-
-    // Create the Fabricator tab
-    Fabricator.tab = Header.addLocation(_("A Whirring Fabricator"), "fabricator", Fabricator, 'ship');
-    
-    // Create the Fabricator panel
-    Fabricator.panel = $('<div>').attr('id', "fabricatorPanel")
-      .addClass('location');
-    if (Ship.panel) {
-      Fabricator.panel.insertBefore(Ship.panel);
-    }
-    else {
-      Fabricator.panel.appendTo('div#locationSlider');
-    }
-
-    $.Dispatch('stateUpdate').subscribe(() => {
-      Fabricator.updateBuildButtons();
-      Fabricator.updateBlueprints();
-    });
-    
-    Engine.updateSlider();
-    Fabricator.updateBuildButtons();
-
-  },
-
-  onArrival: transition_diff => {
-    Fabricator.setTitle();
-    Fabricator.updateBlueprints(true);
-
-    if(!$SM.get('game.fabricator.seen')) {
-      Notifications.notify(Fabricator, _('the familiar hum of wanderer machinery coming to life. finally, real tools.'));
-      $SM.set('game.fabricator.seen', true);
-    }
-    AudioEngine.playBackgroundMusic(AudioLibrary.MUSIC_SHIP);
-
-    Engine.moveStoresView(null, transition_diff);
-  },
-
-  setTitle: () => {
-    if(Engine.activeModule == Fabricator) {
-      document.title = _("A Whirring Fabricator");
-    }
-  },
-
-  updateBuildButtons: () => {
-    let section = $('#fabricateButtons');
-    let needsAppend = false;
-    if (section.length === 0) {
-      section = $('<div>').attr({ 'id': 'fabricateButtons', 'data-legend': _('fabricate:') }).css('opacity', 0);
-      needsAppend = true;
-    }
-
-    for (const [ key, value ] of Object.entries(Fabricator.Craftables)) {
-      const max = $SM.num(key, value) + 1 > value.maximum;
-      if (!value.button) {
-        if (Fabricator.canFabricate(key)) {
-          const name = _(value.name) + ((value.quantity ?? 1) > 1 ? ` (x${value.quantity})` : '');
-          value.button = new Button.Button({
-            id: 'fabricate_' + key,
-            cost: value.cost(),
-            text: name,
-            click: Fabricator.fabricate,
-            width: '150px',
-            ttPos: section.children().length > 10 ? 'top right' : 'bottom right'
-          }).css('opacity', 0).attr('fabricateThing', key).appendTo(section).animate({ opacity: 1 }, 300, 'linear');
+    _preloadAudio: function () {
+        // start loading music and events early
+        // ** could be used later if we specify a better set of
+        // audio files to preload -- i.e. we probably don't need to load
+        // the later villages or events audio, and esp. not the ending
+        for (var key in AudioLibrary) {
+            if (
+            key.toString().indexOf('MUSIC_') > -1 ||
+            key.toString().indexOf('EVENT_') > -1) {
+                AudioEngine.loadAudioFile(AudioLibrary[key]);
+            }
         }
-      } else {
-        // refresh the tooltip
-        const costTooltip = $('.tooltip', value.button);
-        costTooltip.empty();
-        const cost = value.cost();
-        for (const [ resource, num ] of Object.entries(cost)) {
-          $("<div>").addClass('row_key').text(_(resource)).appendTo(costTooltip);
-          $("<div>").addClass('row_val').text(num).appendTo(costTooltip);
+    },
+    _initAudioContext: function () {
+        AudioEngine._audioContext = new (window.AudioContext || window.webkitAudioContext);
+        AudioEngine._createMasterChannel();
+    },
+    _createMasterChannel: function () {
+        // create master
+        AudioEngine._master = AudioEngine._audioContext.createGain();
+        AudioEngine._master.gain.setValueAtTime(1.0, AudioEngine._audioContext.currentTime);
+        AudioEngine._master.connect(AudioEngine._audioContext.destination);
+    },
+    _getMissingAudioBuffer: function () {
+        // plays beeping sound to indicate missing audio
+        var buffer = AudioEngine._audioContext.createBuffer(
+            1,
+            AudioEngine._audioContext.sampleRate,
+            AudioEngine._audioContext.sampleRate
+        );
+        // Fill the buffer
+        var bufferData = buffer.getChannelData(0);
+        for (var i = 0; i < buffer.length / 2; i++) {
+            bufferData[i] = Math.sin(i * 0.05) / 4; // max .25 gain value
         }
-        if (max && value.maxMsg && !value.button.hasClass('disabled')) {
-          Notifications.notify(Fabricator, value.maxMsg);
+        return buffer;
+    },
+    _playSound: function (buffer) {
+        if (AudioEngine._currentSoundEffectAudio &&
+            AudioEngine._currentSoundEffectAudio.source.buffer == buffer) {
+            return;
         }
-      }
-      if (max) {
-        Button.setDisabled(value.button, true);
-      } else {
-        Button.setDisabled(value.button, false);
-      }
+
+        var source = AudioEngine._audioContext.createBufferSource();
+        source.buffer = buffer;
+        source.onended = function(event) {
+            // dereference current sound effect when finished
+            if (AudioEngine._currentSoundEffectAudio &&
+                AudioEngine._currentSoundEffectAudio.source.buffer == buffer) {
+                AudioEngine._currentSoundEffectAudio = null;
+            }
+        };
+
+        source.connect(AudioEngine._master);
+        source.start();
+
+        AudioEngine._currentSoundEffectAudio = {
+            source: source
+        };
+    },
+    _playBackgroundMusic: function (buffer) {
+        var source = AudioEngine._audioContext.createBufferSource();
+        source.buffer = buffer;
+        source.loop = true;
+
+        var envelope = AudioEngine._audioContext.createGain();
+        envelope.gain.setValueAtTime(0.0, AudioEngine._audioContext.currentTime);
+        
+        var fadeTime = AudioEngine._audioContext.currentTime + AudioEngine.FADE_TIME;
+
+        // fade out current background music
+        if (AudioEngine._currentBackgroundMusic && 
+            AudioEngine._currentBackgroundMusic.source &&
+            AudioEngine._currentBackgroundMusic.source.playbackState !== 0) {
+            var currentBackgroundGainValue = AudioEngine._currentBackgroundMusic.envelope.gain.value;
+            AudioEngine._currentBackgroundMusic.envelope.gain.cancelScheduledValues(AudioEngine._audioContext.currentTime);
+            AudioEngine._currentBackgroundMusic.envelope.gain.setValueAtTime(currentBackgroundGainValue, AudioEngine._audioContext.currentTime);
+            AudioEngine._currentBackgroundMusic.envelope.gain.linearRampToValueAtTime(0.0, fadeTime);
+            AudioEngine._currentBackgroundMusic.source.stop(fadeTime + 0.3); // make sure fade has completed
+        }
+
+        // fade in new backgorund music
+        source.connect(envelope);
+        envelope.connect(AudioEngine._master);
+        source.start();
+        envelope.gain.linearRampToValueAtTime(1.0, fadeTime);
+
+        // update current background music
+        AudioEngine._currentBackgroundMusic = {
+            source: source,
+            envelope: envelope
+        };
+    },
+    _playEventMusic: function (buffer) {
+        var source = AudioEngine._audioContext.createBufferSource();
+        source.buffer = buffer;
+        source.loop = true;
+
+        var envelope = AudioEngine._audioContext.createGain();
+        envelope.gain.setValueAtTime(0.0, AudioEngine._audioContext.currentTime);
+
+        var fadeTime = AudioEngine._audioContext.currentTime + AudioEngine.FADE_TIME * 2;
+
+        // turn down current background music
+        if (AudioEngine._currentBackgroundMusic != null) {
+            var currentBackgroundGainValue = AudioEngine._currentBackgroundMusic.envelope.gain.value;
+            AudioEngine._currentBackgroundMusic.envelope.gain.cancelScheduledValues(AudioEngine._audioContext.currentTime);
+            AudioEngine._currentBackgroundMusic.envelope.gain.setValueAtTime(currentBackgroundGainValue, AudioEngine._audioContext.currentTime);
+            AudioEngine._currentBackgroundMusic.envelope.gain.linearRampToValueAtTime(0.2, fadeTime);
+        }
+
+        // fade in event music
+        source.connect(envelope);
+        envelope.connect(AudioEngine._master);
+        source.start();
+        envelope.gain.linearRampToValueAtTime(1.0, fadeTime);
+
+        // update reference
+        AudioEngine._currentEventAudio = {
+            source: source,
+            envelope: envelope
+        };
+    },
+    _stopEventMusic: function () {
+        var fadeTime = AudioEngine._audioContext.currentTime + AudioEngine.FADE_TIME * 2;
+
+        // fade out event music and stop
+        if (AudioEngine._currentEventAudio && 
+            AudioEngine._currentEventAudio.source && 
+            AudioEngine._currentEventAudio.source.buffer) {
+            var currentEventGainValue = AudioEngine._currentEventAudio.envelope.gain.value;
+            AudioEngine._currentEventAudio.envelope.gain.cancelScheduledValues(AudioEngine._audioContext.currentTime);
+            AudioEngine._currentEventAudio.envelope.gain.setValueAtTime(currentEventGainValue, AudioEngine._audioContext.currentTime);
+            AudioEngine._currentEventAudio.envelope.gain.linearRampToValueAtTime(0.0, fadeTime);
+            AudioEngine._currentEventAudio.source.stop(fadeTime + 1); // make sure fade has completed
+            AudioEngine._currentEventAudio = null;
+        }
+
+        // turn up background music
+        if (AudioEngine._currentBackgroundMusic) {
+          var currentBackgroundGainValue = AudioEngine._currentBackgroundMusic.envelope.gain.value;
+          AudioEngine._currentBackgroundMusic.envelope.gain.cancelScheduledValues(AudioEngine._audioContext.currentTime);
+          AudioEngine._currentBackgroundMusic.envelope.gain.setValueAtTime(currentBackgroundGainValue, AudioEngine._audioContext.currentTime);
+          AudioEngine._currentBackgroundMusic.envelope.gain.linearRampToValueAtTime(1.0, fadeTime);
+        }
+    },
+    isAudioContextRunning: function () {
+        return AudioEngine._audioContext.state !== 'suspended';
+    },
+    tryResumingAudioContext: function() {
+        if (AudioEngine._audioContext.state === 'suspended') {
+            AudioEngine._audioContext.resume();
+        }
+    },
+    playBackgroundMusic: function (src) {
+        if (!AudioEngine._initialized) {
+          return;
+        }
+        AudioEngine.loadAudioFile(src)
+            .then(function (buffer) {
+                AudioEngine._playBackgroundMusic(buffer);
+            });
+    },
+    playEventMusic: function (src) {
+        if (!AudioEngine._initialized) {
+          return;
+        }
+        AudioEngine.loadAudioFile(src)
+            .then(function (buffer) {
+                AudioEngine._playEventMusic(buffer);
+            });
+    },
+    stopEventMusic: function () {
+        if (!AudioEngine._initialized) {
+          return;
+        }
+        AudioEngine._stopEventMusic();
+    },
+    playSound: function (src) {
+        if (!AudioEngine._initialized) {
+          return;
+        }
+        AudioEngine.loadAudioFile(src)
+            .then(function (buffer) {
+                AudioEngine._playSound(buffer);
+            });
+    },
+    loadAudioFile: function (src) {
+        if (src.indexOf('http') === -1) {
+            var path = window.location.protocol + '//' + window.location.hostname + (window.location.port ?(':' + window.location.port) : '') + window.location.pathname;
+            if(path.endsWith('index.html')){
+                path = path.slice(0, - 10); 
+            }
+            src = path + src;
+        }
+        if (AudioEngine.AUDIO_BUFFER_CACHE[src]) {
+            return new Promise(function (resolve, reject) {
+                resolve(AudioEngine.AUDIO_BUFFER_CACHE[src]);
+            });
+        } else {
+            var request = new Request(src);
+            return fetch(request).then(function (response) {
+                return response.arrayBuffer();
+            }).then(function (buffer) {
+                if (buffer.byteLength === 0) {
+                    console.error('cannot load audio from ' + src);
+                    return AudioEngine._getMissingAudioBuffer();
+                }
+
+                var decodeAudioDataPromise = AudioEngine._audioContext.decodeAudioData(buffer, function (decodedData) {
+                    AudioEngine.AUDIO_BUFFER_CACHE[src] = decodedData;
+                    return AudioEngine.AUDIO_BUFFER_CACHE[src];
+                });
+
+                // Safari WebAudio does not return a promise based API for
+                // decodeAudioData, so we need to fake it if we want to play
+                // audio immediately on first fetch
+                if (decodeAudioDataPromise) {
+                    return decodeAudioDataPromise;
+                } else {
+                    return new Promise(function (resolve, reject) {
+                        var fakePromiseId = setInterval(function() {
+                            if (AudioEngine.AUDIO_BUFFER_CACHE[src]) {
+                                resolve(AudioEngine.AUDIO_BUFFER_CACHE[src]);
+                                clearInterval(fakePromiseId);
+                            }
+                        }, 20);
+                    });
+                }
+            });
+        }
+    },
+    setBackgroundMusicVolume: function (volume, s) {
+        if (AudioEngine._master == null) return;  // master may not be ready yet
+        if (volume === undefined) {
+            volume = 1.0;
+        }
+        if (s === undefined) {
+            s = 1.0;
+        }
+
+        // cancel any current schedules and then ramp
+        var currentBackgroundGainValue = AudioEngine._currentBackgroundMusic.envelope.gain.value;
+        AudioEngine._currentBackgroundMusic.envelope.gain.cancelScheduledValues(AudioEngine._audioContext.currentTime);
+        AudioEngine._currentBackgroundMusic.envelope.gain.setValueAtTime(currentBackgroundGainValue, AudioEngine._audioContext.currentTime);
+        AudioEngine._currentBackgroundMusic.envelope.gain.linearRampToValueAtTime(
+            volume,
+            AudioEngine._audioContext.currentTime + s
+        );
+    },
+    setMasterVolume: function (volume, s) {
+        if (AudioEngine._master == null) return;  // master may not be ready yet
+        if (volume === undefined) {
+            volume = 1.0;
+        }
+        if (s === undefined) {
+            s = 1.0;
+        }
+
+        // cancel any current schedules and then ramp
+        var currentGainValue = AudioEngine._master.gain.value;
+        AudioEngine._master.gain.cancelScheduledValues(AudioEngine._audioContext.currentTime);
+        AudioEngine._master.gain.setValueAtTime(currentGainValue, AudioEngine._audioContext.currentTime);
+        AudioEngine._master.gain.linearRampToValueAtTime(
+            volume,
+            AudioEngine._audioContext.currentTime + s
+        );
     }
-
-    if (needsAppend && section.children().length > 0) {
-      section.appendTo(Fabricator.panel).animate({ opacity: 1 }, 300, 'linear');
-    }
-  },
-
-  updateBlueprints: ignoreStores => {
-    if(!$SM.get('character.blueprints')) {
-      return;
-    }
-
-    let blueprints = $('#blueprints');
-    let needsAppend = false;
-    if(blueprints.length === 0) {
-      needsAppend = true;
-      blueprints = $('<div>').attr({'id': 'blueprints', 'data-legend': _('blueprints')});
-    }
-
-    for (const k in $SM.get('character.blueprints')) {
-      const id = 'blueprint_' + k.replace(/ /g, '-');
-      let r = $('#' + id);
-      if($SM.get(`character.blueprints["${k}"]`) && r.length === 0) {
-        r = $('<div>').attr('id', id).addClass('blueprintRow').appendTo(blueprints);
-        $('<div>').addClass('row_key').text(_(k)).appendTo(r);
-      }
-    }
-    
-    if(needsAppend && blueprints.children().length > 0) {
-      blueprints.prependTo(Fabricator.panel);
-    }
-  },
-
-  canFabricate: itemKey => 
-    !Fabricator.Craftables[itemKey].blueprintRequired || 
-    $SM.get(`character.blueprints['${itemKey}']`),
-
-  fabricate: button => {
-    const thing = $(button).attr('fabricateThing');
-    const craftable = Fabricator.Craftables[thing];
-    const numThings = Math.min(0, $SM.get(`stores['${thing}']`, true));
-
-    if (craftable.maximum <= numThings) {
-      return;
-    }
-
-    const storeMod = {};
-    const cost = craftable.cost();
-    for (const [ key, value ] of Object.entries(cost)) {
-      const have = $SM.get(`stores['${key}']`, true);
-      if (have < value) {
-        Notifications.notify(Fabricator, _(`not enough ${key}`));
-        return false;
-      } else {
-        storeMod[key] = have - value;
-      }
-    }
-    $SM.setM('stores', storeMod);
-    $SM.add(`stores['${thing}']`, craftable.quantity ?? 1);
-
-    Notifications.notify(Fabricator, craftable.buildMsg);
-    AudioEngine.playSound(AudioLibrary.CRAFT);
-  }
-
-};
- 
-/**
- * Module that takes care of header buttons
- */
-var Header = {
-	
-	init: function(options) {
-		this.options = $.extend(
-			this.options,
-			options
-		);
-	},
-	
-	options: {}, // Nothing for now
-	
-	canTravel: function() {
-		return $('div#header div.headerButton').length > 1;
-	},
-	
-	addLocation: function(text, id, module, before) {
-    const toAdd = $('<div>').attr('id', "location_" + id)
-			.addClass('headerButton')
-			.text(text).click(function() {
-				if(Header.canTravel()) {
-					Engine.travelTo(module);
-				}
-			});
-      
-    if (before && $(`#location_${before}`).length > 0) {
-      return toAdd.insertBefore(`#location_${before}`);
-    }
-    
-    return toAdd.appendTo($('div#header'));
-	}
 };
  
 /**
@@ -9502,516 +8507,6 @@ $(function() {
   Engine.init();
 });
  
-/**
- * Module that takes care of audio playback
- */
-var AudioEngine = {
-    FADE_TIME: 1,
-    AUDIO_BUFFER_CACHE: {},
-    _audioContext: null,
-    _master: null,
-    _currentBackgroundMusic: null,
-    _currentEventAudio: null,
-    _currentSoundEffectAudio: null,
-    _initialized: false,
-    init: function () {
-        AudioEngine._initAudioContext();
-        // AudioEngine._preloadAudio(); // removed to save bandwidth
-        AudioEngine._initialized = true;
-    },
-    _preloadAudio: function () {
-        // start loading music and events early
-        // ** could be used later if we specify a better set of
-        // audio files to preload -- i.e. we probably don't need to load
-        // the later villages or events audio, and esp. not the ending
-        for (var key in AudioLibrary) {
-            if (
-            key.toString().indexOf('MUSIC_') > -1 ||
-            key.toString().indexOf('EVENT_') > -1) {
-                AudioEngine.loadAudioFile(AudioLibrary[key]);
-            }
-        }
-    },
-    _initAudioContext: function () {
-        AudioEngine._audioContext = new (window.AudioContext || window.webkitAudioContext);
-        AudioEngine._createMasterChannel();
-    },
-    _createMasterChannel: function () {
-        // create master
-        AudioEngine._master = AudioEngine._audioContext.createGain();
-        AudioEngine._master.gain.setValueAtTime(1.0, AudioEngine._audioContext.currentTime);
-        AudioEngine._master.connect(AudioEngine._audioContext.destination);
-    },
-    _getMissingAudioBuffer: function () {
-        // plays beeping sound to indicate missing audio
-        var buffer = AudioEngine._audioContext.createBuffer(
-            1,
-            AudioEngine._audioContext.sampleRate,
-            AudioEngine._audioContext.sampleRate
-        );
-        // Fill the buffer
-        var bufferData = buffer.getChannelData(0);
-        for (var i = 0; i < buffer.length / 2; i++) {
-            bufferData[i] = Math.sin(i * 0.05) / 4; // max .25 gain value
-        }
-        return buffer;
-    },
-    _playSound: function (buffer) {
-        if (AudioEngine._currentSoundEffectAudio &&
-            AudioEngine._currentSoundEffectAudio.source.buffer == buffer) {
-            return;
-        }
-
-        var source = AudioEngine._audioContext.createBufferSource();
-        source.buffer = buffer;
-        source.onended = function(event) {
-            // dereference current sound effect when finished
-            if (AudioEngine._currentSoundEffectAudio &&
-                AudioEngine._currentSoundEffectAudio.source.buffer == buffer) {
-                AudioEngine._currentSoundEffectAudio = null;
-            }
-        };
-
-        source.connect(AudioEngine._master);
-        source.start();
-
-        AudioEngine._currentSoundEffectAudio = {
-            source: source
-        };
-    },
-    _playBackgroundMusic: function (buffer) {
-        var source = AudioEngine._audioContext.createBufferSource();
-        source.buffer = buffer;
-        source.loop = true;
-
-        var envelope = AudioEngine._audioContext.createGain();
-        envelope.gain.setValueAtTime(0.0, AudioEngine._audioContext.currentTime);
-        
-        var fadeTime = AudioEngine._audioContext.currentTime + AudioEngine.FADE_TIME;
-
-        // fade out current background music
-        if (AudioEngine._currentBackgroundMusic && 
-            AudioEngine._currentBackgroundMusic.source &&
-            AudioEngine._currentBackgroundMusic.source.playbackState !== 0) {
-            var currentBackgroundGainValue = AudioEngine._currentBackgroundMusic.envelope.gain.value;
-            AudioEngine._currentBackgroundMusic.envelope.gain.cancelScheduledValues(AudioEngine._audioContext.currentTime);
-            AudioEngine._currentBackgroundMusic.envelope.gain.setValueAtTime(currentBackgroundGainValue, AudioEngine._audioContext.currentTime);
-            AudioEngine._currentBackgroundMusic.envelope.gain.linearRampToValueAtTime(0.0, fadeTime);
-            AudioEngine._currentBackgroundMusic.source.stop(fadeTime + 0.3); // make sure fade has completed
-        }
-
-        // fade in new backgorund music
-        source.connect(envelope);
-        envelope.connect(AudioEngine._master);
-        source.start();
-        envelope.gain.linearRampToValueAtTime(1.0, fadeTime);
-
-        // update current background music
-        AudioEngine._currentBackgroundMusic = {
-            source: source,
-            envelope: envelope
-        };
-    },
-    _playEventMusic: function (buffer) {
-        var source = AudioEngine._audioContext.createBufferSource();
-        source.buffer = buffer;
-        source.loop = true;
-
-        var envelope = AudioEngine._audioContext.createGain();
-        envelope.gain.setValueAtTime(0.0, AudioEngine._audioContext.currentTime);
-
-        var fadeTime = AudioEngine._audioContext.currentTime + AudioEngine.FADE_TIME * 2;
-
-        // turn down current background music
-        if (AudioEngine._currentBackgroundMusic != null) {
-            var currentBackgroundGainValue = AudioEngine._currentBackgroundMusic.envelope.gain.value;
-            AudioEngine._currentBackgroundMusic.envelope.gain.cancelScheduledValues(AudioEngine._audioContext.currentTime);
-            AudioEngine._currentBackgroundMusic.envelope.gain.setValueAtTime(currentBackgroundGainValue, AudioEngine._audioContext.currentTime);
-            AudioEngine._currentBackgroundMusic.envelope.gain.linearRampToValueAtTime(0.2, fadeTime);
-        }
-
-        // fade in event music
-        source.connect(envelope);
-        envelope.connect(AudioEngine._master);
-        source.start();
-        envelope.gain.linearRampToValueAtTime(1.0, fadeTime);
-
-        // update reference
-        AudioEngine._currentEventAudio = {
-            source: source,
-            envelope: envelope
-        };
-    },
-    _stopEventMusic: function () {
-        var fadeTime = AudioEngine._audioContext.currentTime + AudioEngine.FADE_TIME * 2;
-
-        // fade out event music and stop
-        if (AudioEngine._currentEventAudio && 
-            AudioEngine._currentEventAudio.source && 
-            AudioEngine._currentEventAudio.source.buffer) {
-            var currentEventGainValue = AudioEngine._currentEventAudio.envelope.gain.value;
-            AudioEngine._currentEventAudio.envelope.gain.cancelScheduledValues(AudioEngine._audioContext.currentTime);
-            AudioEngine._currentEventAudio.envelope.gain.setValueAtTime(currentEventGainValue, AudioEngine._audioContext.currentTime);
-            AudioEngine._currentEventAudio.envelope.gain.linearRampToValueAtTime(0.0, fadeTime);
-            AudioEngine._currentEventAudio.source.stop(fadeTime + 1); // make sure fade has completed
-            AudioEngine._currentEventAudio = null;
-        }
-
-        // turn up background music
-        if (AudioEngine._currentBackgroundMusic) {
-          var currentBackgroundGainValue = AudioEngine._currentBackgroundMusic.envelope.gain.value;
-          AudioEngine._currentBackgroundMusic.envelope.gain.cancelScheduledValues(AudioEngine._audioContext.currentTime);
-          AudioEngine._currentBackgroundMusic.envelope.gain.setValueAtTime(currentBackgroundGainValue, AudioEngine._audioContext.currentTime);
-          AudioEngine._currentBackgroundMusic.envelope.gain.linearRampToValueAtTime(1.0, fadeTime);
-        }
-    },
-    isAudioContextRunning: function () {
-        return AudioEngine._audioContext.state !== 'suspended';
-    },
-    tryResumingAudioContext: function() {
-        if (AudioEngine._audioContext.state === 'suspended') {
-            AudioEngine._audioContext.resume();
-        }
-    },
-    playBackgroundMusic: function (src) {
-        if (!AudioEngine._initialized) {
-          return;
-        }
-        AudioEngine.loadAudioFile(src)
-            .then(function (buffer) {
-                AudioEngine._playBackgroundMusic(buffer);
-            });
-    },
-    playEventMusic: function (src) {
-        if (!AudioEngine._initialized) {
-          return;
-        }
-        AudioEngine.loadAudioFile(src)
-            .then(function (buffer) {
-                AudioEngine._playEventMusic(buffer);
-            });
-    },
-    stopEventMusic: function () {
-        if (!AudioEngine._initialized) {
-          return;
-        }
-        AudioEngine._stopEventMusic();
-    },
-    playSound: function (src) {
-        if (!AudioEngine._initialized) {
-          return;
-        }
-        AudioEngine.loadAudioFile(src)
-            .then(function (buffer) {
-                AudioEngine._playSound(buffer);
-            });
-    },
-    loadAudioFile: function (src) {
-        if (src.indexOf('http') === -1) {
-            var path = window.location.protocol + '//' + window.location.hostname + (window.location.port ?(':' + window.location.port) : '') + window.location.pathname;
-            if(path.endsWith('index.html')){
-                path = path.slice(0, - 10); 
-            }
-            src = path + src;
-        }
-        if (AudioEngine.AUDIO_BUFFER_CACHE[src]) {
-            return new Promise(function (resolve, reject) {
-                resolve(AudioEngine.AUDIO_BUFFER_CACHE[src]);
-            });
-        } else {
-            var request = new Request(src);
-            return fetch(request).then(function (response) {
-                return response.arrayBuffer();
-            }).then(function (buffer) {
-                if (buffer.byteLength === 0) {
-                    console.error('cannot load audio from ' + src);
-                    return AudioEngine._getMissingAudioBuffer();
-                }
-
-                var decodeAudioDataPromise = AudioEngine._audioContext.decodeAudioData(buffer, function (decodedData) {
-                    AudioEngine.AUDIO_BUFFER_CACHE[src] = decodedData;
-                    return AudioEngine.AUDIO_BUFFER_CACHE[src];
-                });
-
-                // Safari WebAudio does not return a promise based API for
-                // decodeAudioData, so we need to fake it if we want to play
-                // audio immediately on first fetch
-                if (decodeAudioDataPromise) {
-                    return decodeAudioDataPromise;
-                } else {
-                    return new Promise(function (resolve, reject) {
-                        var fakePromiseId = setInterval(function() {
-                            if (AudioEngine.AUDIO_BUFFER_CACHE[src]) {
-                                resolve(AudioEngine.AUDIO_BUFFER_CACHE[src]);
-                                clearInterval(fakePromiseId);
-                            }
-                        }, 20);
-                    });
-                }
-            });
-        }
-    },
-    setBackgroundMusicVolume: function (volume, s) {
-        if (AudioEngine._master == null) return;  // master may not be ready yet
-        if (volume === undefined) {
-            volume = 1.0;
-        }
-        if (s === undefined) {
-            s = 1.0;
-        }
-
-        // cancel any current schedules and then ramp
-        var currentBackgroundGainValue = AudioEngine._currentBackgroundMusic.envelope.gain.value;
-        AudioEngine._currentBackgroundMusic.envelope.gain.cancelScheduledValues(AudioEngine._audioContext.currentTime);
-        AudioEngine._currentBackgroundMusic.envelope.gain.setValueAtTime(currentBackgroundGainValue, AudioEngine._audioContext.currentTime);
-        AudioEngine._currentBackgroundMusic.envelope.gain.linearRampToValueAtTime(
-            volume,
-            AudioEngine._audioContext.currentTime + s
-        );
-    },
-    setMasterVolume: function (volume, s) {
-        if (AudioEngine._master == null) return;  // master may not be ready yet
-        if (volume === undefined) {
-            volume = 1.0;
-        }
-        if (s === undefined) {
-            s = 1.0;
-        }
-
-        // cancel any current schedules and then ramp
-        var currentGainValue = AudioEngine._master.gain.value;
-        AudioEngine._master.gain.cancelScheduledValues(AudioEngine._audioContext.currentTime);
-        AudioEngine._master.gain.setValueAtTime(currentGainValue, AudioEngine._audioContext.currentTime);
-        AudioEngine._master.gain.linearRampToValueAtTime(
-            volume,
-            AudioEngine._audioContext.currentTime + s
-        );
-    }
-};
- 
-/**
- * Module that defines all audio files
- */
-var AudioLibrary = {
-    MUSIC_DUSTY_PATH: 'audio/dusty-path.flac',
-    MUSIC_SILENT_FOREST: 'audio/silent-forest.flac',
-    MUSIC_LONELY_HUT: 'audio/lonely-hut.flac',
-    MUSIC_TINY_VILLAGE: 'audio/tiny-village.flac',
-    MUSIC_MODEST_VILLAGE: 'audio/modest-village.flac',
-    MUSIC_LARGE_VILLAGE: 'audio/large-village.flac',
-    MUSIC_RAUCOUS_VILLAGE: 'audio/raucous-village.flac',
-    MUSIC_FIRE_DEAD: 'audio/fire-dead.flac',
-    MUSIC_FIRE_SMOLDERING: 'audio/fire-smoldering.flac',
-    MUSIC_FIRE_FLICKERING: 'audio/fire-flickering.flac',
-    MUSIC_FIRE_BURNING: 'audio/fire-burning.flac',
-    MUSIC_FIRE_ROARING: 'audio/fire-roaring.flac',
-    MUSIC_WORLD: 'audio/world.flac',
-    MUSIC_SPACE: 'audio/space.flac',
-    MUSIC_ENDING: 'audio/ending.flac',
-    MUSIC_SHIP: 'audio/ship.flac',
-    EVENT_NOMAD: 'audio/event-nomad.flac',
-    EVENT_NOISES_OUTSIDE: 'audio/event-noises-outside.flac',
-    EVENT_NOISES_INSIDE: 'audio/event-noises-inside.flac',
-    EVENT_BEGGAR: 'audio/event-beggar.flac',
-    EVENT_SHADY_BUILDER: 'audio/event-shady-builder.flac',
-    EVENT_MYSTERIOUS_WANDERER: 'audio/event-mysterious-wanderer.flac',
-    EVENT_SCOUT: 'audio/event-scout.flac',
-    EVENT_WANDERING_MASTER: 'audio/event-wandering-master.flac',
-    EVENT_SICK_MAN: 'audio/event-sick-man.flac',
-    EVENT_RUINED_TRAP: 'audio/event-ruined-trap.flac',
-    EVENT_HUT_FIRE: 'audio/event-hut-fire.flac',
-    EVENT_SICKNESS: 'audio/event-sickness.flac',
-    EVENT_PLAGUE: 'audio/event-plague.flac',
-    EVENT_BEAST_ATTACK: 'audio/event-beast-attack.flac',
-    EVENT_SOLDIER_ATTACK: 'audio/event-soldier-attack.flac',
-    EVENT_THIEF: 'audio/event-thief.flac',
-    LANDMARK_FRIENDLY_OUTPOST: 'audio/landmark-friendly-outpost.flac',
-    LANDMARK_SWAMP: 'audio/landmark-swamp.flac',
-    LANDMARK_CAVE: 'audio/landmark-cave.flac',
-    LANDMARK_TOWN: 'audio/landmark-town.flac',
-    LANDMARK_CITY: 'audio/landmark-city.flac',
-    LANDMARK_HOUSE: 'audio/landmark-house.flac',
-    LANDMARK_BATTLEFIELD: 'audio/landmark-battlefield.flac',
-    LANDMARK_BOREHOLE: 'audio/landmark-borehole.flac',
-    LANDMARK_CRASHED_SHIP: 'audio/landmark-crashed-ship.flac',
-    LANDMARK_SULPHUR_MINE: 'audio/landmark-sulphurmine.flac',
-    LANDMARK_COAL_MINE: 'audio/landmark-coalmine.flac',
-    LANDMARK_IRON_MINE: 'audio/landmark-ironmine.flac',
-    LANDMARK_DESTROYED_VILLAGE: 'audio/landmark-destroyed-village.flac',
-    ENCOUNTER_TIER_1: 'audio/encounter-tier-1.flac',
-    ENCOUNTER_TIER_2: 'audio/encounter-tier-2.flac',
-    ENCOUNTER_TIER_3: 'audio/encounter-tier-3.flac',
-    LIGHT_FIRE: 'audio/light-fire.flac',
-    STOKE_FIRE: 'audio/stoke-fire.flac',
-    BUILD: 'audio/build.flac',
-    CRAFT: 'audio/craft.flac',
-    BUY: 'audio/buy.flac',
-    GATHER_WOOD: 'audio/gather-wood.flac',
-    CHECK_TRAPS: 'audio/check-traps.flac',
-    EMBARK: 'audio/embark.flac',
-    FOOTSTEPS_1: 'audio/footsteps-1.flac',
-    FOOTSTEPS_2: 'audio/footsteps-2.flac',
-    FOOTSTEPS_3: 'audio/footsteps-3.flac',
-    FOOTSTEPS_4: 'audio/footsteps-4.flac',
-    FOOTSTEPS_5: 'audio/footsteps-5.flac',
-    FOOTSTEPS_6: 'audio/footsteps-6.flac',
-    EAT_MEAT: 'audio/eat-meat.flac',
-    USE_MEDS: 'audio/use-meds.flac',
-    WEAPON_UNARMED_1: 'audio/weapon-unarmed-1.flac',
-    WEAPON_UNARMED_2: 'audio/weapon-unarmed-2.flac',
-    WEAPON_UNARMED_3: 'audio/weapon-unarmed-3.flac',
-    WEAPON_MELEE_1: 'audio/weapon-melee-1.flac',
-    WEAPON_MELEE_2: 'audio/weapon-melee-2.flac',
-    WEAPON_MELEE_3: 'audio/weapon-melee-3.flac',
-    WEAPON_RANGED_1: 'audio/weapon-ranged-1.flac',
-    WEAPON_RANGED_2: 'audio/weapon-ranged-2.flac',
-    WEAPON_RANGED_3: 'audio/weapon-ranged-3.flac',
-    DEATH: 'audio/death.flac',
-    REINFORCE_HULL: 'audio/reinforce-hull.flac',
-    UPGRADE_ENGINE: 'audio/upgrade-engine.flac',
-    LIFT_OFF: 'audio/lift-off.flac',
-    ASTEROID_HIT_1: 'audio/asteroid-hit-1.flac',
-    ASTEROID_HIT_2: 'audio/asteroid-hit-2.flac',
-    ASTEROID_HIT_3: 'audio/asteroid-hit-3.flac',
-    ASTEROID_HIT_4: 'audio/asteroid-hit-4.flac',
-    ASTEROID_HIT_5: 'audio/asteroid-hit-5.flac',
-    ASTEROID_HIT_6: 'audio/asteroid-hit-6.flac',
-    ASTEROID_HIT_7: 'audio/asteroid-hit-7.flac',
-    ASTEROID_HIT_8: 'audio/asteroid-hit-8.flac',
-    CRASH: 'audio/crash.flac',
-}; 
-var Button = {
-	Button: function(options) {
-		if(typeof options.cooldown == 'number') {
-			this.data_cooldown = options.cooldown;
-		}
-		this.data_remaining = 0;
-		if(typeof options.click == 'function') {
-			this.data_handler = options.click;
-		}
-
-		var el = $('<div>')
-			.attr('id', typeof(options.id) != 'undefined' ? options.id : "BTN_" + Engine.getGuid())
-			.addClass('button')
-			.text(typeof(options.text) != 'undefined' ? options.text : "button")
-			.click(function() {
-				if(!$(this).hasClass('disabled')) {
-					Button.cooldown($(this));
-					$(this).data("handler")($(this));
-				}
-			})
-			.data("handler",  typeof options.click == 'function' ? options.click : function() { Engine.log("click"); })
-			.data("remaining", 0)
-			.data("cooldown", typeof options.cooldown == 'number' ? options.cooldown : 0)
-			.data('boosted', options.boosted ?? (() => false));
-
-		el.append($("<div>").addClass('cooldown'));
-
-		// waiting for expiry of residual cooldown detected in state
-		Button.cooldown(el, 'state');
-
-		if(options.cost) {
-			var ttPos = options.ttPos ? options.ttPos : "bottom right";
-			var costTooltip = $('<div>').addClass('tooltip ' + ttPos);
-			for(var k in options.cost) {
-				$("<div>").addClass('row_key').text(_(k)).appendTo(costTooltip);
-				$("<div>").addClass('row_val').text(options.cost[k]).appendTo(costTooltip);
-			}
-			if(costTooltip.children().length > 0) {
-				costTooltip.appendTo(el);
-			}
-		}
-
-		if(options.width) {
-			el.css('width', options.width);
-		}
-
-		return el;
-	},
-
-	saveCooldown: true,
-
-	setDisabled: function(btn, disabled) {
-		if(btn) {
-			if(!disabled && !btn.data('onCooldown')) {
-				btn.removeClass('disabled');
-			} else if(disabled) {
-				btn.addClass('disabled');
-			}
-			btn.data('disabled', disabled);
-		}
-	},
-
-	isDisabled: function(btn) {
-		if(btn) {
-			return btn.data('disabled') === true;
-		}
-		return false;
-	},
-
-	cooldown: function(btn, option) {
-		var cd = btn.data("cooldown");
-		if (btn.data('boosted')()) {
-			cd /= 2;
-		}
-		var id = 'cooldown.'+ btn.attr('id');
-		if(cd > 0) {
-			if(typeof option == 'number') {
-				cd = option;
-			}
-			// param "start" takes value from cooldown time if not specified
-			var start, left;
-			switch(option){
-				// a switch will allow for several uses of cooldown function
-				case 'state':
-					if(!$SM.get(id)){
-						return;
-					}
-					start = Math.min($SM.get(id), cd);
-					left = (start / cd).toFixed(4);
-					break;
-				default:
-					start = cd;
-					left = 1;
-			}
-			Button.clearCooldown(btn);
-			if(Button.saveCooldown){
-				$SM.set(id,start);
-				// residual value is measured in seconds
-				// saves program performance
-				btn.data('countdown', Engine.setInterval(function(){
-					$SM.set(id, $SM.get(id, true) - 0.5, true);
-				},500));
-			}
-			var time = start;
-			if (Engine.options.doubleTime){
-				time /= 2;
-			}
-			$('div.cooldown', btn).width(left * 100 +"%").animate({width: '0%'}, time * 1000, 'linear', function() {
-				Button.clearCooldown(btn, true);
-			});
-			btn.addClass('disabled');
-			btn.data('onCooldown', true);
-		}
-	},
-
-	clearCooldown: function(btn, cooldownEnded) {
-		var ended = cooldownEnded || false;
-		if(!ended){
-			$('div.cooldown', btn).stop(true, true);
-		}
-		btn.data('onCooldown', false);
-		if(btn.data('countdown')){
-			window.clearInterval(btn.data('countdown'));
-			$SM.remove('cooldown.'+ btn.attr('id'));
-			btn.removeData('countdown');
-		}
-		if(!btn.data('disabled')) {
-			btn.removeClass('disabled');
-		}
-	}
-};
- 
 (function (Engine, Events, Dropbox, $) {
 
   /**
@@ -10374,7 +8869,2796 @@ var Button = {
   Engine.Dropbox = DropboxConnector;
 
 })(Engine, Events, Dropbox, jQuery); 
+/**
+ * Module that handles the random event system
+ */
+var Events = {
 
+	_EVENT_TIME_RANGE: [3, 6], // range, in minutes
+	_PANEL_FADE: 200,
+	_FIGHT_SPEED: 100,
+	_EAT_COOLDOWN: 5,
+	_MEDS_COOLDOWN: 7,
+	_HYPO_COOLDOWN: 7,
+	_SHIELD_COOLDOWN: 10,
+	_STIM_COOLDOWN: 10,
+	_LEAVE_COOLDOWN: 1,
+	STUN_DURATION: 4000,
+	ENERGISE_MULTIPLIER: 4,
+	EXPLOSION_DURATION: 3000,
+	ENRAGE_DURATION: 4000,
+	MEDITATE_DURATION: 5000,
+	BOOST_DURATION: 3000,
+	BOOST_DAMAGE: 10,
+	DOT_TICK: 1000,
+	BLINK_INTERVAL: false,
+	init: function(options) {
+		this.options = $.extend(
+			this.options,
+			options
+		);
+
+		// Build the Event Pool
+		Events.EventPool = [].concat(
+			Events.Global,
+			Events.Room,
+			Events.Outside,
+      Events.Marketing
+		);
+
+		Events.eventStack = [];
+
+		Events.scheduleNextEvent();
+
+		//subscribe to stateUpdates
+		$.Dispatch('stateUpdate').subscribe(Events.handleStateUpdates);
+
+		//check for stored delayed events
+		Events.initDelay();
+	},
+
+	options: {}, // Nothing for now
+
+	delayState: 'wait',
+	activeScene: null,
+
+	loadScene: function(name) {
+		Engine.log('loading scene: ' + name);
+		Events.activeScene = name;
+		var scene = Events.activeEvent().scenes[name];
+
+		// onLoad
+		if(scene.onLoad) {
+			scene.onLoad();
+		}
+
+		// Notify the scene change
+		if(scene.notification) {
+			Notifications.notify(null, scene.notification);
+		}
+
+		// Scene reward
+		if(scene.reward) {
+			$SM.addM('stores', scene.reward);
+		}
+
+		$('#description', Events.eventPanel()).empty();
+		$('#buttons', Events.eventPanel()).empty();
+		if(scene.combat) {
+			Events.startCombat(scene);
+		} else {
+			Events.startStory(scene);
+		}
+	},
+
+	startCombat: function(scene) {
+		Engine.event('game event', 'combat');
+		Events.fought = false;
+		Events.won = false;
+		var desc = $('#description', Events.eventPanel());
+
+		$('<div>').text(scene.notification).appendTo(desc);
+
+		// Draw pause button
+		/* Disable for now, because it doesn't work and looks weird
+		var pauseBox = $('<div>').attr('id', 'pauseButton').appendTo(desc);
+		var pause = new Button.Button({
+			id: 'pause',
+			text: '',
+			cooldown: Events._PAUSE_COOLDOWN,
+			click: Events.togglePause
+		}).appendTo(pauseBox);
+		$('<span>').addClass('text').insertBefore(pause.children('.cooldown'));
+		$('<div>').addClass('clear').appendTo(pauseBox);
+		Events.setPause(pause, 'set');
+		Events.removePause(pause, 'set');
+		*/
+
+		var fightBox = $('<div>').attr('id', 'fight').appendTo(desc);
+		// Draw the wanderer
+		Events.createFighterDiv('@', World.health, World.getMaxHealth()).attr('id', 'wanderer').appendTo(fightBox);
+		// Draw the enemy
+		Events.createFighterDiv(scene.chara, scene.health, scene.health).attr('id', 'enemy').appendTo(fightBox);
+
+		// Draw the action buttons
+		var btns = $('#buttons', Events.eventPanel());
+
+		var attackBtns = $('<div>').appendTo(btns).attr('id','attackButtons');
+		var numWeapons = 0;
+		for(var k in World.Weapons) {
+			var weapon = World.Weapons[k];
+			if(typeof Path.outfit[k] == 'number' && Path.outfit[k] > 0) {
+				if(typeof weapon.damage != 'number' || weapon.damage === 0) {
+					// Weapons that deal no damage don't count
+					numWeapons--;
+				} else if(weapon.cost){
+					for(var c in weapon.cost) {
+						var num = weapon.cost[c];
+						if(typeof Path.outfit[c] != 'number' || Path.outfit[c] < num) {
+							// Can't use this weapon, so don't count it
+							numWeapons--;
+						}
+					}
+				}
+				numWeapons++;
+				Events.createAttackButton(k).appendTo(attackBtns);
+			}
+		}
+		if(numWeapons === 0) {
+			// No weapons? You can punch stuff!
+			Events.createAttackButton('fists').prependTo(attackBtns);
+		}
+		$('<div>').addClass('clear').appendTo(attackBtns);
+
+		var healBtns = $('<div>').appendTo(btns).attr('id','healButtons');
+		Events.createEatMeatButton().appendTo(healBtns);
+		if((Path.outfit['medicine'] || 0) !== 0) {
+			Events.createUseMedsButton().appendTo(healBtns);
+		}
+		if((Path.outfit['hypo'] || 0) !== 0) {
+			Events.createUseHypoButton().appendTo(healBtns);
+		}
+		if ((Path.outfit['stim'] ?? 0) > 0) {
+			Events.createStimButton().appendTo(healBtns);
+		}
+		if($SM.get('stores["kinetic armour"]', true) > 0) {
+			Events.createShieldButton().appendTo(healBtns);
+		}
+		$('<div>').addClass('clear').appendTo(healBtns);
+		Events.setHeal(healBtns);
+		
+		// Set up the enemy attack timers
+		Events.startEnemyAttacks();
+		Events._specialTimers = (scene.specials ?? []).map(s => Engine.setInterval(
+			() => {
+				const enemy = $('#enemy');
+				const text = s.action(enemy);
+				Events.updateFighterDiv(enemy);
+				if (text) {
+					Events.drawFloatText(text, $('.hp', enemy))
+				}
+			}, 
+			s.delay * 1000
+		));
+	},
+
+	startEnemyAttacks: (delay) => {
+		clearInterval(Events._enemyAttackTimer);
+		const scene = Events.activeEvent().scenes[Events.activeScene];
+		Events._enemyAttackTimer = Engine.setInterval(Events.enemyAttack, (delay ?? scene.attackDelay) * 1000);
+	},
+
+	setStatus: (fighter, status) => {
+		fighter.data('status', status);
+		if (status === 'enraged' && fighter.attr('id') === 'enemy') {
+			Events.startEnemyAttacks(0.5);
+			setTimeout(() => {
+				fighter.data('status', 'none');
+				Events.startEnemyAttacks();
+			}, Events.ENRAGE_DURATION);
+		}
+		if (status === 'meditation') {
+			Events._meditateDmg = 0;
+			setTimeout(() => {
+				fighter.data('status', 'none');
+			}, Events.MEDITATE_DURATION);
+		}
+		if (status === 'boost') {
+			setTimeout(() => {
+				fighter.data('status', 'none');
+			}, Events.BOOST_DURATION);
+		}
+	},
+
+	setPause: function(btn, state){
+		if(!btn) {
+			btn = $('#pause');
+		}
+		var event = btn.closest('#event');
+		var string, log;
+		if(state == 'set') {
+			string = 'start.';
+			log = 'loaded';
+		} else {
+			string = 'resume.';
+			log = 'paused';
+		}
+		btn.children('.text').first().text( _(string) );
+		Events.paused = (state == 'auto') ? 'auto' : true;
+		event.addClass('paused');
+		Button.clearCooldown(btn);
+		$('#buttons').find('.button').each(function(i){
+			if($(this).data('onCooldown')){
+				$(this).children('.cooldown').stop(true,false);
+			}
+		});
+		Engine.log('fight '+ log +'.');
+	},
+
+	removePause: function(btn, state){
+		if(!btn) {
+			btn = $('#pause');
+		}
+		var event = btn.closest('#event');
+		var log, time, target;
+		if(state == 'auto' && Events.paused != 'auto') {
+			return;
+		}
+		switch(state){
+			case 'set':
+				Button.cooldown(btn, Events._LEAVE_COOLDOWN);
+				log = 'started';
+				time = Events._LEAVE_COOLDOWN * 1000;
+				target = $();
+				break;
+			case 'end':
+				Button.setDisabled(btn, true);
+				log = 'ended';
+				time = Events._FIGHT_SPEED;
+				target = $();
+				break;
+			case 'auto':
+				Button.cooldown(btn);
+				/* falls through */
+			default:
+				log = 'resumed';
+				time = Events._PAUSE_COOLDOWN * 1000;
+				target = $('#buttons').find('.button');
+				break;
+		}
+		Engine.setTimeout(function(){
+			btn.children('.text').first().text( _('pause.') );
+			Events.paused = false;
+			event.removeClass('paused');
+			target.each(function(i){
+				if($(this).data('onCooldown')){
+					Button.cooldown($(this), 'pause');
+				}
+			});
+			Engine.log('Event '+ log);
+		}, time);
+	},
+
+	togglePause: function(btn, auto){
+		if(!btn) {
+			btn = $('#pause');
+		}
+		if((auto) && (document.hasFocus() == !Events.paused)) {
+			return;
+		}
+		var f = (Events.paused) ? Events.removePause : Events.setPause;
+		var state = (auto) ? 'auto' : false;
+		f(btn, state);
+	},
+
+	createEatMeatButton: function(cooldown) {
+		if (cooldown == null) {
+			cooldown = Events._EAT_COOLDOWN;
+		}
+
+		var btn = new Button.Button({
+			id: 'eat',
+			text: _('eat meat'),
+			cooldown: cooldown,
+			click: Events.eatMeat,
+			cost: { 'cured meat': 1 }
+		});
+
+		if(Path.outfit['cured meat'] === 0) {
+			Button.setDisabled(btn, true);
+		}
+
+		return btn;
+	},
+
+	createUseMedsButton: function(cooldown) {
+		if (cooldown == null) {
+			cooldown = Events._MEDS_COOLDOWN;
+		}
+
+		var btn = new Button.Button({
+			id: 'meds',
+			text: _('use meds'),
+			cooldown: cooldown,
+			click: Events.useMeds,
+			cost: { 'medicine': 1 }
+		});
+
+		if((Path.outfit['medicine'] || 0) === 0) {
+			Button.setDisabled(btn, true);
+		}
+
+		return btn;
+	},
+
+	createUseHypoButton: function(cooldown) {
+		if (cooldown == null) {
+			cooldown = Events._HYPO_COOLDOWN;
+		}
+
+		var btn = new Button.Button({
+			id: 'hypo',
+			text: _('use hypo'),
+			cooldown: cooldown,
+			click: Events.useHypo,
+			cost: { 'hypo': 1 }
+		});
+
+		if((Path.outfit['hypo'] ?? 0) > 0) {
+			Button.setDisabled(btn, true);
+		}
+
+		return btn;
+	},
+
+	createShieldButton: function() {
+		var btn = new Button.Button({
+			id: 'shld',
+			text: _('shield'),
+			cooldown: Events._SHIELD_COOLDOWN,
+			click: Events.useShield
+		});
+		return btn;
+	},
+
+	createStimButton: () => new Button.Button({
+		id: 'use-stim',
+		text: _('boost'),
+		cooldown: Events._STIM_COOLDOWN,
+		click: Events.useStim
+	}),
+
+	createAttackButton: function(weaponName) {
+		var weapon = World.Weapons[weaponName];
+		var cd = weapon.cooldown;
+		if(weapon.type == 'unarmed') {
+			if($SM.hasPerk('unarmed master')) {
+				cd /= 2;
+			}
+		}
+		var btn = new Button.Button({
+			id: 'attack_' + weaponName.replace(/ /g, '-'),
+			text: weapon.verb,
+			cooldown: cd,
+			click: Events.useWeapon,
+			boosted: () => $('#wanderer').data('status') === 'boost',
+			cost: weapon.cost
+		});
+		if(typeof weapon.damage == 'number' && weapon.damage > 0) {
+			btn.addClass('weaponButton');
+		}
+
+		for(var k in weapon.cost) {
+			if(typeof Path.outfit[k] != 'number' || Path.outfit[k] < weapon.cost[k]) {
+				Button.setDisabled(btn, true);
+				break;
+			}
+		}
+
+		return btn;
+	},
+
+	drawFloatText: function(text, parent, cb) {
+		$('<div>').text(text).addClass('damageText').appendTo(parent).animate({
+			'bottom': '70px',
+			'opacity': '0'
+		},
+		700,
+		'linear',
+		function() {
+			$(this).remove();
+			cb && cb();
+		});
+	},
+
+	setHeal: function(healBtns) {
+		if(!healBtns){
+			healBtns = $('#healButtons');
+		}
+		healBtns = healBtns.children('.button');
+		var canHeal = (World.health < World.getMaxHealth());
+		healBtns.each(function(i){
+			const btn = $(this);
+			Button.setDisabled(btn, !canHeal && btn.attr('id') !== 'shld');
+		});
+		return canHeal;
+	},
+
+	doHeal: function(healing, cured, btn) {
+		if(Path.outfit[healing] > 0) {
+			Path.outfit[healing]--;
+			World.updateSupplies();
+			if(Path.outfit[healing] === 0) {
+				Button.setDisabled(btn, true);
+			}
+
+			var hp = World.health + cured;
+			hp = Math.min(World.getMaxHealth(),hp);
+			World.setHp(hp);
+			Events.setHeal();
+
+			if(Events.activeEvent()) {
+				var w = $('#wanderer');
+				w.data('hp', hp);
+				Events.updateFighterDiv(w);
+				Events.drawFloatText('+' + cured, '#wanderer .hp');
+				var takeETbutton = Events.setTakeAll();
+				Events.canLeave(takeETbutton);
+			}
+		}
+	},
+
+	eatMeat: function(btn) {
+		Events.doHeal('cured meat', World.meatHeal(), btn);
+		AudioEngine.playSound(AudioLibrary.EAT_MEAT);
+	},
+
+	useMeds: function(btn) {
+		Events.doHeal('medicine', World.medsHeal(), btn);
+		AudioEngine.playSound(AudioLibrary.USE_MEDS);
+	},
+
+	useHypo: btn => {
+		Events.doHeal('hypo', World.hypoHeal(), btn);
+		AudioEngine.playSound(AudioLibrary.USE_MEDS);
+	},
+
+	useShield: btn => {
+		const player = $('#wanderer');
+		player.data('status', 'shield');
+		Events.updateFighterDiv(player);
+	},
+
+	useStim: btn => {
+		const player = $('#wanderer');
+		player.data('status', 'boost');
+		Events.dotDamage(player, Events.BOOST_DAMAGE);
+		Events.updateFighterDiv(player);
+	},
+
+	useWeapon: function(btn) {
+		if(Events.activeEvent()) {
+			var weaponName = btn.attr('id').substring(7).replace(/-/g, ' ');
+			var weapon = World.Weapons[weaponName];
+			if(weapon.type == 'unarmed') {
+				if(!$SM.get('character.punches')) $SM.set('character.punches', 0);
+				$SM.add('character.punches', 1);
+				if($SM.get('character.punches') == 50 && !$SM.hasPerk('boxer')) {
+					$SM.addPerk('boxer');
+				} else if($SM.get('character.punches') == 150 && !$SM.hasPerk('martial artist')) {
+					$SM.addPerk('martial artist');
+				} else if($SM.get('character.punches') == 300 && !$SM.hasPerk('unarmed master')) {
+					$SM.addPerk('unarmed master');
+				}
+
+			}
+			if(weapon.cost) {
+				var mod = {};
+				var out = false;
+				for(var k in weapon.cost) {
+					if(typeof Path.outfit[k] != 'number' || Path.outfit[k] < weapon.cost[k]) {
+						return;
+					}
+					mod[k] = -weapon.cost[k];
+					if(Path.outfit[k] - weapon.cost[k] < weapon.cost[k]) {
+						out = true;
+					}
+				}
+				for(var m in mod) {
+					Path.outfit[m] += mod[m];
+				}
+				if(out) {
+					Button.setDisabled(btn, true);
+					var validWeapons = false;
+					$('.weaponButton').each(function(){
+						if(!Button.isDisabled($(this)) && $(this).attr('id') != 'attack_fists') {
+							validWeapons = true;
+							return false;
+						}
+					});
+					if(!validWeapons) {
+						// enable or create the punch button
+						var fists = $('#attack_fists');
+						if(fists.length === 0) {
+							Events.createAttackButton('fists').prependTo('#buttons', Events.eventPanel());
+						} else {
+							Button.setDisabled(fists, false);
+						}
+					}
+				}
+				World.updateSupplies();
+			}
+			var dmg = -1;
+			if(Math.random() <= World.getHitChance()) {
+				dmg = weapon.damage;
+				if(typeof dmg == 'number') {
+					if(weapon.type == 'unarmed' && $SM.hasPerk('boxer')) {
+						dmg *= 2;
+					}
+					if(weapon.type == 'unarmed' && $SM.hasPerk('martial artist')) {
+						dmg *= 3;
+					}
+					if(weapon.type == 'unarmed' && $SM.hasPerk('unarmed master')) {
+						dmg *= 2;
+					}
+					if(weapon.type == 'melee' && $SM.hasPerk('barbarian')) {
+						dmg = Math.floor(dmg * 1.5);
+					}
+				}
+			}
+			
+			var attackFn = weapon.type == 'ranged' ? Events.animateRanged : Events.animateMelee;
+			
+			// play variation audio for weapon type
+			var r = Math.floor(Math.random() * 2) + 1;
+			switch (weapon.type) {
+				case 'unarmed':
+					AudioEngine.playSound(AudioLibrary['WEAPON_UNARMED_' + r]);
+					break;
+				case 'melee':
+					AudioEngine.playSound(AudioLibrary['WEAPON_MELEE_' + r]);
+					break;
+				case 'ranged':
+					AudioEngine.playSound(AudioLibrary['WEAPON_RANGED_' + r]);
+					break;
+			}
+
+			attackFn($('#wanderer'), dmg, function() {
+				const enemy = $('#enemy');
+				const enemyHp = enemy.data('hp');
+				const scene = Events.activeEvent().scenes[Events.activeScene];
+				const atHealth = scene.atHealth ?? {};
+				const explosion = scene.explosion;
+
+				for (const [k, action] of Object.entries(atHealth)) {
+					const hpThreshold = Number(k);
+					if (enemyHp <= hpThreshold && enemyHp + dmg > hpThreshold) {
+						action(enemy);
+					}
+				}
+
+				if(enemyHp <= 0 && !Events.won) {
+					// Success!
+					Events.won = true;
+					if (explosion) {
+						Events.explode(enemy, $('#wanderer'), explosion);
+					}
+					else {
+						Events.winFight();
+					}
+				}
+			});
+		}
+	},
+
+	explode: (enemy, player, dmg) => {
+		Events.clearTimeouts();
+		enemy.addClass('exploding');
+		setTimeout(() => {
+			enemy.removeClass('exploding');
+			$('.label', enemy).text('*');
+			Events.damage(enemy, player, dmg, 'ranged', () => {
+				if (!Events.checkPlayerDeath()) {
+					Events.winFight();
+				}
+			});
+		}, Events.EXPLOSION_DURATION);
+	},
+
+	dotDamage: (target, dmg) => {
+		const hp = Math.max(0, target.data('hp') - dmg);
+		target.data('hp', hp);
+		if(target.attr('id') == 'wanderer') {
+			World.setHp(hp);
+			Events.setHeal();
+			Events.checkPlayerDeath();
+		}
+		else if(hp <= 0 && !Events.won) {
+			Events.won = true;
+			Events.winFight();
+		}
+		Events.updateFighterDiv(target);
+		Events.drawFloatText(`-${dmg}`, $('.hp', target));
+	},
+
+	damage: function(fighter, enemy, dmg, type, cb) {
+		var enemyHp = enemy.data('hp');
+		const maxHp = enemy.data('maxHp');
+		var msg = "";
+		const shielded = enemy.data('status') === 'shield';
+		const energised = fighter.data('status') === 'energised';
+		const venomous = fighter.data('status') === 'venomous';
+		const meditating = enemy.data('status') === 'meditation';
+		if(typeof dmg == 'number') {
+			if(dmg < 0) {
+				msg = _('miss');
+				dmg = 0;
+			} else {
+				if (energised) {
+					dmg *= this.ENERGISE_MULTIPLIER;
+				}
+
+				if (meditating) {
+					Events._meditateDmg = (Events._meditateDmg ?? 0) + dmg;
+					msg = dmg;
+				}
+				else {
+					msg = (shielded ? '+' : '-') + dmg;
+					enemyHp = Math.min(maxHp, Math.max(0, enemyHp + (shielded ? dmg : -dmg)));
+					enemy.data('hp', enemyHp);
+					if(fighter.attr('id') == 'enemy') {
+						World.setHp(enemyHp);
+						Events.setHeal();
+					}
+				}
+
+				if (venomous && !shielded) {
+					clearInterval(Events._dotTimer);
+					Events._dotTimer = setInterval(() => {
+						Events.dotDamage(enemy, Math.floor(dmg / 2));
+					}, Events.DOT_TICK);
+				}
+				
+				if (shielded) {
+					// shields break in one hit
+					enemy.data('status', 'none');
+				}
+				
+				Events.updateFighterDiv(enemy);
+
+				// play variation audio for weapon type
+				var r = Math.floor(Math.random() * 2) + 1;
+				switch (type) {
+					case 'unarmed':
+						AudioEngine.playSound(AudioLibrary['WEAPON_UNARMED_' + r]);
+						break;
+					case 'melee':
+						AudioEngine.playSound(AudioLibrary['WEAPON_MELEE_' + r]);
+						break;
+					case 'ranged':
+						AudioEngine.playSound(AudioLibrary['WEAPON_RANGED_' + r]);
+						break;
+				}
+			}
+		} else {
+			if(dmg == 'stun') {
+				msg = _('stunned');
+				enemy.data('stunned', true);
+				setTimeout(() => enemy.data('stunned', false), Events.STUN_DURATION);
+			}
+		}
+
+		if (energised || venomous) {
+			// attack buffs only applies to one hit
+			fighter.data('status', 'none');
+			Events.updateFighterDiv(fighter);
+		}
+
+		Events.drawFloatText(msg, $('.hp', enemy), cb);
+	},
+
+	animateMelee: function(fighter, dmg, callback) {
+		var start, end, enemy;
+		if(fighter.attr('id') == 'wanderer') {
+			start = {'left': '50%'};
+			end = {'left': '25%'};
+			enemy = $('#enemy');
+		} else {
+			start = {'right': '50%'};
+			end = {'right': '25%'};
+			enemy = $('#wanderer');
+		}
+
+		fighter.stop(true, true).animate(start, Events._FIGHT_SPEED, function() {
+
+			Events.damage(fighter, enemy, dmg, 'melee');
+
+			$(this).animate(end, Events._FIGHT_SPEED, callback);
+		});
+	},
+
+	animateRanged: function(fighter, dmg, callback) {
+		var start, end, enemy;
+		if(fighter.attr('id') == 'wanderer') {
+			start = {'left': '25%'};
+			end = {'left': '50%'};
+			enemy = $('#enemy');
+		} else {
+			start = {'right': '25%'};
+			end = {'right': '50%'};
+			enemy = $('#wanderer');
+		}
+
+		$('<div>').css(start).addClass('bullet').text('o').appendTo('#description')
+			.animate(end, Events._FIGHT_SPEED * 2, 'linear', function() {
+
+			Events.damage(fighter, enemy, dmg, 'ranged');
+
+			$(this).remove();
+			if(typeof callback == 'function') {
+				callback();
+			}
+		});
+	},
+
+	enemyAttack: function() {
+		// Events.togglePause($('#pause'),'auto');
+
+		var scene = Events.activeEvent().scenes[Events.activeScene];
+		const enemy = $('#enemy');
+		const stunned = enemy.data('stunned');
+		const meditating = enemy.data('status') === 'meditation';
+
+		if(!stunned && !meditating) {
+			var toHit = scene.hit;
+			toHit *= $SM.hasPerk('evasive') ? 0.8 : 1;
+			var dmg = -1;
+			if ((Events._meditateDmg ?? 0) > 0) {
+				dmg = Events._meditateDmg;
+				Events._meditateDmg = 0;
+			}
+			else if(Math.random() <= toHit) {
+				dmg = scene.damage;
+			}
+
+			var attackFn = scene.ranged ? Events.animateRanged : Events.animateMelee;
+
+			attackFn($('#enemy'), dmg, Events.checkPlayerDeath);
+		}
+	},
+
+	checkPlayerDeath: () => {
+		if($('#wanderer').data('hp') <= 0) {
+			Events.clearTimeouts();
+			Events.endEvent();
+			World.die();
+			return true;
+		}
+		return false;
+	},
+
+	clearTimeouts: () => {
+		clearInterval(Events._enemyAttackTimer);
+		Events._specialTimers.forEach(clearInterval);
+		clearInterval(Events._dotTimer);
+	},
+
+	endFight: function() {
+		Events.fought = true;
+		Events.clearTimeouts();
+		Events.removePause($('#pause'), 'end');
+	},
+
+	winFight: function() {
+		Engine.setTimeout(function() {
+			if(Events.fought) {
+				return;
+			}
+			Events.endFight();
+			// AudioEngine.playSound(AudioLibrary.WIN_FIGHT);
+			$('#enemy').animate({opacity: 0}, 300, 'linear', function() {
+				Engine.setTimeout(function() {
+					var scene = Events.activeEvent().scenes[Events.activeScene];
+					var leaveBtn = false;
+					var desc = $('#description', Events.eventPanel());
+					var btns = $('#buttons', Events.eventPanel());
+					desc.empty();
+					btns.empty();
+					$('<div>').text(scene.deathMessage).appendTo(desc);
+
+					var takeETbtn = Events.drawLoot(scene.loot);
+
+					var exitBtns = $('<div>').appendTo(btns).attr('id','exitButtons');
+					if(scene.buttons) {
+						// Draw the buttons
+						leaveBtn = Events.drawButtons(scene);
+					} else {
+						leaveBtn = new Button.Button({
+							id: 'leaveBtn',
+							cooldown: Events._LEAVE_COOLDOWN,
+							click: function() {
+								if(scene.nextScene && scene.nextScene != 'end') {
+									Events.loadScene(scene.nextScene);
+								} else {
+									Events.endEvent();
+								}
+							},
+							text: _('leave')
+						});
+						Button.cooldown(leaveBtn.appendTo(exitBtns));
+
+						var healBtns = $('<div>').appendTo(btns).attr('id','healButtons');
+						Events.createEatMeatButton(0).appendTo(healBtns);
+						if((Path.outfit['medicine'] || 0) !== 0) {
+							Events.createUseMedsButton(0).appendTo(healBtns);
+						}
+						if (Path.outfit['hypo'] ?? 0 > 0) {
+							Events.createUseHypoButton(0).appendTo(healBtns);
+						}
+						$('<div>').addClass('clear').appendTo(healBtns);
+						Events.setHeal(healBtns);
+					}
+					$('<div>').addClass('clear').appendTo(exitBtns);
+
+					Events.allowLeave(takeETbtn, leaveBtn);
+				}, 1000, true);
+			});
+		}, Events._FIGHT_SPEED);
+	},
+
+	loseFight: function(){
+		Events.endFight();
+		Events.endEvent();
+		World.die();
+	},
+
+	drawDrop:function(btn) {
+		var name = btn.attr('id').substring(5).replace(/-/g, ' ');
+		var needsAppend = false;
+		var weight = Path.getWeight(name);
+		var freeSpace = Path.getFreeSpace();
+		if(weight > freeSpace) {
+			// Draw the drop menu
+			Engine.log('drop menu');
+			var dropMenu;
+			if($('#dropMenu').length){
+				dropMenu = $('#dropMenu');
+				$('#dropMenu').empty();
+			} else {
+				dropMenu = $('<div>').attr({'id': 'dropMenu', 'data-legend': _('drop:')});
+				needsAppend = true;
+			}
+			for(var k in Path.outfit) {
+				if(name == k) continue;
+				var itemWeight = Path.getWeight(k);
+				if(itemWeight > 0) {
+					var numToDrop = Math.ceil((weight - freeSpace) / itemWeight);
+					if(numToDrop > Path.outfit[k]) {
+						numToDrop = Path.outfit[k];
+					}
+					if(numToDrop > 0) {
+						var dropRow = $('<div>').attr('id', 'drop_' + k.replace(/ /g, '-'))
+							.text(_(k) + ' x' + numToDrop)
+							.data('thing', k)
+							.data('num', numToDrop)
+							.click(Events.dropStuff)
+							.mouseenter(function(e){
+								e.stopPropagation();
+							});
+						dropRow.appendTo(dropMenu);
+					}
+				}
+			}
+			$('<div>').attr('id','no_drop')
+				.text(_('nothing'))
+				.mouseenter(function(e){
+					e.stopPropagation();
+				})
+				.click(function(e){
+					e.stopPropagation();
+					dropMenu.remove();
+				})
+				.appendTo(dropMenu);
+			if(needsAppend){
+				dropMenu.appendTo(btn);
+			}
+			btn.one("mouseleave", function() {
+				$('#dropMenu').remove();
+			});
+		}
+	},
+
+	drawLootRow: function(name, num){
+		var id = name.replace(/ /g, '-');
+		var lootRow = $('<div>').attr('id','loot_' + id).data('item', name).addClass('lootRow');
+		var take = new Button.Button({
+			id: 'take_' + id,
+			text: _(name) + ' [' + num + ']',
+			click: Events.getLoot
+		}).addClass('lootTake').data('numLeft', num).appendTo(lootRow);
+		take.mouseenter(function(){
+			Events.drawDrop(take);
+		});
+		var takeall = new Button.Button({
+			id: 'all_take_' + id,
+			text: _('take') + ' ',
+			click: Events.takeAll
+		}).addClass('lootTakeAll').appendTo(lootRow);
+		$('<span>').insertBefore(takeall.children('.cooldown'));
+		$('<div>').addClass('clear').appendTo(lootRow);
+		return lootRow;
+	},
+
+	drawLoot: function(lootList) {
+		var desc = $('#description', Events.eventPanel());
+		var lootButtons = $('<div>').attr({'id': 'lootButtons', 'data-legend': _('take:')});
+		for(var k in lootList) {
+			var loot = lootList[k];
+			if(Math.random() < loot.chance) {
+				var num = Math.floor(Math.random() * (loot.max - loot.min)) + loot.min;
+				var lootRow = Events.drawLootRow(k, num);
+				lootRow.appendTo(lootButtons);
+			}
+		}
+		lootButtons.appendTo(desc);
+		var takeET = null;
+		if(lootButtons.children().length > 0) {
+			var takeETrow = $('<div>').addClass('takeETrow');
+			takeET = new Button.Button({
+				id: 'loot_takeEverything',
+				text: '',
+				cooldown: Events._LEAVE_COOLDOWN,
+				click: Events.takeEverything
+			}).appendTo(takeETrow);
+			$('<span>').insertBefore(takeET.children('.cooldown'));
+			$('<div>').addClass('clear').appendTo(takeETrow);
+			takeETrow.appendTo(lootButtons);
+			Events.setTakeAll(lootButtons);
+		} else {
+			var noLoot = $('<div>').addClass('noLoot').text( _('nothing to take') );
+			noLoot.appendTo(lootButtons);
+		}
+		return takeET || false;
+	},
+
+	setTakeAll: function(lootButtons){
+		if(!lootButtons) {
+			lootButtons = $('#lootButtons');
+		}
+		var canTakeSomething = false;
+		var free = Path.getFreeSpace();
+		var takeETbutton = lootButtons.find('#loot_takeEverything');
+		lootButtons.children('.lootRow').each(function(i){
+			var name = $(this).data('item');
+			var take = $(this).children('.lootTake').first();
+			var takeAll = $(this).children('.lootTakeAll').first();
+			var numLeft = take.data('numLeft');
+			var num = Math.min(Math.floor(Path.getFreeSpace() / Path.getWeight(name)), numLeft);
+			takeAll.data('numLeft', num);
+			free -= numLeft * Path.getWeight(name);
+			if(num > 0){
+				takeAll.removeClass('disabled');
+				canTakeSomething = true;
+			} else {
+				takeAll.addClass('disabled');
+			}
+			if(num < numLeft){
+				takeAll.children('span').first().text(num);
+			} else {
+				takeAll.children('span').first().text(_('all'));
+			}
+		});
+		Button.setDisabled(takeETbutton, !canTakeSomething);
+		takeETbutton.data('canTakeEverything', (free >= 0) ? true : false);
+		return takeETbutton;
+	},
+
+	allowLeave: function(takeETbtn, leaveBtn){
+		if(takeETbtn){
+			if(leaveBtn){
+				takeETbtn.data('leaveBtn', leaveBtn);
+			}
+			Events.canLeave(takeETbtn);
+		}
+	},
+
+	canLeave: function(btn){
+		var basetext = (btn.data('canTakeEverything')) ? _('take everything') : _('take all you can');
+		var textbox = btn.children('span');
+		var takeAndLeave = (btn.data('leaveBtn')) ? btn.data('canTakeEverything') : false;
+		var text = _(basetext);
+		if(takeAndLeave){
+			Button.cooldown(btn);
+			text += _(' and ') + btn.data('leaveBtn').text();
+		}
+		textbox.text( text );
+		btn.data('canLeave', takeAndLeave);
+	},
+
+	dropStuff: function(e) {
+		e.stopPropagation();
+		var btn = $(this);
+		var target = btn.closest('.button');
+		var thing = btn.data('thing');
+		var id = 'take_' + thing.replace(/ /g, '-');
+		var num = btn.data('num');
+		var lootButtons = $('#lootButtons');
+		Engine.log('dropping ' + num + ' ' + thing);
+
+		var lootBtn = $('#' + id, lootButtons);
+		if(lootBtn.length > 0) {
+			var curNum = lootBtn.data('numLeft');
+			curNum += num;
+			lootBtn.text(_(thing) + ' [' + curNum + ']').data('numLeft', curNum);
+		} else {
+			var lootRow = Events.drawLootRow(thing, num);
+			lootRow.insertBefore($('.takeETrow', lootButtons));
+		}
+		Path.outfit[thing] -= num;
+		Events.getLoot(target);
+		World.updateSupplies();
+	},
+
+	getLoot: function(btn, stateSkipButtonSet) {
+		var name = btn.attr('id').substring(5).replace(/-/g, ' ');
+		if(btn.data('numLeft') > 0) {
+			var skipButtonSet = stateSkipButtonSet || false;
+			var weight = Path.getWeight(name);
+			var freeSpace = Path.getFreeSpace();
+			if(weight <= freeSpace) {
+				var num = btn.data('numLeft');
+				num--;
+				btn.data('numLeft', num);
+				// #dropMenu gets removed by this.
+				btn.text(_(name) + ' [' + num + ']');
+				if(num === 0) {
+					Button.setDisabled(btn);
+					btn.animate({'opacity':0}, 300, 'linear', function() {
+						$(this).parent().remove();
+						if($('#lootButtons').children().length == 1) {
+							$('#lootButtons').remove();
+						}
+					});
+				}
+				var curNum = Path.outfit[name];
+				curNum = typeof curNum == 'number' ? curNum : 0;
+				curNum++;
+				Path.outfit[name] = curNum;
+				World.updateSupplies();
+
+				if(!skipButtonSet){
+					Events.setTakeAll();
+				}
+			}
+			if(!skipButtonSet){
+				Events.drawDrop(btn);
+			}
+		}
+	},
+
+	takeAll: function(btn){
+		var target = $('#'+ btn.attr('id').substring(4));
+		for(var k = 0; k < btn.data('numLeft'); k++){
+			Events.getLoot(target, true);
+		}
+		Events.setTakeAll();
+	},
+
+	takeEverything: function(btn){
+		$('#lootButtons').children('.lootRow').each(function(i){
+			var target = $(this).children('.lootTakeAll').first();
+			if(!target.hasClass('disabled')){
+				Events.takeAll(target);
+			}
+		});
+		if(btn.data('canLeave')){
+			btn.data('leaveBtn').click();
+		}
+	},
+
+	createFighterDiv: function(chara, hp, maxhp) {
+		var fighter = $('<div>')
+			.addClass('fighter')
+			.data('hp', hp)
+			.data('maxHp', maxhp)
+			.data('refname',chara);
+		$('<div>').addClass('label').text(_(chara)).appendTo(fighter);
+		$('<div>').addClass('hp').text(hp+'/'+maxhp).appendTo(fighter);
+		return fighter;
+	},
+
+	updateFighterDiv: function(fighter) {
+		$('.hp', fighter).text(fighter.data('hp') + '/' + fighter.data('maxHp'));
+		const status = fighter.data('status');
+		const hasStatus = status && status !== 'none';
+		fighter.attr('class', `fighter${hasStatus ? ` ${status}` : ''}`);
+	},
+
+	startStory: function(scene) {
+		// Write the text
+		var desc = $('#description', Events.eventPanel());
+		var leaveBtn = false;
+		for(var i in scene.text) {
+			$('<div>').text(scene.text[i]).appendTo(desc);
+		}
+
+		if(scene.textarea != null) {
+			var ta = $('<textarea>').val(scene.textarea).appendTo(desc);
+			if(scene.readonly) {
+				ta.attr('readonly', true);
+			}
+			Engine.autoSelect('#description textarea');
+		}
+
+		// Draw any loot
+		var takeETbtn;
+		if(scene.loot) {
+			takeETbtn = Events.drawLoot(scene.loot);
+		}
+
+		// Draw the buttons
+		var exitBtns = $('<div>').attr('id','exitButtons').appendTo($('#buttons', Events.eventPanel()));
+		leaveBtn = Events.drawButtons(scene);
+		$('<div>').addClass('clear').appendTo(exitBtns);
+
+
+		Events.allowLeave(takeETbtn, leaveBtn);
+	},
+
+	drawButtons: function(scene) {
+		var btns = $('#exitButtons', Events.eventPanel());
+		var btnsList = [];
+		for(var id in scene.buttons) {
+			var info = scene.buttons[id];
+			const cost = {
+				...info.cost
+			};
+			if (Path.outfit && Path.outfit['glowstone']) {
+				delete cost.torch;
+			}
+			var b = new Button.Button({
+				id,
+				text: info.text,
+				cost,
+				click: Events.buttonClick,
+				cooldown: info.cooldown
+			}).appendTo(btns);
+			if(typeof info.available == 'function' && !info.available()) {
+				Button.setDisabled(b, true);
+			}
+			if(typeof info.cooldown == 'number') {
+				Button.cooldown(b);
+			}
+			btnsList.push(b);
+		}
+
+		Events.updateButtons();
+		return (btnsList.length == 1) ? btnsList[0] : false;
+	},
+
+	getQuantity: function(store) {
+		if (store === 'water') {
+			return World.water;
+		}
+		if (store === 'hp') {
+			return World.health;
+		}
+		var num = Engine.activeModule == World ? Path.outfit[store] : $SM.get('stores["'+store+'"]', true);
+		return isNaN(num) || num < 0 ? 0 : num;
+	},
+
+	updateButtons: function() {
+		var btns = Events.activeEvent().scenes[Events.activeScene].buttons;
+		for(var bId in btns) {
+			var b = btns[bId];
+			var btnEl = $('#'+bId, Events.eventPanel());
+			if(typeof b.available == 'function' && !b.available()) {
+				Button.setDisabled(btnEl, true);
+			} else if(b.cost) {
+				const cost = {
+					...b.cost
+				};
+				if (Path.outfit && Path.outfit['glowstone']) {
+					delete cost.torch;
+				}
+				var disabled = false;
+				for(var store in cost) {
+					var num = Events.getQuantity(store);
+					if(num < cost[store]) {
+						// Too expensive
+						disabled = true;
+						break;
+					}
+				}
+				Button.setDisabled(btnEl, disabled);
+			}
+		}
+	},
+
+	buttonClick: function(btn) {
+		var info = Events.activeEvent().scenes[Events.activeScene].buttons[btn.attr('id')];
+		// Cost
+		var costMod = {};
+		if(info.cost) {
+			const cost = {
+				...info.cost
+			};
+			if (Path.outfit && Path.outfit['glowstone']) {
+				delete cost.torch;
+			}
+			for(var store in cost) {
+				var num = Events.getQuantity(store);
+				if(num < cost[store]) {
+					// Too expensive
+					return;
+				}
+				if (store === 'water') {
+					World.setWater(World.water - cost[store]);
+				}
+				else if (store === 'hp') {
+					World.setHp(World.hp - cost[store]);
+				}
+				else {
+					costMod[store] = -cost[store];
+				}
+			}
+			if(Engine.activeModule == World) {
+				for(var k in costMod) {
+					Path.outfit[k] += costMod[k];
+				}
+				World.updateSupplies();
+			} else {
+				$SM.addM('stores', costMod);
+			}
+		}
+
+		if(typeof info.onChoose == 'function') {
+			var textarea = Events.eventPanel().find('textarea');
+			info.onChoose(textarea.length > 0 ? textarea.val() : null);
+		}
+
+		// Reward
+		if(info.reward) {
+			$SM.addM('stores', info.reward);
+		}
+
+		Events.updateButtons();
+
+		// Notification
+		if(info.notification) {
+			Notifications.notify(null, info.notification);
+		}
+
+    info.onClick && info.onClick();
+
+    // Link
+    if (info.link) {
+      Events.endEvent();
+      window.open(info.link);
+			return;
+    }
+
+		// Next Event
+		if (info.nextEvent) {
+			const eventData = Events.Setpieces[info.nextEvent] || Events.Executioner[info.nextEvent];
+			Events.switchEvent(eventData);
+			return;
+		}
+
+		// Next Scene
+		if(info.nextScene) {
+			if(info.nextScene == 'end') {
+				Events.endEvent();
+			} else {
+				var r = Math.random();
+				var lowestMatch = null;
+				for(var i in info.nextScene) {
+					if(r < i && (lowestMatch == null || i < lowestMatch)) {
+						lowestMatch = i;
+					}
+				}
+				if(lowestMatch != null) {
+					Events.loadScene(info.nextScene[lowestMatch]);
+					return;
+				}
+				Engine.log('ERROR: no suitable scene found');
+				Events.endEvent();
+			}
+		}
+	},
+
+	// blinks the browser window title
+	blinkTitle: function() {
+		var title = document.title;
+
+		// every 3 seconds change title to '*** EVENT ***', then 1.5 seconds later, change it back to the original title.
+		Events.BLINK_INTERVAL = setInterval(function() {
+			document.title = _('*** EVENT ***');
+			Engine.setTimeout(function() {document.title = title;}, 1500, true);
+		}, 3000);
+	},
+
+	stopTitleBlink: function() {
+		clearInterval(Events.BLINK_INTERVAL);
+		Events.BLINK_INTERVAL = false;
+	},
+
+	// Makes an event happen!
+	triggerEvent: function() {
+		if(Events.activeEvent() == null) {
+			var possibleEvents = [];
+			for(var i in Events.EventPool) {
+				var event = Events.EventPool[i];
+				if(event.isAvailable()) {
+					possibleEvents.push(event);
+				}
+			}
+
+			if(possibleEvents.length === 0) {
+				Events.scheduleNextEvent(0.5);
+				return;
+			} else {
+				var r = Math.floor(Math.random()*(possibleEvents.length));
+				Events.startEvent(possibleEvents[r]);
+			}
+		}
+
+		Events.scheduleNextEvent();
+	},
+
+	triggerFight: function() {
+		var possibleFights = [];
+		for(var i in Events.Encounters) {
+			var fight = Events.Encounters[i];
+			if(fight.isAvailable()) {
+				possibleFights.push(fight);
+			}
+		}
+
+		var r = Math.floor(Math.random()*(possibleFights.length));
+		Events.startEvent(possibleFights[r]);
+		
+		// play audio only when fight is possible
+		if (possibleFights.length > 0) {
+			if (World.getDistance() > 20) {
+				// Tier 3
+				AudioEngine.playEventMusic(AudioLibrary.ENCOUNTER_TIER_3);
+			} else if (World.getDistance() > 10) {
+				// Tier 2
+				AudioEngine.playEventMusic(AudioLibrary.ENCOUNTER_TIER_2);
+			} else {
+				// Tier 1
+				AudioEngine.playEventMusic(AudioLibrary.ENCOUNTER_TIER_1);
+			}
+		}
+	},
+
+	activeEvent: function() {
+		if(Events.eventStack && Events.eventStack.length > 0) {
+			return Events.eventStack[0];
+		}
+		return null;
+	},
+
+	eventPanel: function() {
+		return Events.activeEvent().eventPanel;
+	},
+
+	switchEvent: event => {
+		if (!event) {
+			return;
+		}
+		AudioEngine.stopEventMusic();
+		Events.eventPanel().remove();
+		Events.activeEvent().eventPanel = null;
+		Events.eventStack.shift();
+		Events.startEvent(event);
+	},
+
+	startEvent: function(event, options) {
+		if(!event) {
+			return;
+		}
+		event.audio && AudioEngine.playEventMusic(event.audio);
+		Engine.event('game event', 'event');
+		Engine.keyLock = true;
+		Engine.tabNavigation = false;
+		Button.saveCooldown = false;
+		Events.eventStack.unshift(event);
+		event.eventPanel = $('<div>').attr('id', 'event').addClass('eventPanel').css('opacity', '0');
+		if(options != null && options.width != null) {
+			Events.eventPanel().css('width', options.width);
+		}
+		$('<div>').addClass('eventTitle').text(Events.activeEvent().title).appendTo(Events.eventPanel());
+		$('<div>').attr('id', 'description').appendTo(Events.eventPanel());
+		$('<div>').attr('id', 'buttons').appendTo(Events.eventPanel());
+		Events.loadScene('start');
+		$('div#wrapper').append(Events.eventPanel());
+		Events.eventPanel().animate({opacity: 1}, Events._PANEL_FADE, 'linear');
+		var currentSceneInformation = Events.activeEvent().scenes[Events.activeScene];
+		if (currentSceneInformation.blink) {
+			Events.blinkTitle();
+		}
+	},
+
+	scheduleNextEvent: function(scale) {
+		var nextEvent = Math.floor(Math.random()*(Events._EVENT_TIME_RANGE[1] - Events._EVENT_TIME_RANGE[0])) + Events._EVENT_TIME_RANGE[0];
+		if(scale > 0) { nextEvent *= scale; }
+		Engine.log('next event scheduled in ' + nextEvent + ' minutes');
+		Events._eventTimeout = Engine.setTimeout(Events.triggerEvent, nextEvent * 60 * 1000);
+	},
+
+	endEvent: function() {
+		AudioEngine.stopEventMusic();
+		Events.eventPanel().animate({opacity:0}, Events._PANEL_FADE, 'linear', function() {
+			Events.eventPanel().remove();
+			Events.activeEvent().eventPanel = null;
+			Events.eventStack.shift();
+			Engine.log(Events.eventStack.length + ' events remaining');
+			Engine.keyLock = false;
+			Engine.tabNavigation = true;
+			Button.saveCooldown = true;
+			if (Events.BLINK_INTERVAL) {
+				Events.stopTitleBlink();
+			}
+			// Force refocus on the body. I hate you, IE.
+			$('body').focus();
+		});
+	},
+
+	handleStateUpdates: function(e){
+		if((e.category == 'stores' || e.category == 'income') && Events.activeEvent() != null){
+			Events.updateButtons();
+		}
+	},
+
+	initDelay: function(){
+		if($SM.get(Events.delayState)){
+			Events.recallDelay(Events.delayState, Events);
+		}
+	},
+
+	recallDelay: function(stateName, target){
+		var state = $SM.get(stateName);
+		for(var i in state){
+			if(typeof(state[i]) == 'object'){
+				Events.recallDelay(stateName +'["'+ i +'"]', target[i]);
+			} else {
+				if(target && typeof target[i] == 'function'){
+					target[i]();
+				} else {
+					$SM.remove(stateName);
+				}
+			}
+		}
+		if($.isEmptyObject(state)){
+			$SM.remove(stateName);
+		}
+	},
+
+	saveDelay: function(action, stateName, delay){
+		var state = Events.delayState + '.' + stateName;
+		if(delay){
+			$SM.set(state, delay);
+		} else {
+			delay = $SM.get(state, true);
+		}
+		var time = Engine.setInterval(function(){
+			// update state every half second
+			$SM.set(state, ($SM.get(state) - 0.5), true);
+		}, 500);
+		Engine.setTimeout(function(){
+			// outcome realizes. erase countdown
+			window.clearInterval(time);
+			$SM.remove(state);
+			$SM.removeBranch(Events.delayState);
+			action();
+		}, delay * 1000);
+	}
+};
+ 
+/**
+ * Module that registers the fabricator functionality
+ */
+const Fabricator = {
+  _STORES_OFFSET: 0,
+  name: _('Fabricator'),
+  Craftables: {
+    'energy blade': {
+      name: _('energy blade'),
+      type: 'weapon',
+      buildMsg: _("the blade hums, charged particles sparking and fizzing."),
+      cost: () => ({
+        'alien alloy': 1
+      })
+    },
+    'fluid recycler': {
+      name: _('fluid recycler'),
+      type: 'upgrade',
+      maximum: 1,
+      buildMsg: _('water out, water in. waste not, want not.'),
+      cost: () => ({
+        'alien alloy': 2
+      })
+    },
+    'cargo drone': {
+      name: _('cargo drone'),
+      type: 'upgrade',
+      maximum: 1,
+      buildMsg: _('the workhorse of the wanderer fleet.'),
+      cost: () => ({
+        'alien alloy': 2
+      })
+    },
+    'kinetic armour': {
+      name: _('kinetic armour'),
+      type: 'upgrade',
+      maximum: 1,
+      blueprintRequired: true,
+      buildMsg: _('wanderer soldiers succeed by subverting the enemy\'s rage.'),
+      cost: () => ({
+        'alien alloy': 2
+      })
+    },
+    'disruptor': {
+      name: _('disruptor'),
+      type: 'weapon',
+      blueprintRequired: true,
+      buildMsg: _("somtimes it is best not to fight."),
+      cost: () => ({
+        'alien alloy': 1
+      })
+    },
+    'hypo': {
+      name: _('hypo'),
+      type: 'tool',
+      blueprintRequired: true,
+      buildMsg: _('a handful of hypos. life in a vial.'),
+      cost: () => ({
+        'alien alloy': 1
+      }),
+      quantity: 5
+    },
+    'stim': {
+      name: _('stim'),
+      type: 'tool',
+      blueprintRequired: true,
+      buildMsg: _('sometimes it is best to fight without restraint.'),
+      cost: () => ({
+        'alien alloy': 1
+      })
+    },
+    'plasma rifle': {
+      name: _('plasma rifle'),
+      type: 'weapon',
+      blueprintRequired: true,
+      buildMsg: _("the peak of wanderer weapons technology, sleek and deadly."),
+      cost: () => ({
+        'alien alloy': 1
+      })
+    },
+    'glowstone': {
+      name: _('glow stone'),
+      type: 'tool',
+      blueprintRequired: true,
+      buildMsg: _('a smooth, perfect sphere. its light is inextinguishable.'),
+      cost: () => ({
+        'alien alloy': 1
+      })
+    }
+  },
+
+  init: () => {
+
+    if (!$SM.get('features.location.fabricator')) {
+      $SM.set('features.location.fabricator', true);
+    }
+
+    // Create the Fabricator tab
+    Fabricator.tab = Header.addLocation(_("A Whirring Fabricator"), "fabricator", Fabricator, 'ship');
+    
+    // Create the Fabricator panel
+    Fabricator.panel = $('<div>').attr('id', "fabricatorPanel")
+      .addClass('location');
+    if (Ship.panel) {
+      Fabricator.panel.insertBefore(Ship.panel);
+    }
+    else {
+      Fabricator.panel.appendTo('div#locationSlider');
+    }
+
+    $.Dispatch('stateUpdate').subscribe(() => {
+      Fabricator.updateBuildButtons();
+      Fabricator.updateBlueprints();
+    });
+    
+    Engine.updateSlider();
+    Fabricator.updateBuildButtons();
+
+  },
+
+  onArrival: transition_diff => {
+    Fabricator.setTitle();
+    Fabricator.updateBlueprints(true);
+
+    if(!$SM.get('game.fabricator.seen')) {
+      Notifications.notify(Fabricator, _('the familiar hum of wanderer machinery coming to life. finally, real tools.'));
+      $SM.set('game.fabricator.seen', true);
+    }
+    AudioEngine.playBackgroundMusic(AudioLibrary.MUSIC_SHIP);
+
+    Engine.moveStoresView(null, transition_diff);
+  },
+
+  setTitle: () => {
+    if(Engine.activeModule == Fabricator) {
+      document.title = _("A Whirring Fabricator");
+    }
+  },
+
+  updateBuildButtons: () => {
+    let section = $('#fabricateButtons');
+    let needsAppend = false;
+    if (section.length === 0) {
+      section = $('<div>').attr({ 'id': 'fabricateButtons', 'data-legend': _('fabricate:') }).css('opacity', 0);
+      needsAppend = true;
+    }
+
+    for (const [ key, value ] of Object.entries(Fabricator.Craftables)) {
+      const max = $SM.num(key, value) + 1 > value.maximum;
+      if (!value.button) {
+        if (Fabricator.canFabricate(key)) {
+          const name = _(value.name) + ((value.quantity ?? 1) > 1 ? ` (x${value.quantity})` : '');
+          value.button = new Button.Button({
+            id: 'fabricate_' + key,
+            cost: value.cost(),
+            text: name,
+            click: Fabricator.fabricate,
+            width: '150px',
+            ttPos: section.children().length > 10 ? 'top right' : 'bottom right'
+          }).css('opacity', 0).attr('fabricateThing', key).appendTo(section).animate({ opacity: 1 }, 300, 'linear');
+        }
+      } else {
+        // refresh the tooltip
+        const costTooltip = $('.tooltip', value.button);
+        costTooltip.empty();
+        const cost = value.cost();
+        for (const [ resource, num ] of Object.entries(cost)) {
+          $("<div>").addClass('row_key').text(_(resource)).appendTo(costTooltip);
+          $("<div>").addClass('row_val').text(num).appendTo(costTooltip);
+        }
+        if (max && value.maxMsg && !value.button.hasClass('disabled')) {
+          Notifications.notify(Fabricator, value.maxMsg);
+        }
+      }
+      if (max) {
+        Button.setDisabled(value.button, true);
+      } else {
+        Button.setDisabled(value.button, false);
+      }
+    }
+
+    if (needsAppend && section.children().length > 0) {
+      section.appendTo(Fabricator.panel).animate({ opacity: 1 }, 300, 'linear');
+    }
+  },
+
+  updateBlueprints: ignoreStores => {
+    if(!$SM.get('character.blueprints')) {
+      return;
+    }
+
+    let blueprints = $('#blueprints');
+    let needsAppend = false;
+    if(blueprints.length === 0) {
+      needsAppend = true;
+      blueprints = $('<div>').attr({'id': 'blueprints', 'data-legend': _('blueprints')});
+    }
+
+    for (const k in $SM.get('character.blueprints')) {
+      const id = 'blueprint_' + k.replace(/ /g, '-');
+      let r = $('#' + id);
+      if($SM.get(`character.blueprints["${k}"]`) && r.length === 0) {
+        r = $('<div>').attr('id', id).addClass('blueprintRow').appendTo(blueprints);
+        $('<div>').addClass('row_key').text(_(k)).appendTo(r);
+      }
+    }
+    
+    if(needsAppend && blueprints.children().length > 0) {
+      blueprints.prependTo(Fabricator.panel);
+    }
+  },
+
+  canFabricate: itemKey => 
+    !Fabricator.Craftables[itemKey].blueprintRequired || 
+    $SM.get(`character.blueprints['${itemKey}']`),
+
+  fabricate: button => {
+    const thing = $(button).attr('fabricateThing');
+    const craftable = Fabricator.Craftables[thing];
+    const numThings = Math.min(0, $SM.get(`stores['${thing}']`, true));
+
+    if (craftable.maximum <= numThings) {
+      return;
+    }
+
+    const storeMod = {};
+    const cost = craftable.cost();
+    for (const [ key, value ] of Object.entries(cost)) {
+      const have = $SM.get(`stores['${key}']`, true);
+      if (have < value) {
+        Notifications.notify(Fabricator, _(`not enough ${key}`));
+        return false;
+      } else {
+        storeMod[key] = have - value;
+      }
+    }
+    $SM.setM('stores', storeMod);
+    $SM.add(`stores['${thing}']`, craftable.quantity ?? 1);
+
+    Notifications.notify(Fabricator, craftable.buildMsg);
+    AudioEngine.playSound(AudioLibrary.CRAFT);
+  }
+
+};
+ 
+/**
+ * Module that takes care of header buttons
+ */
+var Header = {
+	
+	init: function(options) {
+		this.options = $.extend(
+			this.options,
+			options
+		);
+	},
+	
+	options: {}, // Nothing for now
+	
+	canTravel: function() {
+		return $('div#header div.headerButton').length > 1;
+	},
+	
+	addLocation: function(text, id, module, before) {
+    const toAdd = $('<div>').attr('id', "location_" + id)
+			.addClass('headerButton')
+			.text(text).click(function() {
+				if(Header.canTravel()) {
+					Engine.travelTo(module);
+				}
+			});
+      
+    if (before && $(`#location_${before}`).length > 0) {
+      return toAdd.insertBefore(`#location_${before}`);
+    }
+    
+    return toAdd.appendTo($('div#header'));
+	}
+};
+ 
+/**
+ Module for triggering marketing messages
+ @author mtownsend
+ @since Jan 2021
+*/
+
+Events.Marketing = [{
+  /* Play Penrose! */
+  title: _('Penrose'),
+  isAvailable: () => !$SM.get('marketing.penrose'),
+  scenes: {
+    'start': {
+      text: [
+        _('a strange thrumming, pounding and crashing. visions of people and places, of a huge machine and twisting curves.'),
+        _('inviting. it would be so easy to give in, completely.')
+      ],
+      notification: _('a strange thrumming, pounding and crashing. and then gone.'),
+      blink: true,
+      buttons: {
+        'give in': {
+          text: _('give in'),
+          onClick: () => {
+            $SM.set('marketing.penrose', true);
+          },
+          link: 'https://penrose.doublespeakgames.com/?utm_source=adarkroom&utm_medium=crosspromote&utm_campaign=event'
+        },
+        'ignore': {
+          text: _('ignore it'),
+          nextScene: 'end'
+        }
+      }
+    }
+  },
+  audio: AudioLibrary.EVENT_NOISES_INSIDE
+}];
+ 
+/**
+ * Events that can occur when the Outside module is active
+ **/
+Events.Outside = [
+	{ /* Ruined traps */
+	title: _('A Ruined Trap'),
+		isAvailable: function() {
+			return Engine.activeModule == Outside && $SM.get('game.buildings["trap"]', true) > 0;
+		},
+		scenes: {
+			'start': {
+				text: [
+					_('some of the traps have been torn apart.'),
+					_('large prints lead away, into the forest.')
+				],
+				onLoad: function() {
+					var numWrecked = Math.floor(Math.random() * $SM.get('game.buildings["trap"]', true)) + 1;
+					$SM.add('game.buildings["trap"]', -numWrecked);
+					Outside.updateVillage();
+					Outside.updateTrapButton();
+				},
+				notification: _('some traps have been destroyed'),
+				blink: true,
+				buttons: {
+					'track': {
+						text: _('track them'),
+						nextScene: {0.5: 'nothing', 1: 'catch'}
+					},
+					'ignore': {
+						text: _('ignore them'),
+						nextScene: 'end'
+					}
+				}
+			},
+			'nothing': {
+				text: [
+					_('the tracks disappear after just a few minutes.'),
+					_('the forest is silent.')
+				],
+				notification: _('nothing was found'),
+				buttons: {
+					'end': {
+						text: _('go home'),
+						nextScene: 'end'
+					}
+				}
+			},
+			'catch': {
+				text: [
+					_('not far from the village lies a large beast, its fur matted with blood.'),
+					_('it puts up little resistance before the knife.')
+				],
+				notification: _('there was a beast. it\'s dead now'),
+				reward: {
+					fur: 100,
+					meat: 100,
+					teeth: 10
+				},
+				buttons: {
+					'end': {
+						text: _('go home'),
+						nextScene: 'end'
+					}
+				}
+			}
+		},
+		audio: AudioLibrary.EVENT_RUINED_TRAP
+	},
+	{ /* Hut fire */
+		title: _('Fire'),
+		isAvailable: function() {
+			return Engine.activeModule == Outside && $SM.get('game.buildings["hut"]', true) > 0 && $SM.get('game.population', true) > 50;
+		},
+		scenes: {
+			'start': {
+				text: [
+					_('a fire rampages through one of the huts, destroying it.'),
+					_('all residents in the hut perished in the fire.')
+				],
+				notification: _('a fire has started'),
+				blink: true,
+				onLoad: function() {
+					Outside.destroyHuts(1);
+				},
+				buttons: {
+					'mourn': {
+						text: _('mourn'),
+						notification: _('some villagers have died'),
+						nextScene: 'end'
+					}
+				}
+			}
+		},
+		audio: AudioLibrary.EVENT_HUT_FIRE
+	},
+	{ /* Sickness */
+		title: _('Sickness'),
+		isAvailable: function() {
+			return Engine.activeModule == Outside && $SM.get('game.population', true) > 10 && $SM.get('game.population', true) < 50 && $SM.get('stores.medicine', true) > 0;
+		},
+		scenes: {
+			'start': {
+				text: [
+					_('a sickness is spreading through the village.'),
+					_('medicine is needed immediately.')
+				],
+				notification: _('some villagers are ill'),
+				blink: true,
+				buttons: {
+					'heal': {
+						text: _('1 medicine'),
+						cost: { 'medicine' : 1 },
+						nextScene: {1: 'healed'}
+					},
+					'ignore': {
+						text: _('ignore it'),
+						nextScene: {1: 'death'}
+					}
+				}
+			},
+			'healed': {
+				text: [
+					_('the sickness is cured in time.')
+				],
+				notification: _('sufferers are healed'),
+				buttons: {
+					'end': {
+						text: _('go home'),
+						nextScene: 'end'
+					}
+				}
+			},
+			'death': {
+				text: [
+					_('the sickness spreads through the village.'),
+					_('the days are spent with burials.'),
+					_('the nights are rent with screams.')
+				],
+				notification: _('sufferers are left to die'),
+				onLoad: function() {
+					var numKilled = Math.floor(Math.random() * Math.floor($SM.get('game.population', true)/2)) + 1;
+					Outside.killVillagers(numKilled);
+				},
+				buttons: {
+					'end': {
+						text: _('go home'),
+						nextScene: 'end'
+					}
+				}
+			}
+		},
+		audio: AudioLibrary.EVENT_SICKNESS
+	},
+
+	{ /* Plague */
+		title: _('Plague'),
+		isAvailable: function() {
+			return Engine.activeModule == Outside && $SM.get('game.population', true) > 50 && $SM.get('stores.medicine', true) > 0;
+		},
+		scenes: {
+			'start': {
+				text: [
+					_('a terrible plague is fast spreading through the village.'),
+					_('medicine is needed immediately.')
+				],
+				notification: _('a plague afflicts the village'),
+				blink: true,
+				buttons: {
+					/* Because there is a serious need for medicine, the price is raised. */
+					'buyMedicine': {
+						text: _('buy medicine'),
+						cost: { 'scales': 70,
+								'teeth': 50 },
+						reward: { 'medicine': 1 }
+					},
+					'heal': {
+						text: _('5 medicine'),
+						cost: { 'medicine' : 5 },
+						nextScene: {1: 'healed'}
+					},
+					'ignore': {
+						text: _('do nothing'),
+						nextScene: {1: 'death'}
+					}
+				}
+			},
+			'healed': {
+				text: [
+					_('the plague is kept from spreading.'),
+					_('only a few die.'),
+					_('the rest bury them.')
+				],
+				notification: _('epidemic is eradicated eventually'),
+				onLoad: function() {
+					var numKilled = Math.floor(Math.random() * 5) + 2;
+					Outside.killVillagers(numKilled);
+				},
+				buttons: {
+					'end': {
+						text: _('go home'),
+						nextScene: 'end'
+					}
+				}
+			},
+			'death': {
+				text: [
+					_('the plague rips through the village.'),
+					_('the nights are rent with screams.'),
+					_('the only hope is a quick death.')
+				],
+				notification: _('population is almost exterminated'),
+				onLoad: function() {
+					var numKilled = Math.floor(Math.random() * 80) + 10;
+					Outside.killVillagers(numKilled);
+				},
+				buttons: {
+					'end': {
+						text: _('go home'),
+						nextScene: 'end'
+					}
+				}
+			}
+		},
+		audio: AudioLibrary.EVENT_PLAGUE
+	},
+
+	{ /* Beast attack */
+		title: _('A Beast Attack'),
+		isAvailable: function() {
+			return Engine.activeModule == Outside && $SM.get('game.population', true) > 0;
+		},
+		scenes: {
+			'start': {
+				text: [
+					 _('a pack of snarling beasts pours out of the trees.'),
+					 _('the fight is short and bloody, but the beasts are repelled.'),
+					 _('the villagers retreat to mourn the dead.')
+				],
+				notification: _('wild beasts attack the villagers'),
+				onLoad: function() {
+					var numKilled = Math.floor(Math.random() * 10) + 1;
+					Outside.killVillagers(numKilled);
+				},
+				reward: {
+					fur: 100,
+					meat: 100,
+					teeth: 10
+				},
+				blink: true,
+				buttons: {
+					'end': {
+						text: _('go home'),
+						notification: _('predators become prey. price is unfair'),
+						nextScene: 'end'
+					}
+				}
+			}
+		},
+		audio: AudioLibrary.EVENT_BEAST_ATTACK
+	},
+
+	{ /* Soldier attack */
+		title: _('A Military Raid'),
+		isAvailable: function() {
+			return Engine.activeModule == Outside && $SM.get('game.population', true) > 0 && $SM.get('game.cityCleared');
+		},
+		scenes: {
+			'start': {
+				text: [
+					_('a gunshot rings through the trees.'),
+					_('well armed men charge out of the forest, firing into the crowd.'),
+					_('after a skirmish they are driven away, but not without losses.')
+				],
+				notification: _('troops storm the village'),
+				onLoad: function() {
+					var numKilled = Math.floor(Math.random() * 40) + 1;
+					Outside.killVillagers(numKilled);
+				},
+				reward: {
+					bullets: 10,
+					'cured meat': 50
+				},
+
+				blink: true,
+				buttons: {
+					'end': {
+						text: _('go home'),
+						notification: _('warfare is bloodthirsty'),
+						nextScene: 'end'
+					}
+				}
+			}
+		},
+		audio: AudioLibrary.EVENT_SOLDIER_ATTACK
+	}
+
+];
+ 
+/**
+ * Events that can occur when the Room module is active
+ **/
+Events.Room = [
+	{ /* The Nomad  --  Merchant */
+		title: _('The Nomad'),
+		isAvailable: function() {
+			return Engine.activeModule == Room && $SM.get('stores.fur', true) > 0;
+		},
+		scenes: {
+			'start': {
+				text: [
+					_('a nomad shuffles into view, laden with makeshift bags bound with rough twine.'),
+					_("won't say from where he came, but it's clear that he's not staying.")
+				],
+				notification: _('a nomad arrives, looking to trade'),
+				blink: true,
+				buttons: {
+					'buyScales': {
+						text: _('buy scales'),
+						cost: { 'fur': 100 },
+						reward: { 'scales': 1 }
+					},
+					'buyTeeth': {
+						text: _('buy teeth'),
+						cost: { 'fur': 200 },
+						reward: { 'teeth': 1 }
+					},
+					'buyBait': {
+						text: _('buy bait'),
+						cost: { 'fur': 5 },
+						reward: { 'bait': 1 },
+						notification: _('traps are more effective with bait.')
+					},
+					'buyCompass': {
+						available: function() {
+							return $SM.get('stores.compass', true) < 1;
+						},
+						text: _('buy compass'),
+						cost: { fur: 300, scales: 15, teeth: 5 },
+						reward: { 'compass': 1 },
+						notification: _('the old compass is dented and dusty, but it looks to work.')
+					},
+					'goodbye': {
+						text: _('say goodbye'),
+						nextScene: 'end'
+					}
+				}
+			}
+		},
+		audio: AudioLibrary.EVENT_NOMAD
+	},
+	{ /* Noises Outside  --  gain wood/fur */
+		title: _('Noises'),
+		isAvailable: function() {
+			return Engine.activeModule == Room && $SM.get('stores.wood');
+		},
+		scenes: {
+			'start': {
+				text: [
+					_('through the walls, shuffling noises can be heard.'),
+					_("can't tell what they're up to.")
+				],
+				notification: _('strange noises can be heard through the walls'),
+				blink: true,
+				buttons: {
+					'investigate': {
+						text: _('investigate'),
+						nextScene: { 0.3: 'stuff', 1: 'nothing' }
+					},
+					'ignore': {
+						text: _('ignore them'),
+						nextScene: 'end'
+					}
+				}
+			},
+			'nothing': {
+				text: [
+					_('vague shapes move, just out of sight.'),
+					_('the sounds stop.')
+				],
+				buttons: {
+					'backinside': {
+						text: _('go back inside'),
+						nextScene: 'end'
+					}
+				}
+			},
+			'stuff': {
+				reward: { wood: 100, fur: 10 },
+				text: [
+					_('a bundle of sticks lies just beyond the threshold, wrapped in coarse furs.'),
+					_('the night is silent.')
+				],
+				buttons: {
+					'backinside': {
+						text: _('go back inside'),
+						nextScene: 'end'
+					}
+				}
+			}
+		},
+		audio: AudioLibrary.EVENT_NOISES_OUTSIDE
+	},
+	{ /* Noises Inside  --  trade wood for better good */
+		title: _('Noises'),
+		isAvailable: function() {
+			return Engine.activeModule == Room && $SM.get('stores.wood');
+		},
+		scenes: {
+			start: {
+				text: [
+					_('scratching noises can be heard from the store room.'),
+					_('something\'s in there.')
+				],
+				notification: _('something\'s in the store room'),
+				blink: true,
+				buttons: {
+					'investigate': {
+						text: _('investigate'),
+						nextScene: { 0.5: 'scales', 0.8: 'teeth', 1: 'cloth' }
+					},
+					'ignore': {
+						text: _('ignore them'),
+						nextScene: 'end'
+					}
+				}
+			},
+			scales: {
+				text: [
+					_('some wood is missing.'),
+					_('the ground is littered with small scales')
+				],
+				onLoad: function() {
+					var numWood = $SM.get('stores.wood', true);
+					numWood = Math.floor(numWood * 0.1);
+					if(numWood === 0) numWood = 1;
+					var numScales = Math.floor(numWood / 5);
+					if(numScales === 0) numScales = 1;
+					$SM.addM('stores', {'wood': -numWood, 'scales': numScales});
+				},
+				buttons: {
+					'leave': {
+						text: _('leave'),
+						nextScene: 'end'
+					}
+				}
+			},
+			teeth: {
+				text: [
+					_('some wood is missing.'),
+					_('the ground is littered with small teeth')
+				],
+				onLoad: function() {
+					var numWood = $SM.get('stores.wood', true);
+					numWood = Math.floor(numWood * 0.1);
+					if(numWood === 0) numWood = 1;
+					var numTeeth = Math.floor(numWood / 5);
+					if(numTeeth === 0) numTeeth = 1;
+					$SM.addM('stores', {'wood': -numWood, 'teeth': numTeeth});
+				},
+				buttons: {
+					'leave': {
+						text: _('leave'),
+						nextScene: 'end'
+					}
+				}
+			},
+			cloth: {
+				text: [
+					_('some wood is missing.'),
+					_('the ground is littered with scraps of cloth')
+				],
+				onLoad: function() {
+					var numWood = $SM.get('stores.wood', true);
+					numWood = Math.floor(numWood * 0.1);
+					if(numWood === 0) numWood = 1;
+					var numCloth = Math.floor(numWood / 5);
+					if(numCloth === 0) numCloth = 1;
+					$SM.addM('stores', {'wood': -numWood, 'cloth': numCloth});
+				},
+				buttons: {
+					'leave': {
+						text: _('leave'),
+						nextScene: 'end'
+					}
+				}
+			}
+		},
+		audio: AudioLibrary.EVENT_NOISES_INSIDE
+	},
+	{ /* The Beggar  --  trade fur for better good */
+		title: _('The Beggar'),
+		isAvailable: function() {
+			return Engine.activeModule == Room && $SM.get('stores.fur');
+		},
+		scenes: {
+			start: {
+				text: [
+					_('a beggar arrives.'),
+					_('asks for any spare furs to keep him warm at night.')
+				],
+				notification: _('a beggar arrives'),
+				blink: true,
+				buttons: {
+					'50furs': {
+						text: _('give 50'),
+						cost: {fur: 50},
+						nextScene: { 0.5: 'scales', 0.8: 'teeth', 1: 'cloth' }
+					},
+					'100furs': {
+						text: _('give 100'),
+						cost: {fur: 100},
+						nextScene: { 0.5: 'teeth', 0.8: 'scales', 1: 'cloth' }
+					},
+					'deny': {
+						text: _('turn him away'),
+						nextScene: 'end'
+					}
+				}
+			},
+			scales: {
+				reward: { scales: 20 },
+				text: [
+					_('the beggar expresses his thanks.'),
+					_('leaves a pile of small scales behind.')
+				],
+				buttons: {
+					'leave': {
+						text: _('say goodbye'),
+						nextScene: 'end'
+					}
+				}
+			},
+			teeth: {
+				reward: { teeth: 20 },
+				text: [
+					_('the beggar expresses his thanks.'),
+					_('leaves a pile of small teeth behind.')
+				],
+				buttons: {
+					'leave': {
+						text: _('say goodbye'),
+						nextScene: 'end'
+					}
+				}
+			},
+			cloth: {
+				reward: { cloth: 20 },
+				text: [
+					_('the beggar expresses his thanks.'),
+					_('leaves some scraps of cloth behind.')
+				],
+				buttons: {
+					'leave': {
+						text: _('say goodbye'),
+						nextScene: 'end'
+					}
+				}
+			}
+		},
+		audio: AudioLibrary.EVENT_BEGGAR
+	},
+	{/* The Shady Builder */
+		title: _('The Shady Builder'),
+		isAvailable: function() {
+			return Engine.activeModule == Room && $SM.get('game.buildings["hut"]', true) >= 5 && $SM.get('game.buildings["hut"]', true) < 20;
+		},
+		scenes: {
+			'start':{
+				text: [
+					_('a shady builder passes through'),
+					_('says he can build you a hut for less wood')
+				],
+				notification: _('a shady builder passes through'),
+				buttons: {
+					'build': {
+						text: _('300 wood'),
+						cost: { 'wood' : 300 },
+						nextScene: {0.6: 'steal', 1: 'build'}
+					},
+					'deny': {
+						text: _('say goodbye'),
+						nextScene: 'end'
+					}
+				}
+			},
+			'steal': {
+				text:[
+					_("the shady builder has made off with your wood")
+				],
+				notification: _('the shady builder has made off with your wood'),
+				buttons: {
+					'end': {
+						text: _('go home'),
+						nextScene: 'end'
+					}
+				}
+			},
+			'build': {
+				text:[
+					_("the shady builder builds a hut")
+				],
+				notification: _('the shady builder builds a hut'),
+				onLoad: function() {
+					var n = $SM.get('game.buildings["hut"]', true);
+					if(n < 20){
+						$SM.set('game.buildings["hut"]',n+1);
+					}
+				},
+				buttons: {
+					'end': {
+						text: _('go home'),
+						nextScene: 'end'
+					}
+				}
+			}
+		},
+		audio: AudioLibrary.EVENT_SHADY_BUILDER
+	},
+
+	{ /* Mysterious Wanderer  --  wood gambling */
+		title: _('The Mysterious Wanderer'),
+		isAvailable: function() {
+			return Engine.activeModule == Room && $SM.get('stores.wood');
+		},
+		scenes: {
+			start: {
+				text: [
+					_('a wanderer arrives with an empty cart. says if he leaves with wood, he\'ll be back with more.'),
+					_("builder's not sure he's to be trusted.")
+				],
+				notification: _('a mysterious wanderer arrives'),
+				blink: true,
+				buttons: {
+					'wood100': {
+						text: _('give 100'),
+						cost: {wood: 100},
+						nextScene: { 1: 'wood100'}
+					},
+					'wood500': {
+						text: _('give 500'),
+						cost: {wood: 500},
+						nextScene: { 1: 'wood500' }
+					},
+					'deny': {
+						text: _('turn him away'),
+						nextScene: 'end'
+					}
+				}
+			},
+			'wood100': {
+				text: [
+					_('the wanderer leaves, cart loaded with wood')
+				],
+				action: function(inputDelay) {
+					var delay = inputDelay || false;
+					Events.saveDelay(function() {
+						$SM.add('stores.wood', 300);
+						Notifications.notify(Room, _('the mysterious wanderer returns, cart piled high with wood.'));
+					}, 'Room[4].scenes.wood100.action', delay);
+				},
+				onLoad: function() {
+					if(Math.random() < 0.5) {
+						this.action(60);
+					}
+				},
+				buttons: {
+					'leave': {
+						text: _('say goodbye'),
+						nextScene: 'end'
+					}
+				}
+			},
+			'wood500': {
+				text: [
+					_('the wanderer leaves, cart loaded with wood')
+				],
+				action: function(inputDelay) {
+					var delay = inputDelay || false;
+					Events.saveDelay(function() {
+						$SM.add('stores.wood', 1500);
+						Notifications.notify(Room, _('the mysterious wanderer returns, cart piled high with wood.'));
+					}, 'Room[4].scenes.wood500.action', delay);
+				},
+				onLoad: function() {
+					if(Math.random() < 0.3) {
+						this.action(60);
+					}
+				},
+				buttons: {
+					'leave': {
+						text: _('say goodbye'),
+						nextScene: 'end'
+					}
+				}
+			}
+		},
+		audio: AudioLibrary.EVENT_MYSTERIOUS_WANDERER
+	},
+
+	{ /* Mysterious Wanderer  --  fur gambling */
+		title: _('The Mysterious Wanderer'),
+		isAvailable: function() {
+			return Engine.activeModule == Room && $SM.get('stores.fur');
+		},
+		scenes: {
+			start: {
+				text: [
+					_('a wanderer arrives with an empty cart. says if she leaves with furs, she\'ll be back with more.'),
+					_("builder's not sure she's to be trusted.")
+				],
+				notification: _('a mysterious wanderer arrives'),
+				blink: true,
+				buttons: {
+					'fur100': {
+						text: _('give 100'),
+						cost: {fur: 100},
+						nextScene: { 1: 'fur100'}
+					},
+					'fur500': {
+						text: _('give 500'),
+						cost: {fur: 500},
+						nextScene: { 1: 'fur500' }
+					},
+					'deny': {
+						text: _('turn her away'),
+						nextScene: 'end'
+					}
+				}
+			},
+			'fur100': {
+				text: [
+					_('the wanderer leaves, cart loaded with furs')
+				],
+				action: function(inputDelay) {
+					var delay = inputDelay || false;
+					Events.saveDelay(function() {
+						$SM.add('stores.fur', 300);
+						Notifications.notify(Room, _('the mysterious wanderer returns, cart piled high with furs.'));
+					}, 'Room[5].scenes.fur100.action', delay);
+				},
+				onLoad: function() {
+					if(Math.random() < 0.5) {
+						this.action(60);
+					}
+				},
+				buttons: {
+					'leave': {
+						text: _('say goodbye'),
+						nextScene: 'end'
+					}
+				}
+			},
+			'fur500': {
+				text: [
+					_('the wanderer leaves, cart loaded with furs')
+				],
+				action: function(inputDelay) {
+					var delay = inputDelay || false;
+					Events.saveDelay(function() {
+						$SM.add('stores.fur', 1500);
+						Notifications.notify(Room, _('the mysterious wanderer returns, cart piled high with furs.'));
+					}, 'Room[5].scenes.fur500.action', delay);
+				},
+				onLoad: function() {
+					if(Math.random() < 0.3) {
+						this.action(60);
+					}
+				},
+				buttons: {
+					'leave': {
+						text: _('say goodbye'),
+						nextScene: 'end'
+					}
+				}
+			}
+		},
+		audio: AudioLibrary.EVENT_MYSTERIOUS_WANDERER
+	},
+
+	{ /* The Scout  --  Map Merchant */
+		title: _('The Scout'),
+		isAvailable: function() {
+			return Engine.activeModule == Room && $SM.get('features.location.world');
+		},
+		scenes: {
+			'start': {
+				text: [
+					_("the scout says she's been all over."),
+					_("willing to talk about it, for a price.")
+				],
+				notification: _('a scout stops for the night'),
+				blink: true,
+				buttons: {
+					'buyMap': {
+						text: _('buy map'),
+						cost: { 'fur': 200, 'scales': 10 },
+						available: function() {
+							return !World.seenAll;
+						},
+						notification: _('the map uncovers a bit of the world'),
+						onChoose: World.applyMap
+					},
+					'learn': {
+						text: _('learn scouting'),
+						cost: { 'fur': 1000, 'scales': 50, 'teeth': 20 },
+						available: function() {
+							return !$SM.hasPerk('scout');
+						},
+						onChoose: function() {
+							$SM.addPerk('scout');
+						}
+					},
+					'leave': {
+						text: _('say goodbye'),
+						nextScene: 'end'
+					}
+				}
+			}
+		},
+		audio: AudioLibrary.EVENT_SCOUT
+	},
+
+	{ /* The Wandering Master */
+		title: _('The Master'),
+		isAvailable: function() {
+			return Engine.activeModule == Room && $SM.get('features.location.world');
+		},
+		scenes: {
+			'start': {
+				text: [
+					_('an old wanderer arrives.'),
+					_('he smiles warmly and asks for lodgings for the night.')
+				],
+				notification: _('an old wanderer arrives'),
+				blink: true,
+				buttons: {
+					'agree': {
+						text: _('agree'),
+						cost: {
+							'cured meat': 100,
+							'fur': 100,
+							'torch': 1
+						},
+						nextScene: {1: 'agree'}
+					},
+					'deny': {
+						text: _('turn him away'),
+						nextScene: 'end'
+					}
+				}
+			},
+			'agree': {
+				text: [
+					_('in exchange, the wanderer offers his wisdom.')
+				],
+				buttons: {
+					'evasion': {
+						text: _('evasion'),
+						available: function() {
+							return !$SM.hasPerk('evasive');
+						},
+						onChoose: function() {
+							$SM.addPerk('evasive');
+						},
+						nextScene: 'end'
+					},
+					'precision': {
+						text: _('precision'),
+						available: function() {
+							return !$SM.hasPerk('precise');
+						},
+						onChoose: function() {
+							$SM.addPerk('precise');
+						},
+						nextScene: 'end'
+					},
+					'force': {
+						text: _('force'),
+						available: function() {
+							return !$SM.hasPerk('barbarian');
+						},
+						onChoose: function() {
+							$SM.addPerk('barbarian');
+						},
+						nextScene: 'end'
+					},
+					'nothing': {
+						text: _('nothing'),
+						nextScene: 'end'
+					}
+				}
+			}
+		},
+		audio: AudioLibrary.EVENT_WANDERING_MASTER
+	},
+
+	{ /* The Sick Man */
+		title: _('The Sick Man'),
+		isAvailable: function() {
+			return Engine.activeModule == Room && $SM.get('stores.medicine', true) > 0;
+		},
+		scenes: {
+			'start': {
+				text: [
+					_("a man hobbles up, coughing."),
+					_("he begs for medicine.")
+				],
+				notification: _('a sick man hobbles up'),
+				blink: true,
+				buttons: {
+					'help': {
+						text: _('give 1 medicine'),
+						cost: { 'medicine': 1 },
+						notification: _('the man swallows the medicine eagerly'),
+						nextScene: { 0.1: 'alloy', 0.3: 'cells', 0.5: 'scales', 1.0: 'nothing' }
+					},
+					'ignore': {
+						text: _('tell him to leave'),
+						nextScene: 'end'
+					}
+				}
+			},
+			'alloy': {
+				text: [
+					_("the man is thankful."),
+					_('he leaves a reward.'),
+					_('some weird metal he picked up on his travels.')
+				],
+				onLoad: function() {
+					$SM.add('stores["alien alloy"]', 1);
+				},
+				buttons: {
+					'bye': {
+						text: _('say goodbye'),
+						nextScene: 'end'
+					}
+				}
+			},
+			'cells': {
+				text: [
+					_("the man is thankful."),
+					_('he leaves a reward.'),
+					_('some weird glowing boxes he picked up on his travels.')
+				],
+				onLoad: function() {
+					$SM.add('stores["energy cell"]', 3);
+				},
+				buttons: {
+					'bye': {
+						text: _('say goodbye'),
+						nextScene: 'end'
+					}
+				}
+			},
+			'scales': {
+				text: [
+					_("the man is thankful."),
+					_('he leaves a reward.'),
+					_('all he has are some scales.')
+				],
+				onLoad: function() {
+					$SM.add('stores.scales', 5);
+				},
+				buttons: {
+					'bye': {
+						text: _('say goodbye'),
+						nextScene: 'end'
+					}
+				}
+			},
+			'nothing': {
+				text: [
+					_("the man expresses his thanks and hobbles off.")
+				],
+				buttons: {
+					'bye': {
+						text: _('say goodbye'),
+						nextScene: 'end'
+					}
+				}
+			}
+		},
+		audio: AudioLibrary.EVENT_SICK_MAN
+	}
+];
+ 
 /**
  * Events that only occur at specific times. Launched manually.
  **/
@@ -16812,1029 +18096,7 @@ Events.Global = [
 		audio: AudioLibrary.EVENT_THIEF
 	}
 ];
- 
-/**
- Module for triggering marketing messages
- @author mtownsend
- @since Jan 2021
-*/
 
-Events.Marketing = [{
-  /* Play Penrose! */
-  title: _('Penrose'),
-  isAvailable: () => !$SM.get('marketing.penrose'),
-  scenes: {
-    'start': {
-      text: [
-        _('a strange thrumming, pounding and crashing. visions of people and places, of a huge machine and twisting curves.'),
-        _('inviting. it would be so easy to give in, completely.')
-      ],
-      notification: _('a strange thrumming, pounding and crashing. and then gone.'),
-      blink: true,
-      buttons: {
-        'give in': {
-          text: _('give in'),
-          onClick: () => {
-            $SM.set('marketing.penrose', true);
-          },
-          link: 'https://penrose.doublespeakgames.com/?utm_source=adarkroom&utm_medium=crosspromote&utm_campaign=event'
-        },
-        'ignore': {
-          text: _('ignore it'),
-          nextScene: 'end'
-        }
-      }
-    }
-  },
-  audio: AudioLibrary.EVENT_NOISES_INSIDE
-}];
- 
-/**
- * Events that can occur when the Outside module is active
- **/
-Events.Outside = [
-	{ /* Ruined traps */
-	title: _('A Ruined Trap'),
-		isAvailable: function() {
-			return Engine.activeModule == Outside && $SM.get('game.buildings["trap"]', true) > 0;
-		},
-		scenes: {
-			'start': {
-				text: [
-					_('some of the traps have been torn apart.'),
-					_('large prints lead away, into the forest.')
-				],
-				onLoad: function() {
-					var numWrecked = Math.floor(Math.random() * $SM.get('game.buildings["trap"]', true)) + 1;
-					$SM.add('game.buildings["trap"]', -numWrecked);
-					Outside.updateVillage();
-					Outside.updateTrapButton();
-				},
-				notification: _('some traps have been destroyed'),
-				blink: true,
-				buttons: {
-					'track': {
-						text: _('track them'),
-						nextScene: {0.5: 'nothing', 1: 'catch'}
-					},
-					'ignore': {
-						text: _('ignore them'),
-						nextScene: 'end'
-					}
-				}
-			},
-			'nothing': {
-				text: [
-					_('the tracks disappear after just a few minutes.'),
-					_('the forest is silent.')
-				],
-				notification: _('nothing was found'),
-				buttons: {
-					'end': {
-						text: _('go home'),
-						nextScene: 'end'
-					}
-				}
-			},
-			'catch': {
-				text: [
-					_('not far from the village lies a large beast, its fur matted with blood.'),
-					_('it puts up little resistance before the knife.')
-				],
-				notification: _('there was a beast. it\'s dead now'),
-				reward: {
-					fur: 100,
-					meat: 100,
-					teeth: 10
-				},
-				buttons: {
-					'end': {
-						text: _('go home'),
-						nextScene: 'end'
-					}
-				}
-			}
-		},
-		audio: AudioLibrary.EVENT_RUINED_TRAP
-	},
-	{ /* Hut fire */
-		title: _('Fire'),
-		isAvailable: function() {
-			return Engine.activeModule == Outside && $SM.get('game.buildings["hut"]', true) > 0 && $SM.get('game.population', true) > 50;
-		},
-		scenes: {
-			'start': {
-				text: [
-					_('a fire rampages through one of the huts, destroying it.'),
-					_('all residents in the hut perished in the fire.')
-				],
-				notification: _('a fire has started'),
-				blink: true,
-				onLoad: function() {
-					Outside.destroyHuts(1);
-				},
-				buttons: {
-					'mourn': {
-						text: _('mourn'),
-						notification: _('some villagers have died'),
-						nextScene: 'end'
-					}
-				}
-			}
-		},
-		audio: AudioLibrary.EVENT_HUT_FIRE
-	},
-	{ /* Sickness */
-		title: _('Sickness'),
-		isAvailable: function() {
-			return Engine.activeModule == Outside && $SM.get('game.population', true) > 10 && $SM.get('game.population', true) < 50 && $SM.get('stores.medicine', true) > 0;
-		},
-		scenes: {
-			'start': {
-				text: [
-					_('a sickness is spreading through the village.'),
-					_('medicine is needed immediately.')
-				],
-				notification: _('some villagers are ill'),
-				blink: true,
-				buttons: {
-					'heal': {
-						text: _('1 medicine'),
-						cost: { 'medicine' : 1 },
-						nextScene: {1: 'healed'}
-					},
-					'ignore': {
-						text: _('ignore it'),
-						nextScene: {1: 'death'}
-					}
-				}
-			},
-			'healed': {
-				text: [
-					_('the sickness is cured in time.')
-				],
-				notification: _('sufferers are healed'),
-				buttons: {
-					'end': {
-						text: _('go home'),
-						nextScene: 'end'
-					}
-				}
-			},
-			'death': {
-				text: [
-					_('the sickness spreads through the village.'),
-					_('the days are spent with burials.'),
-					_('the nights are rent with screams.')
-				],
-				notification: _('sufferers are left to die'),
-				onLoad: function() {
-					var numKilled = Math.floor(Math.random() * Math.floor($SM.get('game.population', true)/2)) + 1;
-					Outside.killVillagers(numKilled);
-				},
-				buttons: {
-					'end': {
-						text: _('go home'),
-						nextScene: 'end'
-					}
-				}
-			}
-		},
-		audio: AudioLibrary.EVENT_SICKNESS
-	},
-
-	{ /* Plague */
-		title: _('Plague'),
-		isAvailable: function() {
-			return Engine.activeModule == Outside && $SM.get('game.population', true) > 50 && $SM.get('stores.medicine', true) > 0;
-		},
-		scenes: {
-			'start': {
-				text: [
-					_('a terrible plague is fast spreading through the village.'),
-					_('medicine is needed immediately.')
-				],
-				notification: _('a plague afflicts the village'),
-				blink: true,
-				buttons: {
-					/* Because there is a serious need for medicine, the price is raised. */
-					'buyMedicine': {
-						text: _('buy medicine'),
-						cost: { 'scales': 70,
-								'teeth': 50 },
-						reward: { 'medicine': 1 }
-					},
-					'heal': {
-						text: _('5 medicine'),
-						cost: { 'medicine' : 5 },
-						nextScene: {1: 'healed'}
-					},
-					'ignore': {
-						text: _('do nothing'),
-						nextScene: {1: 'death'}
-					}
-				}
-			},
-			'healed': {
-				text: [
-					_('the plague is kept from spreading.'),
-					_('only a few die.'),
-					_('the rest bury them.')
-				],
-				notification: _('epidemic is eradicated eventually'),
-				onLoad: function() {
-					var numKilled = Math.floor(Math.random() * 5) + 2;
-					Outside.killVillagers(numKilled);
-				},
-				buttons: {
-					'end': {
-						text: _('go home'),
-						nextScene: 'end'
-					}
-				}
-			},
-			'death': {
-				text: [
-					_('the plague rips through the village.'),
-					_('the nights are rent with screams.'),
-					_('the only hope is a quick death.')
-				],
-				notification: _('population is almost exterminated'),
-				onLoad: function() {
-					var numKilled = Math.floor(Math.random() * 80) + 10;
-					Outside.killVillagers(numKilled);
-				},
-				buttons: {
-					'end': {
-						text: _('go home'),
-						nextScene: 'end'
-					}
-				}
-			}
-		},
-		audio: AudioLibrary.EVENT_PLAGUE
-	},
-
-	{ /* Beast attack */
-		title: _('A Beast Attack'),
-		isAvailable: function() {
-			return Engine.activeModule == Outside && $SM.get('game.population', true) > 0;
-		},
-		scenes: {
-			'start': {
-				text: [
-					 _('a pack of snarling beasts pours out of the trees.'),
-					 _('the fight is short and bloody, but the beasts are repelled.'),
-					 _('the villagers retreat to mourn the dead.')
-				],
-				notification: _('wild beasts attack the villagers'),
-				onLoad: function() {
-					var numKilled = Math.floor(Math.random() * 10) + 1;
-					Outside.killVillagers(numKilled);
-				},
-				reward: {
-					fur: 100,
-					meat: 100,
-					teeth: 10
-				},
-				blink: true,
-				buttons: {
-					'end': {
-						text: _('go home'),
-						notification: _('predators become prey. price is unfair'),
-						nextScene: 'end'
-					}
-				}
-			}
-		},
-		audio: AudioLibrary.EVENT_BEAST_ATTACK
-	},
-
-	{ /* Soldier attack */
-		title: _('A Military Raid'),
-		isAvailable: function() {
-			return Engine.activeModule == Outside && $SM.get('game.population', true) > 0 && $SM.get('game.cityCleared');
-		},
-		scenes: {
-			'start': {
-				text: [
-					_('a gunshot rings through the trees.'),
-					_('well armed men charge out of the forest, firing into the crowd.'),
-					_('after a skirmish they are driven away, but not without losses.')
-				],
-				notification: _('troops storm the village'),
-				onLoad: function() {
-					var numKilled = Math.floor(Math.random() * 40) + 1;
-					Outside.killVillagers(numKilled);
-				},
-				reward: {
-					bullets: 10,
-					'cured meat': 50
-				},
-
-				blink: true,
-				buttons: {
-					'end': {
-						text: _('go home'),
-						notification: _('warfare is bloodthirsty'),
-						nextScene: 'end'
-					}
-				}
-			}
-		},
-		audio: AudioLibrary.EVENT_SOLDIER_ATTACK
-	}
-
-];
- 
-/**
- * Events that can occur when the Room module is active
- **/
-Events.Room = [
-	{ /* The Nomad  --  Merchant */
-		title: _('The Nomad'),
-		isAvailable: function() {
-			return Engine.activeModule == Room && $SM.get('stores.fur', true) > 0;
-		},
-		scenes: {
-			'start': {
-				text: [
-					_('a nomad shuffles into view, laden with makeshift bags bound with rough twine.'),
-					_("won't say from where he came, but it's clear that he's not staying.")
-				],
-				notification: _('a nomad arrives, looking to trade'),
-				blink: true,
-				buttons: {
-					'buyScales': {
-						text: _('buy scales'),
-						cost: { 'fur': 100 },
-						reward: { 'scales': 1 }
-					},
-					'buyTeeth': {
-						text: _('buy teeth'),
-						cost: { 'fur': 200 },
-						reward: { 'teeth': 1 }
-					},
-					'buyBait': {
-						text: _('buy bait'),
-						cost: { 'fur': 5 },
-						reward: { 'bait': 1 },
-						notification: _('traps are more effective with bait.')
-					},
-					'buyCompass': {
-						available: function() {
-							return $SM.get('stores.compass', true) < 1;
-						},
-						text: _('buy compass'),
-						cost: { fur: 300, scales: 15, teeth: 5 },
-						reward: { 'compass': 1 },
-						notification: _('the old compass is dented and dusty, but it looks to work.')
-					},
-					'goodbye': {
-						text: _('say goodbye'),
-						nextScene: 'end'
-					}
-				}
-			}
-		},
-		audio: AudioLibrary.EVENT_NOMAD
-	},
-	{ /* Noises Outside  --  gain wood/fur */
-		title: _('Noises'),
-		isAvailable: function() {
-			return Engine.activeModule == Room && $SM.get('stores.wood');
-		},
-		scenes: {
-			'start': {
-				text: [
-					_('through the walls, shuffling noises can be heard.'),
-					_("can't tell what they're up to.")
-				],
-				notification: _('strange noises can be heard through the walls'),
-				blink: true,
-				buttons: {
-					'investigate': {
-						text: _('investigate'),
-						nextScene: { 0.3: 'stuff', 1: 'nothing' }
-					},
-					'ignore': {
-						text: _('ignore them'),
-						nextScene: 'end'
-					}
-				}
-			},
-			'nothing': {
-				text: [
-					_('vague shapes move, just out of sight.'),
-					_('the sounds stop.')
-				],
-				buttons: {
-					'backinside': {
-						text: _('go back inside'),
-						nextScene: 'end'
-					}
-				}
-			},
-			'stuff': {
-				reward: { wood: 100, fur: 10 },
-				text: [
-					_('a bundle of sticks lies just beyond the threshold, wrapped in coarse furs.'),
-					_('the night is silent.')
-				],
-				buttons: {
-					'backinside': {
-						text: _('go back inside'),
-						nextScene: 'end'
-					}
-				}
-			}
-		},
-		audio: AudioLibrary.EVENT_NOISES_OUTSIDE
-	},
-	{ /* Noises Inside  --  trade wood for better good */
-		title: _('Noises'),
-		isAvailable: function() {
-			return Engine.activeModule == Room && $SM.get('stores.wood');
-		},
-		scenes: {
-			start: {
-				text: [
-					_('scratching noises can be heard from the store room.'),
-					_('something\'s in there.')
-				],
-				notification: _('something\'s in the store room'),
-				blink: true,
-				buttons: {
-					'investigate': {
-						text: _('investigate'),
-						nextScene: { 0.5: 'scales', 0.8: 'teeth', 1: 'cloth' }
-					},
-					'ignore': {
-						text: _('ignore them'),
-						nextScene: 'end'
-					}
-				}
-			},
-			scales: {
-				text: [
-					_('some wood is missing.'),
-					_('the ground is littered with small scales')
-				],
-				onLoad: function() {
-					var numWood = $SM.get('stores.wood', true);
-					numWood = Math.floor(numWood * 0.1);
-					if(numWood === 0) numWood = 1;
-					var numScales = Math.floor(numWood / 5);
-					if(numScales === 0) numScales = 1;
-					$SM.addM('stores', {'wood': -numWood, 'scales': numScales});
-				},
-				buttons: {
-					'leave': {
-						text: _('leave'),
-						nextScene: 'end'
-					}
-				}
-			},
-			teeth: {
-				text: [
-					_('some wood is missing.'),
-					_('the ground is littered with small teeth')
-				],
-				onLoad: function() {
-					var numWood = $SM.get('stores.wood', true);
-					numWood = Math.floor(numWood * 0.1);
-					if(numWood === 0) numWood = 1;
-					var numTeeth = Math.floor(numWood / 5);
-					if(numTeeth === 0) numTeeth = 1;
-					$SM.addM('stores', {'wood': -numWood, 'teeth': numTeeth});
-				},
-				buttons: {
-					'leave': {
-						text: _('leave'),
-						nextScene: 'end'
-					}
-				}
-			},
-			cloth: {
-				text: [
-					_('some wood is missing.'),
-					_('the ground is littered with scraps of cloth')
-				],
-				onLoad: function() {
-					var numWood = $SM.get('stores.wood', true);
-					numWood = Math.floor(numWood * 0.1);
-					if(numWood === 0) numWood = 1;
-					var numCloth = Math.floor(numWood / 5);
-					if(numCloth === 0) numCloth = 1;
-					$SM.addM('stores', {'wood': -numWood, 'cloth': numCloth});
-				},
-				buttons: {
-					'leave': {
-						text: _('leave'),
-						nextScene: 'end'
-					}
-				}
-			}
-		},
-		audio: AudioLibrary.EVENT_NOISES_INSIDE
-	},
-	{ /* The Beggar  --  trade fur for better good */
-		title: _('The Beggar'),
-		isAvailable: function() {
-			return Engine.activeModule == Room && $SM.get('stores.fur');
-		},
-		scenes: {
-			start: {
-				text: [
-					_('a beggar arrives.'),
-					_('asks for any spare furs to keep him warm at night.')
-				],
-				notification: _('a beggar arrives'),
-				blink: true,
-				buttons: {
-					'50furs': {
-						text: _('give 50'),
-						cost: {fur: 50},
-						nextScene: { 0.5: 'scales', 0.8: 'teeth', 1: 'cloth' }
-					},
-					'100furs': {
-						text: _('give 100'),
-						cost: {fur: 100},
-						nextScene: { 0.5: 'teeth', 0.8: 'scales', 1: 'cloth' }
-					},
-					'deny': {
-						text: _('turn him away'),
-						nextScene: 'end'
-					}
-				}
-			},
-			scales: {
-				reward: { scales: 20 },
-				text: [
-					_('the beggar expresses his thanks.'),
-					_('leaves a pile of small scales behind.')
-				],
-				buttons: {
-					'leave': {
-						text: _('say goodbye'),
-						nextScene: 'end'
-					}
-				}
-			},
-			teeth: {
-				reward: { teeth: 20 },
-				text: [
-					_('the beggar expresses his thanks.'),
-					_('leaves a pile of small teeth behind.')
-				],
-				buttons: {
-					'leave': {
-						text: _('say goodbye'),
-						nextScene: 'end'
-					}
-				}
-			},
-			cloth: {
-				reward: { cloth: 20 },
-				text: [
-					_('the beggar expresses his thanks.'),
-					_('leaves some scraps of cloth behind.')
-				],
-				buttons: {
-					'leave': {
-						text: _('say goodbye'),
-						nextScene: 'end'
-					}
-				}
-			}
-		},
-		audio: AudioLibrary.EVENT_BEGGAR
-	},
-	{/* The Shady Builder */
-		title: _('The Shady Builder'),
-		isAvailable: function() {
-			return Engine.activeModule == Room && $SM.get('game.buildings["hut"]', true) >= 5 && $SM.get('game.buildings["hut"]', true) < 20;
-		},
-		scenes: {
-			'start':{
-				text: [
-					_('a shady builder passes through'),
-					_('says he can build you a hut for less wood')
-				],
-				notification: _('a shady builder passes through'),
-				buttons: {
-					'build': {
-						text: _('300 wood'),
-						cost: { 'wood' : 300 },
-						nextScene: {0.6: 'steal', 1: 'build'}
-					},
-					'deny': {
-						text: _('say goodbye'),
-						nextScene: 'end'
-					}
-				}
-			},
-			'steal': {
-				text:[
-					_("the shady builder has made off with your wood")
-				],
-				notification: _('the shady builder has made off with your wood'),
-				buttons: {
-					'end': {
-						text: _('go home'),
-						nextScene: 'end'
-					}
-				}
-			},
-			'build': {
-				text:[
-					_("the shady builder builds a hut")
-				],
-				notification: _('the shady builder builds a hut'),
-				onLoad: function() {
-					var n = $SM.get('game.buildings["hut"]', true);
-					if(n < 20){
-						$SM.set('game.buildings["hut"]',n+1);
-					}
-				},
-				buttons: {
-					'end': {
-						text: _('go home'),
-						nextScene: 'end'
-					}
-				}
-			}
-		},
-		audio: AudioLibrary.EVENT_SHADY_BUILDER
-	},
-
-	{ /* Mysterious Wanderer  --  wood gambling */
-		title: _('The Mysterious Wanderer'),
-		isAvailable: function() {
-			return Engine.activeModule == Room && $SM.get('stores.wood');
-		},
-		scenes: {
-			start: {
-				text: [
-					_('a wanderer arrives with an empty cart. says if he leaves with wood, he\'ll be back with more.'),
-					_("builder's not sure he's to be trusted.")
-				],
-				notification: _('a mysterious wanderer arrives'),
-				blink: true,
-				buttons: {
-					'wood100': {
-						text: _('give 100'),
-						cost: {wood: 100},
-						nextScene: { 1: 'wood100'}
-					},
-					'wood500': {
-						text: _('give 500'),
-						cost: {wood: 500},
-						nextScene: { 1: 'wood500' }
-					},
-					'deny': {
-						text: _('turn him away'),
-						nextScene: 'end'
-					}
-				}
-			},
-			'wood100': {
-				text: [
-					_('the wanderer leaves, cart loaded with wood')
-				],
-				action: function(inputDelay) {
-					var delay = inputDelay || false;
-					Events.saveDelay(function() {
-						$SM.add('stores.wood', 300);
-						Notifications.notify(Room, _('the mysterious wanderer returns, cart piled high with wood.'));
-					}, 'Room[4].scenes.wood100.action', delay);
-				},
-				onLoad: function() {
-					if(Math.random() < 0.5) {
-						this.action(60);
-					}
-				},
-				buttons: {
-					'leave': {
-						text: _('say goodbye'),
-						nextScene: 'end'
-					}
-				}
-			},
-			'wood500': {
-				text: [
-					_('the wanderer leaves, cart loaded with wood')
-				],
-				action: function(inputDelay) {
-					var delay = inputDelay || false;
-					Events.saveDelay(function() {
-						$SM.add('stores.wood', 1500);
-						Notifications.notify(Room, _('the mysterious wanderer returns, cart piled high with wood.'));
-					}, 'Room[4].scenes.wood500.action', delay);
-				},
-				onLoad: function() {
-					if(Math.random() < 0.3) {
-						this.action(60);
-					}
-				},
-				buttons: {
-					'leave': {
-						text: _('say goodbye'),
-						nextScene: 'end'
-					}
-				}
-			}
-		},
-		audio: AudioLibrary.EVENT_MYSTERIOUS_WANDERER
-	},
-
-	{ /* Mysterious Wanderer  --  fur gambling */
-		title: _('The Mysterious Wanderer'),
-		isAvailable: function() {
-			return Engine.activeModule == Room && $SM.get('stores.fur');
-		},
-		scenes: {
-			start: {
-				text: [
-					_('a wanderer arrives with an empty cart. says if she leaves with furs, she\'ll be back with more.'),
-					_("builder's not sure she's to be trusted.")
-				],
-				notification: _('a mysterious wanderer arrives'),
-				blink: true,
-				buttons: {
-					'fur100': {
-						text: _('give 100'),
-						cost: {fur: 100},
-						nextScene: { 1: 'fur100'}
-					},
-					'fur500': {
-						text: _('give 500'),
-						cost: {fur: 500},
-						nextScene: { 1: 'fur500' }
-					},
-					'deny': {
-						text: _('turn her away'),
-						nextScene: 'end'
-					}
-				}
-			},
-			'fur100': {
-				text: [
-					_('the wanderer leaves, cart loaded with furs')
-				],
-				action: function(inputDelay) {
-					var delay = inputDelay || false;
-					Events.saveDelay(function() {
-						$SM.add('stores.fur', 300);
-						Notifications.notify(Room, _('the mysterious wanderer returns, cart piled high with furs.'));
-					}, 'Room[5].scenes.fur100.action', delay);
-				},
-				onLoad: function() {
-					if(Math.random() < 0.5) {
-						this.action(60);
-					}
-				},
-				buttons: {
-					'leave': {
-						text: _('say goodbye'),
-						nextScene: 'end'
-					}
-				}
-			},
-			'fur500': {
-				text: [
-					_('the wanderer leaves, cart loaded with furs')
-				],
-				action: function(inputDelay) {
-					var delay = inputDelay || false;
-					Events.saveDelay(function() {
-						$SM.add('stores.fur', 1500);
-						Notifications.notify(Room, _('the mysterious wanderer returns, cart piled high with furs.'));
-					}, 'Room[5].scenes.fur500.action', delay);
-				},
-				onLoad: function() {
-					if(Math.random() < 0.3) {
-						this.action(60);
-					}
-				},
-				buttons: {
-					'leave': {
-						text: _('say goodbye'),
-						nextScene: 'end'
-					}
-				}
-			}
-		},
-		audio: AudioLibrary.EVENT_MYSTERIOUS_WANDERER
-	},
-
-	{ /* The Scout  --  Map Merchant */
-		title: _('The Scout'),
-		isAvailable: function() {
-			return Engine.activeModule == Room && $SM.get('features.location.world');
-		},
-		scenes: {
-			'start': {
-				text: [
-					_("the scout says she's been all over."),
-					_("willing to talk about it, for a price.")
-				],
-				notification: _('a scout stops for the night'),
-				blink: true,
-				buttons: {
-					'buyMap': {
-						text: _('buy map'),
-						cost: { 'fur': 200, 'scales': 10 },
-						available: function() {
-							return !World.seenAll;
-						},
-						notification: _('the map uncovers a bit of the world'),
-						onChoose: World.applyMap
-					},
-					'learn': {
-						text: _('learn scouting'),
-						cost: { 'fur': 1000, 'scales': 50, 'teeth': 20 },
-						available: function() {
-							return !$SM.hasPerk('scout');
-						},
-						onChoose: function() {
-							$SM.addPerk('scout');
-						}
-					},
-					'leave': {
-						text: _('say goodbye'),
-						nextScene: 'end'
-					}
-				}
-			}
-		},
-		audio: AudioLibrary.EVENT_SCOUT
-	},
-
-	{ /* The Wandering Master */
-		title: _('The Master'),
-		isAvailable: function() {
-			return Engine.activeModule == Room && $SM.get('features.location.world');
-		},
-		scenes: {
-			'start': {
-				text: [
-					_('an old wanderer arrives.'),
-					_('he smiles warmly and asks for lodgings for the night.')
-				],
-				notification: _('an old wanderer arrives'),
-				blink: true,
-				buttons: {
-					'agree': {
-						text: _('agree'),
-						cost: {
-							'cured meat': 100,
-							'fur': 100,
-							'torch': 1
-						},
-						nextScene: {1: 'agree'}
-					},
-					'deny': {
-						text: _('turn him away'),
-						nextScene: 'end'
-					}
-				}
-			},
-			'agree': {
-				text: [
-					_('in exchange, the wanderer offers his wisdom.')
-				],
-				buttons: {
-					'evasion': {
-						text: _('evasion'),
-						available: function() {
-							return !$SM.hasPerk('evasive');
-						},
-						onChoose: function() {
-							$SM.addPerk('evasive');
-						},
-						nextScene: 'end'
-					},
-					'precision': {
-						text: _('precision'),
-						available: function() {
-							return !$SM.hasPerk('precise');
-						},
-						onChoose: function() {
-							$SM.addPerk('precise');
-						},
-						nextScene: 'end'
-					},
-					'force': {
-						text: _('force'),
-						available: function() {
-							return !$SM.hasPerk('barbarian');
-						},
-						onChoose: function() {
-							$SM.addPerk('barbarian');
-						},
-						nextScene: 'end'
-					},
-					'nothing': {
-						text: _('nothing'),
-						nextScene: 'end'
-					}
-				}
-			}
-		},
-		audio: AudioLibrary.EVENT_WANDERING_MASTER
-	},
-
-	{ /* The Sick Man */
-		title: _('The Sick Man'),
-		isAvailable: function() {
-			return Engine.activeModule == Room && $SM.get('stores.medicine', true) > 0;
-		},
-		scenes: {
-			'start': {
-				text: [
-					_("a man hobbles up, coughing."),
-					_("he begs for medicine.")
-				],
-				notification: _('a sick man hobbles up'),
-				blink: true,
-				buttons: {
-					'help': {
-						text: _('give 1 medicine'),
-						cost: { 'medicine': 1 },
-						notification: _('the man swallows the medicine eagerly'),
-						nextScene: { 0.1: 'alloy', 0.3: 'cells', 0.5: 'scales', 1.0: 'nothing' }
-					},
-					'ignore': {
-						text: _('tell him to leave'),
-						nextScene: 'end'
-					}
-				}
-			},
-			'alloy': {
-				text: [
-					_("the man is thankful."),
-					_('he leaves a reward.'),
-					_('some weird metal he picked up on his travels.')
-				],
-				onLoad: function() {
-					$SM.add('stores["alien alloy"]', 1);
-				},
-				buttons: {
-					'bye': {
-						text: _('say goodbye'),
-						nextScene: 'end'
-					}
-				}
-			},
-			'cells': {
-				text: [
-					_("the man is thankful."),
-					_('he leaves a reward.'),
-					_('some weird glowing boxes he picked up on his travels.')
-				],
-				onLoad: function() {
-					$SM.add('stores["energy cell"]', 3);
-				},
-				buttons: {
-					'bye': {
-						text: _('say goodbye'),
-						nextScene: 'end'
-					}
-				}
-			},
-			'scales': {
-				text: [
-					_("the man is thankful."),
-					_('he leaves a reward.'),
-					_('all he has are some scales.')
-				],
-				onLoad: function() {
-					$SM.add('stores.scales', 5);
-				},
-				buttons: {
-					'bye': {
-						text: _('say goodbye'),
-						nextScene: 'end'
-					}
-				}
-			},
-			'nothing': {
-				text: [
-					_("the man expresses his thanks and hobbles off.")
-				],
-				buttons: {
-					'bye': {
-						text: _('say goodbye'),
-						nextScene: 'end'
-					}
-				}
-			}
-		},
-		audio: AudioLibrary.EVENT_SICK_MAN
-	}
-];
- 
 (function(){
 	//only used for poedit to find translatable strings
 	var keywords = [ 
@@ -17904,3 +18166,6 @@ Events.Room = [
 
 	keywords = null;
 })();
+ 
+
+ 
