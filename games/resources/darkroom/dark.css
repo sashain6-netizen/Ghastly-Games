@@ -1,3 +1,22 @@
+/* Force the main containers to use the dark theme color */
+html, body, #wrapper, #main, #content, #locationSlider, .location, #header, #notifications {
+    background-color: #272823 !important;
+    color: #EEE !important;
+}
+
+/* Fix the logo stroke for dark mode */
+.logo-icon > path {
+    stroke: #EEE !important;
+}
+
+/* Ensure buttons don't have white backgrounds from the main CSS */
+div.button {
+    background-color: transparent !important;
+    color: #EEE !important;
+    border-color: #EEE !important;
+}
+
+
 body {
 	background-color: #272823;
 	color: #EEE;
