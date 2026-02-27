@@ -1,64 +1,3 @@
-
-
-/* ============================================= ECHOES OF THE HOLLOW KING — GAME ENGINE ============================================= */ 'use strict'; // ─── UTILITIES ─────────────────────────────── const $ = id => document.getElementById(id); const rand = (min, max) => Math.floor(Math.ran
-
-pasted
-
-Give me updated code without any bugs:
-
-11:31 AM
-
-Check available skills
-Check available skills
-Now let me analyze the bugs in the provided JavaScript code carefully before writing the fix.
-
-Key bugs I can identify:
-
-useSkill calls performPlayerSkill but the sub-menu passes entry objects — the skill entries in the sub-menu have their data wrapped/remapped inconsistently. Looking closer: showSubMenu('SKILLS', G.player.skills, (skill) => useSkill(skill)) — this passes the raw skill object, so useSkill(skill) → performPlayerSkill(skill) is fine. ✓
-performPlayerAttack(null) is called for basic attack — inside performPlayerAttack, skillOverride is null so skillOverride.critBonus would throw. Fixed with the ternary check (skillOverride && skillOverride.critBonus). Actually it's already guarded. ✓
-floatOverPlayer(0, 'miss') for miss — showDamage with type miss shows 'MISS' text, value irrelevant. ✓
-$('player-art') is referenced in floatOverPlayer but the HTML id isn't shown — could be missing in HTML, but we're only fixing JS.
-Victory screen $('btn-continue-victory').onclick is set inside handleEnemyDeath — fine.
-runBattleSequence after retry calls runBattleSequence(G.battleNumber) — this re-uses the same battle number, which is correct for retrying.
-Major bug: In showSubMenu, items have count property but the check entry.cost !== null && entry.cost !== undefined — items have cost: null set explicitly, so disabled will always be false for items. ✓
-tickStatuses is called on enemy BEFORE checking if player died from burn, but also called on player at end of enemy turn regardless of whether player attacked or was hit. Status duration logic seems off — tickStatuses is called after enemy acts but guard was applied by player at start of turn and should last until after the enemy attacks.
-Critical bug: In enemyTurn(), after damage is dealt and player regen ticks, tickStatuses(p) is called which will reduce guard duration. But guard was applied by performPlayerDefend() with duration 1, and the isGuarding check happens before tickStatuses in enemy turn — actually this is fine. But tickStatuses(p) is called at the end of enemyTurn always, even if the multi === 0 early return paths skip it (buff/special returns without calling tickStatuses). That means guard could persist indefinitely if the enemy keeps using buff/special actions. Bug.
-$('story-text-box') click handler — when clicking to skip typewriter, it calls $('story-continue').click(). But the continue button's handler checks G.typingTimer and if it's done typing (cleared), it increments storyIndex and advances. If still typing, it completes the text. But there's a subtle bug: when typing is complete, clearInterval is already called inside the interval, so G.typingTimer still holds the old (cleared) timer ID — it's not set to null. So if (G.typingTimer) is always truthy. Bug — need to null out G.typingTimer after clearing.
-storyIndex is incremented in choices even when choice.next is set — it increments then the startStory call resets everything. Actually, looking again: startStory(choice.next, storyCallback) resets storyQueue and storyIndex, so the premature increment doesn't matter. ✓
-battle.storyAfter for the final battle is 'ending' — STORIES['ending'] exists. After ending finishes, storyCallback calls runBattleSequence(5) which is >= BATTLE_SEQUENCE.length, showing title. ✓
-applyStatus on player for buff type in performPlayerSkill — the buff targets p (player), but renderStatuses only renders enemy statuses. Bug — player statuses are never displayed in renderStatuses.
-HP bar color change — $('player-hp-bar').style.background is set inline, but will never reset when HP goes back up. Minor visual bug.
-hideSubMenu is called but doesn't check if sub-menu is visible — harmless.
-Let me now write the complete fixed JS file:
-
-
-Created a file, read a file
-Created a file, read a file
-
-Fixed game engine with all bugs corrected
-game-engine-fixed.js
-
-Presented file
-Done
-Here's a summary of every bug that was fixed:
-
-1. G.typingTimer never nulled out (story skip broken) After the typewriter interval finished, G.typingTimer held a stale (already-cleared) interval ID instead of null. Since a non-null value is truthy, clicking "continue" always took the "still typing" branch and never actually advanced the story. Fixed by setting G.typingTimer = null in both the interval's completion callback and when manually clearing it.
-
-2. Player statuses never rendered renderStatuses() only wrote to #enemy-status and completely ignored the player's status array. Guard, Regen, Burn, etc. applied to the player were invisible. Fixed by also rendering #player-status (if the element exists).
-
-**3. Status ticks skipped on non-att
-
-Game engine fixed
-JS 
-
-
-
-
-
-Claude is AI and can make mistakes. Please double-check responses.
-Game engine fixed · JS
-Copy
-
 /* =============================================
    ECHOES OF THE HOLLOW KING — GAME ENGINE
    ============================================= */
@@ -1261,4 +1200,3 @@ function init() {
 }
 
 document.addEventListener('DOMContentLoaded', init);
-
