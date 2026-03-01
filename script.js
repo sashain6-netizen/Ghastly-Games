@@ -262,18 +262,24 @@ function updateUIState(email, balance) {
     const personalDisplay = document.getElementById('personal-balance');
     if (personalDisplay) personalDisplay.innerText = balance;
 
-    // Admin Panel Logic
+    // --- ADMIN SYSTEM ---
     const adminLink = document.getElementById('admin-link');
-    const adminEmail = 'sashain6@gmail.com'; // Define your admin email here
+    
+    // Easily add new admins to this list
+    const admins = [
+        'sashain6@gmail.com',
+        'anotheradmin@gmail.com' 
+    ];
 
-    if (email === adminEmail) {
-        adminLink.style.display = 'inline-block';
-    } else {
-        adminLink.style.display = 'none';
+    if (adminLink) {
+        if (admins.includes(email.toLowerCase())) {
+            adminLink.style.display = 'inline-block';
+        } else {
+            adminLink.style.display = 'none';
+        }
     }
 }
 
-// Update handleLogout to hide the admin link when logging out
 function handleLogout() {
     localStorage.removeItem('user_email');
     localStorage.removeItem('golden_balance');
@@ -282,9 +288,14 @@ function handleLogout() {
     document.getElementById('logged-in-box').style.display = 'none';
     document.getElementById('user-display').innerText = "";
     
-    // Hide admin link on logout
+    // Hide admin link and reset state
     const adminLink = document.getElementById('admin-link');
     if (adminLink) adminLink.style.display = 'none';
+
+    const personalDisplay = document.getElementById('personal-balance');
+    const gBucksSpan = document.getElementById('g-bucks'); 
+    if (personalDisplay) personalDisplay.innerText = "0";
+    if (gBucksSpan) gBucksSpan.innerText = "0"; 
 
     updateStats(false); 
 }
