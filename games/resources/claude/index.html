@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ECHOES OF THE HOLLOW KING</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="scanlines"></div>
+  <div id="crt-flicker"></div>
+
+  <div id="app">
+
+    <!-- TITLE SCREEN -->
+    <div id="screen-title" class="screen active">
+      <div class="title-container">
+        <div class="title-glitch-wrapper">
+          <h1 class="title-main" data-text="ECHOES OF THE">ECHOES OF THE</h1>
+          <h1 class="title-main title-big" data-text="HOLLOW KING">HOLLOW KING</h1>
+        </div>
+        <div class="title-lore">
+          <p>A kingdom swallowed by silence. A throne that devours kings.</p>
+          <p>You are the last Ashwalker — and the dark remembers your name.</p>
+        </div>
+        <div class="title-menu">
+          <button class="menu-btn" id="btn-new-game">▶ NEW GAME</button>
+          <button class="menu-btn" id="btn-lore">◈ THE LORE</button>
+        </div>
+        <div class="title-footer">PRESS ANY BUTTON TO BEGIN · © 1987 ASHEN REALM INTERACTIVE</div>
+      </div>
+    </div>
+
+    <!-- LORE SCREEN -->
+    <div id="screen-lore" class="screen">
+      <div class="lore-container">
+        <h2 class="lore-title">◈ THE CHRONICLES OF ASH ◈</h2>
+        <div class="lore-scroll" id="lore-scroll">
+          <div class="lore-chapter">
+            <h3>I. THE SUNDERING</h3>
+            <p>Three hundred years ago, the kingdom of Vaelthorn stood as the crown jewel of the known world. Its spires of white stone caught the dawn, its people sang at harvest, and its king — Malachar the Radiant — ruled with a just and iron hand.</p>
+            <p>Then came the Hollow Night. In a single breathless moment, every flame in Vaelthorn died. Not snuffed, not guttered — simply... gone. As if fire itself had been unmade. When dawn never followed, the survivors called it the Sundering.</p>
+          </div>
+          <div class="lore-chapter">
+            <h3>II. THE HOLLOW KING</h3>
+            <p>King Malachar did not die in the Sundering. He was transformed. The darkness that took Vaelthorn poured into him, filling every hollow of his being with something ancient and wrong. His throne fused with his bones. His crown became his skull.</p>
+            <p>Now he sits in the dead capital, ruling over silence and ash, sending his Echoes — fragments of his shattered will given terrible form — to collect what sustains him: the last living memories of his former people.</p>
+          </div>
+          <div class="lore-chapter">
+            <h3>III. THE ASHWALKERS</h3>
+            <p>For generations, warriors called Ashwalkers have made the pilgrimage to Vaelthorn. Armed with Ember Blades — swords that hold a tiny stolen fragment of the world's last fire — they seek to end the Hollow King's reign.</p>
+            <p>None have returned.</p>
+            <p>You are <span class="highlight">KAEL</span>, the last Ashwalker trained by the dying order. Your mentor gave you her Ember Blade with her last breath. You have nothing left to lose — which makes you more dangerous than all who came before.</p>
+          </div>
+          <div class="lore-chapter">
+            <h3>IV. THE EMBER BLADE</h3>
+            <p>Your weapon is not merely steel. The Ember Blade drinks the essence of what you defeat, growing stronger with each Echo destroyed. The flame within it flickers — barely alive. But like you, it endures.</p>
+          </div>
+        </div>
+        <button class="menu-btn" id="btn-lore-back">◀ RETURN</button>
+      </div>
+    </div>
+
+    <!-- STORY SCREEN -->
+    <div id="screen-story" class="screen">
+      <div class="story-container">
+        <div class="story-scene-art" id="scene-art"></div>
+        <div class="story-text-box">
+          <div class="story-speaker" id="story-speaker"></div>
+          <div class="story-text" id="story-text"></div>
+          <div class="story-continue" id="story-continue">▼ CONTINUE</div>
+        </div>
+        <div class="story-choices" id="story-choices"></div>
+      </div>
+    </div>
+
+    <!-- COMBAT SCREEN -->
+    <div id="screen-combat" class="screen">
+      <div class="combat-container">
+
+        <!-- Top bar: Enemy -->
+        <div class="combatant enemy-side">
+          <div class="combatant-art" id="enemy-art"></div>
+          <div class="combatant-info">
+            <div class="combatant-name" id="enemy-name">VOID SHADE</div>
+            <div class="hp-bar-container">
+              <div class="hp-label">ESSENCE</div>
+              <div class="hp-bar-outer">
+                <div class="hp-bar-inner enemy-hp" id="enemy-hp-bar"></div>
+              </div>
+              <div class="hp-text" id="enemy-hp-text">100 / 100</div>
+            </div>
+            <div class="status-effects" id="enemy-status"></div>
+          </div>
+        </div>
+
+        <!-- Combat log -->
+        <div class="combat-log-container">
+          <div class="combat-log" id="combat-log"></div>
+        </div>
+
+        <!-- Player info -->
+        <div class="combatant player-side">
+          <div class="combatant-info player-info">
+            <div class="combatant-name">KAEL · ASHWALKER</div>
+            <div class="hp-bar-container">
+              <div class="hp-label">VITALITY</div>
+              <div class="hp-bar-outer">
+                <div class="hp-bar-inner player-hp" id="player-hp-bar"></div>
+              </div>
+              <div class="hp-text" id="player-hp-text">120 / 120</div>
+            </div>
+            <div class="mp-bar-container">
+              <div class="hp-label">EMBER</div>
+              <div class="hp-bar-outer">
+                <div class="hp-bar-inner player-mp" id="player-mp-bar"></div>
+              </div>
+              <div class="hp-text" id="player-mp-text">50 / 50</div>
+            </div>
+            <div class="player-stats" id="player-stats"></div>
+          </div>
+          <div class="combatant-art player-art" id="player-art"></div>
+        </div>
+
+        <!-- Action menu -->
+        <div class="action-menu" id="action-menu">
+          <div class="action-title">⚔ CHOOSE ACTION</div>
+          <div class="action-grid" id="action-grid"></div>
+        </div>
+
+        <!-- Sub menu (skills/items) -->
+        <div class="sub-menu hidden" id="sub-menu">
+          <div class="sub-menu-title" id="sub-menu-title">SKILLS</div>
+          <div class="sub-menu-list" id="sub-menu-list"></div>
+          <button class="menu-btn small" id="sub-menu-back">◀ BACK</button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- GAME OVER SCREEN -->
+    <div id="screen-gameover" class="screen">
+      <div class="gameover-container">
+        <h2 class="gameover-title">YOU HAVE FALLEN</h2>
+        <div class="gameover-text" id="gameover-text"></div>
+        <button class="menu-btn" id="btn-retry">↺ TRY AGAIN</button>
+        <button class="menu-btn" id="btn-title">⌂ TITLE SCREEN</button>
+      </div>
+    </div>
+
+    <!-- VICTORY SCREEN -->
+    <div id="screen-victory" class="screen">
+      <div class="victory-container">
+        <div class="victory-art">✦</div>
+        <h2 class="victory-title" id="victory-title">ECHO DESTROYED</h2>
+        <div class="victory-rewards" id="victory-rewards"></div>
+        <button class="menu-btn" id="btn-continue-victory">▶ PRESS ON</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
