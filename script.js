@@ -258,29 +258,33 @@ function updateUIState(email, balance) {
     document.getElementById('logged-out-box').style.display = 'none';
     document.getElementById('logged-in-box').style.display = 'flex';
     document.getElementById('user-display').innerText = email;
+    
     const personalDisplay = document.getElementById('personal-balance');
     if (personalDisplay) personalDisplay.innerText = balance;
+
+    // Admin Panel Logic
+    const adminLink = document.getElementById('admin-link');
+    const adminEmail = 'sashain6@gmail.com'; // Define your admin email here
+
+    if (email === adminEmail) {
+        adminLink.style.display = 'inline-block';
+    } else {
+        adminLink.style.display = 'none';
+    }
 }
 
+// Update handleLogout to hide the admin link when logging out
 function handleLogout() {
-
     localStorage.removeItem('user_email');
     localStorage.removeItem('golden_balance');
 
     document.getElementById('logged-out-box').style.display = 'flex';
     document.getElementById('logged-in-box').style.display = 'none';
     document.getElementById('user-display').innerText = "";
-
-    const personalDisplay = document.getElementById('personal-balance');
-    const gBucksSpan = document.getElementById('g-bucks'); 
-
-    const email = localStorage.getItem('user_email') || "";
-    if (personalDisplay) personalDisplay.innerText = "0";
-    if (gBucksSpan) gBucksSpan.innerText = "0"; 
-
-    if (document.getElementById('golden-state')) {
-        document.getElementById('golden-state').innerText = "Ready";
-    }
+    
+    // Hide admin link on logout
+    const adminLink = document.getElementById('admin-link');
+    if (adminLink) adminLink.style.display = 'none';
 
     updateStats(false); 
 }
