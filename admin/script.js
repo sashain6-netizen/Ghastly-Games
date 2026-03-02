@@ -51,19 +51,24 @@ async function searchUser() {
         document.getElementById('edit-gbucks').value = data.gbucks || 0;
         document.getElementById('edit-xp').value = data.xp || 0;
 
-        // --- THE FIX FOR HASH/SALT VISIBILITY ---
+       // --- THE CLEAN REVEAL ---
         const ownerFields = document.querySelectorAll('.owner-only');
+        
         if (myRole === 'owner') {
-            // Use 'flex' to match your .field-group CSS
             ownerFields.forEach(el => {
-                el.style.setProperty('display', 'flex', 'important'); 
+                el.style.display = 'flex'; // Ensures it shows up
+                el.classList.add('show-field'); // Ensures it gets your flex-column styling
             });
+            
+            // Map the data from the server
             document.getElementById('edit-hash').value = data.password_hash || "";
             document.getElementById('edit-salt').value = data.salt || "";
         } else {
-            ownerFields.forEach(el => el.style.display = 'none');
+            ownerFields.forEach(el => {
+                el.style.display = 'none';
+                el.classList.remove('show-field');
+            });
         }
-        // ------------------------------------------
 
         const myLevel = getRankLevel(myRole);
         const targetLevel = getRankLevel(targetRole);
