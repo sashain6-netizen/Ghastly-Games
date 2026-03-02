@@ -30,14 +30,19 @@ const ADMIN_CONFIG = {
 
 const grid = document.getElementById('link-grid');
 
-sites.forEach(site => {
-    const card = document.createElement('a');
-    card.href = site.url;
-    card.target = "_blank";
-    card.className = 'link-card';
-    card.innerHTML = `<span>${site.name}</span>`;
-    grid.appendChild(card);
-});
+// Add this IF check around the loop
+if (grid) {
+    sites.forEach(site => {
+        const card = document.createElement('a');
+        card.href = site.url;
+        card.target = "_blank";
+        card.className = 'link-card';
+        card.innerHTML = `<span>${site.name}</span>`;
+        grid.appendChild(card);
+    });
+} else {
+    console.log("No grid found, skipping card generation (Admin Mode).");
+}
 
 function showGameModal(title, message) {
     const overlay = document.getElementById('game-modal-overlay');
