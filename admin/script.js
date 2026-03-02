@@ -54,12 +54,13 @@ async function searchUser() {
         // --- THE FIX FOR HASH/SALT VISIBILITY ---
         const ownerFields = document.querySelectorAll('.owner-only');
         if (myRole === 'owner') {
-            // Show fields and populate data for Owners
-            ownerFields.forEach(el => el.style.display = 'block');
+            // Use 'flex' to match your .field-group CSS
+            ownerFields.forEach(el => {
+                el.style.setProperty('display', 'flex', 'important'); 
+            });
             document.getElementById('edit-hash').value = data.password_hash || "";
             document.getElementById('edit-salt').value = data.salt || "";
         } else {
-            // Keep hidden for Co-Owners and Moderators
             ownerFields.forEach(el => el.style.display = 'none');
         }
         // ------------------------------------------
