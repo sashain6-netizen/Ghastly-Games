@@ -100,14 +100,6 @@ async function saveUserData() {
         adminEmail: email
     };
 
-    // --- THE FIX FOR SAVING HASH/SALT ---
-    // Only send these if you are the owner
-    if (myRole === 'owner') {
-        updatedData.password_hash = document.getElementById('edit-hash').value;
-        updatedData.salt = document.getElementById('edit-salt').value;
-    }
-    // ------------------------------------
-
     try {
         const res = await fetch('/stats?action=adminUpdate', {
             method: 'POST',
