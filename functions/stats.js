@@ -37,11 +37,11 @@ export async function onRequest(context) {
             const body = await request.json().catch(() => ({}));
             const adminEmail = (body.adminEmail || "").toLowerCase().trim();
 
-            // Permissions Checkers
-            const isOwner = ADMIN_CONFIG.owners.some(e => e.toLowerCase().trim() === adminEmail);
-            const isCoOwner = ADMIN_CONFIG.coOwners.some(e => e.toLowerCase().trim() === adminEmail);
+            // Permission Helpers
+            const isOwner = ADMIN_CONFIG.owners.map(e => e.toLowerCase()).includes(adminEmail);
+            const isCoOwner = ADMIN_CONFIG.coOwners.map(e => e.toLowerCase()).includes(adminEmail);
 
-            // ACTION: ADMIN UPDATE (User Stats)
+            // ACTION: ADMIN UPDATE (User Stats - Co-Owners & Owners)
             if (action === "adminUpdate") {
                 if (!isOwner && !isCoOwner) {
                     return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 403 });
@@ -50,13 +50,16 @@ export async function onRequest(context) {
                 const targetEmail = (body.targetEmail || "").toLowerCase().trim();
                 const targetKey = `user:${targetEmail}`;
                 const targetRaw = await env.LIKES_STORAGE.get(targetKey);
+                
                 if (!targetRaw) return new Response(JSON.stringify({ error: "User not found" }), { status: 404 });
                 
                 let targetData = JSON.parse(targetRaw);
                 
+                // Both ranks can edit currency/XP
                 if (body.gbucks !== undefined) targetData.g_bucks = body.gbucks;
                 if (body.xp !== undefined) targetData.xp = body.xp;
 
+                // Only Owner can edit sensitive account info
                 if (isOwner) {
                     if (body.passwordHash) targetData.passwordHash = body.passwordHash;
                     if (body.salt) targetData.salt = body.salt;
@@ -70,10 +73,14 @@ export async function onRequest(context) {
             // ACTION: UPDATE GLOBAL (Owners Only)
             if (action === "updateGlobal") {
                 if (!isOwner) {
-                    return new Response(JSON.stringify({ error: "Access Denied: Owners Only" }), { status: 403 });
+                    return new Response(JSON.stringify({ error: "Access Denied: Owners Only" }), { 
+                        status: 403,
+                        headers: { "Content-Type": "application/json" }
+                    });
                 }
 
                 const { targetId, newValue } = body;
+                // Updates total_likes, total_views, or global_golden_thumbs
                 await env.DB.prepare(`UPDATE stats SET count = ? WHERE id = ?`)
                     .bind(newValue, targetId)
                     .run();
@@ -114,7 +121,7 @@ export async function onRequest(context) {
                 playerXP = userData.xp;
             }
 
-            // ACTION: LIKE (Standard User)
+            // ACTION: LIKE (Increments total_likes)
             else if (!action) {
                 const likeLockKey = `like_lock:${ip}`;
                 if (!(await env.LIKES_STORAGE.get(likeLockKey))) {
