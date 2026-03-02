@@ -1,8 +1,6 @@
-const ADMIN_CONFIG = {
-    owners: ['sashain6@gmail.com'],
-    coOwners: ['568712@my.cuhsd.org'],
-    moderators: ['mod1@example.com']
-};
+/* NOTE: Ensure <script src="/script.js"></script> is loaded 
+   BEFORE this file in your admin/index.html 
+*/
 
 let currentTargetEmail = "";
 
@@ -12,6 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const role = getRole(email);
 
     if (!role) {
+        // Kick out anyone not in the ADMIN_CONFIG
         window.location.href = "/";
         return;
     }
@@ -27,13 +26,15 @@ document.addEventListener("DOMContentLoaded", () => {
     // Disable all saving if Moderator
     if (role === 'moderator') {
         document.querySelectorAll('input, .save-btn, .small-save').forEach(el => el.disabled = true);
-        document.getElementById('admin-msg').innerText = "Read-Only Mode: Moderators cannot save changes.";
+        const msg = document.getElementById('admin-msg');
+        if (msg) msg.innerText = "Read-Only Mode: Moderators cannot save changes.";
     }
 });
 
 function getRole(email) {
     if (!email) return null;
     const e = email.toLowerCase().trim();
+    // These reference the global ADMIN_CONFIG from the main script.js
     if (ADMIN_CONFIG.owners.includes(e)) return 'owner';
     if (ADMIN_CONFIG.coOwners.includes(e)) return 'co-owner';
     if (ADMIN_CONFIG.moderators.includes(e)) return 'moderator';
