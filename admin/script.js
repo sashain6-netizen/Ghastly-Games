@@ -224,7 +224,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // OPTIONAL: If you want to see the boxes IMMEDIATELY without searching, 
         // you must also show the container they live in:
-        document.getElementById('edit-section').style.display = 'block';
+        // document.getElementById('edit-section').style.display = 'block';
 
         fetchLogs();
     }
