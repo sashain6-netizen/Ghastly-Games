@@ -266,24 +266,25 @@ async function handleLogin() {
 }
 
 function updateUIState(email, balance) {
-    // 1. Basic UI Setup
-    document.getElementById('logged-out-box').style.display = 'none';
-    document.getElementById('logged-in-box').style.display = 'flex';
-    document.getElementById('user-display').innerText = email;
-    
+    // 1. Get elements and check if they exist on the current page
+    const loggedOutBox = document.getElementById('logged-out-box');
+    const loggedInBox = document.getElementById('logged-in-box');
+    const userDisplay = document.getElementById('user-display');
+    const adminLink = document.getElementById('admin-link');
     const personalDisplay = document.getElementById('personal-balance');
+
+    // 2. Only update if the elements are actually there
+    if (loggedOutBox) loggedOutBox.style.display = 'none';
+    if (loggedInBox) loggedInBox.style.display = 'flex';
+    if (userDisplay) userDisplay.innerText = email;
     if (personalDisplay) personalDisplay.innerText = balance;
 
-    // 2. --- ADMIN SYSTEM ---
-    const adminLink = document.getElementById('admin-link');
-    
-    if (adminLink && email) {
-        const emailLower = email.toLowerCase().trim();
-
-        // This now uses the ADMIN_CONFIG from the top of your script!
-        const isStaff = ADMIN_CONFIG.owners.includes(emailLower) || 
-                        ADMIN_CONFIG.coOwners.includes(emailLower) || 
-                        ADMIN_CONFIG.moderators.includes(emailLower);
+    // 3. Admin logic
+    if (adminLink && email && typeof ADMIN_CONFIG !== 'undefined') {
+        const e = email.toLowerCase().trim();
+        const isStaff = ADMIN_CONFIG.owners.includes(e) || 
+                        ADMIN_CONFIG.coOwners.includes(e) || 
+                        ADMIN_CONFIG.moderators.includes(e);
 
         adminLink.style.display = isStaff ? 'inline-block' : 'none';
     }
