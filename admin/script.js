@@ -36,7 +36,6 @@ function getRankLevel(role) {
 }
 
 async function searchUser() {
-    // MATCHING HTML ID: user-search-input
     const searchInput = document.getElementById('user-search-input');
     const searchEmail = searchInput.value.toLowerCase().trim();
     const myEmail = localStorage.getItem('user_email').toLowerCase().trim();
@@ -45,22 +44,32 @@ async function searchUser() {
     const targetRole = getRole(searchEmail);
 
     try {
-        const res = await fetch(`/admin/get-user?email=${encodeURIComponent(searchEmail)}`);
+        // CHANGE: Hit /stats because we know that URL returns JSON
+        const res = await fetch(`/stats?email=${encodeURIComponent(searchEmail)}`);
+        
+        // Safety check: if Cloudflare sends HTML, this stops the SyntaxError crash
+        const contentType = res.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+            alert("Error: Server sent back a webpage instead of data. Check your URL path.");
+            return;
+        }
+
         const data = await res.json();
 
-        if (data.success) {
+        // data.gbucks will be null if the user doesn't exist in KV
+        if (data && data.gbucks !== null) {
             currentTargetEmail = searchEmail;
             
-            // MATCHING HTML IDs
             document.getElementById('edit-section').style.display = 'block';
-            document.getElementById('target-user-header').innerText = `Editing: ${data.user.email}`;
-            document.getElementById('edit-gbucks').value = data.user.g_bucks || 0;
-            document.getElementById('edit-xp').value = data.user.xp || 0;
+            document.getElementById('target-user-header').innerText = `Editing: ${searchEmail}`;
+            
+            // Mapping to your server's JSON keys: data.gbucks and data.xp
+            document.getElementById('edit-gbucks').value = data.gbucks || 0;
+            document.getElementById('edit-xp').value = data.xp || 0;
 
             const myLevel = getRankLevel(myRole);
             const targetLevel = getRankLevel(targetRole);
 
-            // Hierarchy Rule: Only edit lower ranks (Owners edit all)
             const canEdit = (myLevel > targetLevel) || (myRole === 'owner');
             const saveBtn = document.getElementById('save-user-btn');
 
@@ -74,10 +83,11 @@ async function searchUser() {
                 document.getElementById('admin-msg').innerText = "You cannot edit equal or higher ranks.";
             }
         } else {
-            alert("User not found");
+            alert("User not found in the database.");
         }
     } catch (err) {
-        console.error(err);
+        console.error("Search error:", err);
+        alert("Failed to connect to the server.");
     }
 }
 
