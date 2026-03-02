@@ -1,7 +1,7 @@
 const ADMIN_CONFIG = {
     owners: ['sashain6@gmail.com'],
-    coOwners: ['coowner@example.com'],
-    moderators: ['mod1@example.com']
+    coOwners: ['568712@my.cuhsd.org'],
+    moderators: ['568974@my.cuhsd.org']
 };
 
 export async function onRequest(context) {
