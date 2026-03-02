@@ -213,15 +213,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const badge = document.getElementById('admin-role-badge');
     if (badge) badge.innerText = role ? role.toUpperCase() : "GUEST";
 
-    // 2. IMMEDIATE REVEAL FOR OWNER
+    // 2. PREPARE THE UI FOR OWNERS
     if (role === 'owner') {
         const ownerFields = document.querySelectorAll('.owner-only');
+        
+        // We reveal the fields themselves
         ownerFields.forEach(el => {
-            // This forces them to be visible even before a search happens
             el.style.setProperty('display', 'flex', 'important');
         });
-        
-        // Auto-load logs if owne
+
+        // OPTIONAL: If you want to see the boxes IMMEDIATELY without searching, 
+        // you must also show the container they live in:
+        document.getElementById('edit-section').style.display = 'block';
+
         fetchLogs();
     }
 });

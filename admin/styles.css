@@ -38,9 +38,15 @@
 
 .edit-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr; /* Two equal columns */
     gap: 1.5rem;
     margin: 1.5rem 0;
+    align-items: start; /* Prevents fields from stretching vertically */
+}
+
+.owner-only {
+    display: none; /* Hidden by default */
+    flex-direction: column; /* Keeps label above input */
 }
 
 .field-group {
@@ -97,9 +103,6 @@ button:disabled {
     text-decoration: none;
     font-size: 0.9rem;
     margin-right: 15px;
-}
-.owner-only {
-    display: none; 
 }
 .owner-only.show-field {
     display: flex; 
