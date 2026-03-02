@@ -221,7 +221,7 @@ document.addEventListener("DOMContentLoaded", () => {
             el.style.setProperty('display', 'flex', 'important');
         });
         
-        // Auto-load logs if owner
+        // Auto-load logs if owne
         fetchLogs();
     }
 });
