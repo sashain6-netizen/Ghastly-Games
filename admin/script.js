@@ -209,7 +209,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // --- 1. KICK LOGIC ---
     // If the role is null (meaning they aren't owner, co-owner, or mod)
     if (!role) {
-        window.location.href = "/index.html"; // Change to your actual main site URL
+        window.location.href = "./index.html"; // Change to your actual main site URL
         return; // Prevents the rest of the script from executing
     }
 
