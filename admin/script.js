@@ -73,29 +73,54 @@ async function searchUser() {
 }
 
 // 3. Save User Data
+// Add this helper if it's not in your script.js
+function getRole(email) {
+    if (!email) return null;
+    const e = email.toLowerCase().trim();
+    if (ADMIN_CONFIG.owners.includes(e)) return 'owner';
+    if (ADMIN_CONFIG.coOwners.includes(e)) return 'co-owner';
+    if (ADMIN_CONFIG.moderators.includes(e)) return 'moderator';
+    return null;
+}
+
 async function saveUserData() {
     const email = localStorage.getItem('user_email');
     const role = getRole(email);
     
-    if (role === 'moderator') return;
+    // Safety check
+    if (role === 'moderator' || !role) {
+        alert("Moderators cannot edit data.");
+        return;
+    }
+
+    // FIX: Match the IDs used in searchUser (input-gbucks)
+    const gBucksInput = document.getElementById('input-gbucks'); 
+    const xpInput = document.getElementById('input-xp'); // Make sure this exists in HTML
 
     const updatedData = {
         targetEmail: currentTargetEmail,
-        gbucks: parseInt(document.getElementById('edit-gbucks').value),
-        xp: parseInt(document.getElementById('edit-xp').value),
-        adminEmail: email // Verification for middleware
+        gbucks: parseInt(gBucksInput.value) || 0,
+        xp: xpInput ? (parseInt(xpInput.value) || 0) : 0,
+        adminEmail: email 
     };
 
-    const res = await fetch('/stats?action=adminUpdate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updatedData)
-    });
+    try {
+        const res = await fetch('/stats?action=adminUpdate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updatedData)
+        });
 
-    if (res.ok) {
-        document.getElementById('admin-msg').innerText = "Update successful!";
-        document.getElementById('admin-msg').style.color = "lightgreen";
-    } else {
-        alert("Update failed. Check permissions.");
+        if (res.ok) {
+            const msg = document.getElementById('admin-msg');
+            msg.innerText = "Update successful!";
+            msg.style.color = "lightgreen";
+        } else {
+            const errorData = await res.json();
+            alert("Update failed: " + (errorData.error || "Check permissions."));
+        }
+    } catch (err) {
+        console.error("Save error:", err);
+        alert("Server error while saving.");
     }
 }
