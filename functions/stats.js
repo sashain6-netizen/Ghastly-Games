@@ -19,11 +19,14 @@ export async function onRequest(context) {
     // Helper function to record logs
     async function logAction(env, admin, action, target, details) {
         try {
-            await env.DB.prepare(
-                `INSERT INTO admin_logs (admin_email, action_type, target, details) VALUES (?, ?, ?, ?)`
-            ).bind(admin, action, target, JSON.stringify(details)).run();
+            // Only attempt to log if the DB is bound correctly
+            if (env.DB) {
+                await env.DB.prepare(
+                    `INSERT INTO admin_logs (admin_email, action_type, target, details) VALUES (?, ?, ?, ?)`
+                ).bind(admin, action, target, JSON.stringify(details)).run();
+            }
         } catch (e) {
-            console.error("Logging failed", e);
+            console.error("Logging failed, but continuing update:", e);
         }
     }
 

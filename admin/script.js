@@ -1,23 +1,6 @@
 let currentTargetEmail = "";
 
-document.addEventListener("DOMContentLoaded", () => {
-    const email = localStorage.getItem('user_email');
-    if (typeof ADMIN_CONFIG === 'undefined') return;
-
-    const myRole = getRole(email);
-    if (!myRole) {
-        window.location.href = "/";
-        return;
-    }
-
-    document.getElementById('email-display').innerText = email;
-    document.getElementById('admin-role-badge').innerText = myRole.toUpperCase();
-
-    // Hide owner-only sections if the user is a Co-Owner or Moderator
-    if (myRole !== 'owner') {
-        document.querySelectorAll('.owner-only').forEach(el => el.style.display = 'none');
-    }
-});
+document.getElementById('email-display').innerText = email;
 
 function getRole(email) {
     if (!email || typeof ADMIN_CONFIG === 'undefined') return null;
@@ -177,12 +160,23 @@ async function updateGlobal(fieldId) {
     }
 }
 
+
 async function fetchLogs() {
-    // You'll need to create a new action in stats.js like ?action=getLogs
-    const res = await fetch('/stats?action=getLogs');
-    const logs = await res.json();
-    const container = document.getElementById('log-container');
-    container.innerHTML = logs.map(log => 
-        `<div>[${log.timestamp}] <b>${log.admin_email}</b>: ${log.action_type} on ${log.target}</div>`
-    ).join('');
+    try {
+        const res = await fetch('/stats?action=getLogs');
+        const data = await res.json();
+        
+        // Safety check: ensure data is an array
+        if (!Array.isArray(data)) {
+            console.error("Logs are not an array:", data);
+            return;
+        }
+
+        const container = document.getElementById('log-container');
+        container.innerHTML = data.map(log => 
+            `<div>[${log.timestamp}] <b>${log.admin_email}</b>: ${log.action_type} on ${log.target}</div>`
+        ).join('');
+    } catch (err) {
+        console.error("Failed to fetch logs", err);
+    }
 }
