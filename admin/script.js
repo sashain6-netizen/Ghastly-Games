@@ -1,6 +1,6 @@
 const ADMIN_CONFIG = {
     owners: ['sashain6@gmail.com'],
-    coOwners: ['coowner@example.com'],
+    coOwners: ['568712@my.cuhsd.org'],
     moderators: ['mod1@example.com']
 };
 
