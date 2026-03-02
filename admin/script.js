@@ -123,17 +123,30 @@ async function saveUserData() {
 async function updateGlobal(fieldId) {
     const email = localStorage.getItem('user_email');
     
-    // UI Rank Check: Prevent Co-Owners/Mods from triggering this
+    // UI Safety Check (Owner only)
     if (getRole(email) !== 'owner') {
-        alert("Action Blocked: Only the Owner can modify global stats.");
+        alert("Access Denied: Only the Owner can edit Global Stats.");
         return;
     }
 
+    // Dynamic Input Selector: 
+    // This looks for 'input-total_likes', 'input-total_views', etc.
     const valueInput = document.getElementById(`input-${fieldId}`);
+    
+    if (!valueInput) {
+        alert(`Error: Input field 'input-${fieldId}' not found in HTML.`);
+        return;
+    }
+
     const newValue = parseInt(valueInput.value);
 
     if (isNaN(newValue)) {
         alert("Please enter a valid number.");
+        return;
+    }
+
+    // Confirmation for accidental clicks
+    if (!confirm(`Are you sure you want to set ${fieldId} to ${newValue}?`)) {
         return;
     }
 
@@ -143,19 +156,23 @@ async function updateGlobal(fieldId) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 adminEmail: email,
-                targetId: fieldId,
+                targetId: fieldId, // Passes 'total_likes', 'total_views', or 'global_golden_thumbs'
                 newValue: newValue
             })
         });
 
         const data = await res.json();
-        
-        if (res.ok) {
-            alert("Global stat updated successfully!");
+
+        if (res.ok && data.success) {
+            alert(`${fieldId} updated successfully!`);
+            // Update the display text immediately so you don't have to refresh
+            const displayEl = document.getElementById(`display-${fieldId}`);
+            if (displayEl) displayEl.innerText = newValue;
         } else {
-            alert("Error: " + data.error);
+            alert("Update failed: " + (data.error || "Unknown error"));
         }
     } catch (err) {
-        alert("Server error. Check connection.");
+        console.error("Global update error:", err);
+        alert("Server error. Check your connection.");
     }
 }
