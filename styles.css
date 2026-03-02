@@ -406,85 +406,7 @@ body {
     flex-wrap: wrap;           
 }
 
-#ghastly-auth-system {
-    display: flex;
-    justify-content: center;
-    padding: 40px 20px;
-}
-
-#ghastly-auth-system #signup-container {
-    background: #1a0b2e; 
-    padding: 2.5rem;
-    border-radius: 15px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
-    border: 2px solid #3d1d5a;
-    width: 100%;
-    max-width: 400px;
-    text-align: center;
-    font-family: 'Segoe UI', sans-serif; 
-}
-
-#ghastly-auth-system h2 {
-    color: #bc6ff1;
-    margin-top: 0;
-    text-transform: uppercase;
-    letter-spacing: 3px;
-}
-
-#ghastly-auth-system input {
-    width: 100%;
-    padding: 12px;
-    margin: 10px 0;
-    background: #0d0216;
-    border: 1px solid #5a2d82;
-    border-radius: 8px;
-    color: #fff;
-    font-size: 16px;
-    display: block; 
-}
-
-#ghastly-auth-system input:focus {
-    border-color: #bc6ff1;
-    outline: none;
-    box-shadow: 0 0 10px rgba(188, 111, 241, 0.3);
-}
-
-#ghastly-auth-system button {
-    width: 100%;
-    padding: 14px;
-    margin-top: 15px;
-    background: linear-gradient(135deg, #892cdc, #bc6ff1);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: transform 0.2s;
-}
-
-#ghastly-auth-system button:hover {
-    transform: scale(1.02);
-    filter: brightness(1.1);
-}
-
-#ghastly-auth-system #message {
-    color: #e0d1ed;
-    margin-top: 15px;
-}
-
-#auth-overlay {
-    display: none; 
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.85);
-    z-index: 9999;
-    justify-content: center;
-    align-items: center;
-    padding: 20px; 
-}
+/* --- FIXED AUTH SYSTEM LAYOUT --- */
 
 #ghastly-auth-system {
     position: relative;
@@ -492,8 +414,82 @@ body {
     padding: 30px;
     border-radius: 15px;
     border: 2px solid #bc6ff1;
-    width: 90%;
+    width: 100%; /* Changed from 90% to 100% of the parent max-width */
     max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center everything horizontally */
+}
+
+#ghastly-auth-system h2 {
+    color: #bc6ff1;
+    margin: 10px 0 20px 0; /* Normalized margins */
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    text-align: center;
+    width: 100%;
+}
+
+/* Ensure the form uses the full width of the container */
+.auth-form {
+    display: none; /* Controlled by JS to show/hide */
+    flex-direction: column;
+    gap: 12px;
+    width: 100%; 
+}
+
+/* Fix for skewed inputs */
+#ghastly-auth-system input[type="email"],
+#ghastly-auth-system input[type="password"],
+#ghastly-auth-system input[type="text"] {
+    width: 100%; /* Force full width */
+    box-sizing: border-box; /* Crucial: includes padding in width calculation */
+    padding: 12px;
+    margin: 0; /* Remove top/bottom margins to rely on gap */
+    background: #0d0216;
+    border: 1px solid #5a2d82;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 16px;
+}
+
+#ghastly-auth-system button {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #892cdc, #bc6ff1);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s;
+    margin-top: 10px;
+}
+
+/* Fix for the Show Password Toggle alignment */
+.show-pw-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* Align to left of form */
+    gap: 12px;
+    margin: 5px 0;
+    width: 100%;
+    user-select: none;
+}
+
+/* Keep the close button from interfering with the title */
+#close-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: none;
+    color: #bc6ff1;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10;
 }
 
 #close-btn {
