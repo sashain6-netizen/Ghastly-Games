@@ -101,3 +101,7 @@ button:disabled {
 .owner-only {
     display: none; 
 }
+.owner-only.show-field {
+    display: flex; /* Matches your .field-group style */
+    flex-direction: column;
+}
