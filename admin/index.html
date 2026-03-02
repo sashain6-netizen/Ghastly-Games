@@ -78,6 +78,12 @@
                 <button class="small-save" onclick="updateGlobal('total_views')">Update</button>
             </div>
         </div>
+        <section class="admin-card owner-only">
+            <h3>Recent Admin Actions</h3>
+            <button onclick="fetchLogs()">Refresh Logs</button>
+            <div id="log-container" style="font-family: monospace; font-size: 12px; margin-top: 10px; max-height: 200px; overflow-y: auto;">
+                </div>
+        </section>
     </section>
     </main>
     <script src="/script.js"></script>

@@ -176,3 +176,13 @@ async function updateGlobal(fieldId) {
         alert("Server error. Check your connection.");
     }
 }
+
+async function fetchLogs() {
+    // You'll need to create a new action in stats.js like ?action=getLogs
+    const res = await fetch('/stats?action=getLogs');
+    const logs = await res.json();
+    const container = document.getElementById('log-container');
+    container.innerHTML = logs.map(log => 
+        `<div>[${log.timestamp}] <b>${log.admin_email}</b>: ${log.action_type} on ${log.target}</div>`
+    ).join('');
+}

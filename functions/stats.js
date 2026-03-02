@@ -16,6 +16,47 @@ export async function onRequest(context) {
     let playerXP = null;
     let ownedGames = [];
 
+    // Helper function to record logs
+    async function logAction(env, admin, action, target, details) {
+        try {
+            await env.DB.prepare(
+                `INSERT INTO admin_logs (admin_email, action_type, target, details) VALUES (?, ?, ?, ?)`
+            ).bind(admin, action, target, JSON.stringify(details)).run();
+        } catch (e) {
+            console.error("Logging failed", e);
+        }
+    }
+
+    // --- Inside your POST logic ---
+
+    if (action === "adminUpdate") {
+        // ... your existing auth checks ...
+
+        // After the update is successful, log it:
+        await logAction(env, adminEmail, "USER_UPDATE", targetEmail, {
+            gbucks: body.gbucks,
+            xp: body.xp
+        });
+
+        await env.LIKES_STORAGE.put(targetKey, JSON.stringify(targetData));
+        return new Response(JSON.stringify({ success: true }), { status: 200 });
+    }
+
+    if (action === "updateGlobal") {
+        // ... your existing owner checks ...
+
+        // Log the global change:
+        await logAction(env, adminEmail, "GLOBAL_UPDATE", targetId, {
+            newValue: newValue
+        });
+
+        await env.DB.prepare(`UPDATE stats SET count = ? WHERE id = ?`)
+            .bind(newValue, targetId)
+            .run();
+        
+        return new Response(JSON.stringify({ success: true }), { status: 200 });
+    }
+
     try {
         // --- 1. FETCH PLAYER DATA ---
         let userKey = "";
