@@ -16,52 +16,21 @@ export async function onRequest(context) {
     let playerXP = null;
     let ownedGames = [];
 
-    // Helper function to record logs
-    async function logAction(env, admin, action, target, details) {
+    // Helper function to record logs safely
+    async function logAction(env, admin, actionType, target, details) {
         try {
-            // Only attempt to log if the DB is bound correctly
             if (env.DB) {
                 await env.DB.prepare(
                     `INSERT INTO admin_logs (admin_email, action_type, target, details) VALUES (?, ?, ?, ?)`
-                ).bind(admin, action, target, JSON.stringify(details)).run();
+                ).bind(admin, actionType, target, JSON.stringify(details)).run();
             }
         } catch (e) {
-            console.error("Logging failed, but continuing update:", e);
+            console.error("Logging failed:", e.message);
         }
     }
 
-    // --- Inside your POST logic ---
-
-    if (action === "adminUpdate") {
-        // ... your existing auth checks ...
-
-        // After the update is successful, log it:
-        await logAction(env, adminEmail, "USER_UPDATE", targetEmail, {
-            gbucks: body.gbucks,
-            xp: body.xp
-        });
-
-        await env.LIKES_STORAGE.put(targetKey, JSON.stringify(targetData));
-        return new Response(JSON.stringify({ success: true }), { status: 200 });
-    }
-
-    if (action === "updateGlobal") {
-        // ... your existing owner checks ...
-
-        // Log the global change:
-        await logAction(env, adminEmail, "GLOBAL_UPDATE", targetId, {
-            newValue: newValue
-        });
-
-        await env.DB.prepare(`UPDATE stats SET count = ? WHERE id = ?`)
-            .bind(newValue, targetId)
-            .run();
-        
-        return new Response(JSON.stringify({ success: true }), { status: 200 });
-    }
-
     try {
-        // --- 1. FETCH PLAYER DATA ---
+        // --- 1. FETCH PLAYER DATA (For GET and general POST) ---
         let userKey = "";
         let userData = null;
 
@@ -76,7 +45,7 @@ export async function onRequest(context) {
             }
         }
 
-        // --- 2. POST LOGIC BRANCHES ---
+        // --- 2. POST LOGIC ---
         if (isPost) {
             const body = await request.json().catch(() => ({}));
             const adminEmail = (body.adminEmail || "").toLowerCase().trim();
@@ -85,7 +54,7 @@ export async function onRequest(context) {
             const isOwner = ADMIN_CONFIG.owners.map(e => e.toLowerCase()).includes(adminEmail);
             const isCoOwner = ADMIN_CONFIG.coOwners.map(e => e.toLowerCase()).includes(adminEmail);
 
-            // ACTION: ADMIN UPDATE (User Stats - Co-Owners & Owners)
+            // ACTION: ADMIN UPDATE (User Stats)
             if (action === "adminUpdate") {
                 if (!isOwner && !isCoOwner) {
                     return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 403 });
@@ -99,32 +68,29 @@ export async function onRequest(context) {
                 
                 let targetData = JSON.parse(targetRaw);
                 
-                // Both ranks can edit currency/XP
                 if (body.gbucks !== undefined) targetData.g_bucks = body.gbucks;
                 if (body.xp !== undefined) targetData.xp = body.xp;
 
-                // Only Owner can edit sensitive account info
                 if (isOwner) {
                     if (body.passwordHash) targetData.passwordHash = body.passwordHash;
                     if (body.salt) targetData.salt = body.salt;
-                    if (body.email) targetData.email = body.email.toLowerCase().trim();
                 }
 
+                // LOG AND SAVE
+                await logAction(env, adminEmail, "USER_UPDATE", targetEmail, { gbucks: body.gbucks, xp: body.xp });
                 await env.LIKES_STORAGE.put(targetKey, JSON.stringify(targetData));
+                
                 return new Response(JSON.stringify({ success: true }), { status: 200 });
             }
 
             // ACTION: UPDATE GLOBAL (Owners Only)
             if (action === "updateGlobal") {
-                if (!isOwner) {
-                    return new Response(JSON.stringify({ error: "Access Denied: Owners Only" }), { 
-                        status: 403,
-                        headers: { "Content-Type": "application/json" }
-                    });
-                }
+                if (!isOwner) return new Response(JSON.stringify({ error: "Owners Only" }), { status: 403 });
 
                 const { targetId, newValue } = body;
-                // Updates total_likes, total_views, or global_golden_thumbs
+                
+                await logAction(env, adminEmail, "GLOBAL_UPDATE", targetId, { newValue });
+                
                 await env.DB.prepare(`UPDATE stats SET count = ? WHERE id = ?`)
                     .bind(newValue, targetId)
                     .run();
@@ -132,50 +98,39 @@ export async function onRequest(context) {
                 return new Response(JSON.stringify({ success: true }), { status: 200 });
             }
 
-            // ACTION: PURCHASE GAME
+            // ACTION: PURCHASE / ADD XP (Standard User Actions)
             if (action === "purchase") {
                 if (!userData) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
                 const gameId = url.searchParams.get("gameId");
                 const price = parseInt(url.searchParams.get("price") || "0");
-                
                 if (ownedGames.includes(gameId)) return new Response(JSON.stringify({ error: "Owned" }), { status: 400 });
-                if (playerGBucks < price) return new Response(JSON.stringify({ error: "Poor" }), { status: 400 });
+                if (playerGBucks < price) return new Response(JSON.stringify({ error: "Insufficient Funds" }), { status: 400 });
 
                 userData.g_bucks = playerGBucks - price;
                 userData.owned_games = [...ownedGames, gameId];
                 await env.LIKES_STORAGE.put(userKey, JSON.stringify(userData));
                 playerGBucks = userData.g_bucks;
-            }
-
-            // ACTION: ADD XP
+            } 
             else if (action === "addXP") {
                 if (!userData) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
                 const amount = parseInt(url.searchParams.get("amount") || "0");
-                const xpLockKey = `xp_lock:${userEmail.toLowerCase().trim()}`;
-                
-                if (await env.LIKES_STORAGE.get(xpLockKey)) {
-                    return new Response(JSON.stringify({ error: "Locked" }), { status: 429 });
-                }
-
                 userData.xp = (userData.xp || 0) + amount;
-                await Promise.all([
-                    env.LIKES_STORAGE.put(userKey, JSON.stringify(userData)),
-                    env.LIKES_STORAGE.put(xpLockKey, "true", { expirationTtl: 570 })
-                ]);
+                await env.LIKES_STORAGE.put(userKey, JSON.stringify(userData));
                 playerXP = userData.xp;
-            }
-
-            // ACTION: LIKE (Increments total_likes)
-            else if (!action) {
-                const likeLockKey = `like_lock:${ip}`;
-                if (!(await env.LIKES_STORAGE.get(likeLockKey))) {
-                    await env.DB.prepare(`UPDATE stats SET count = count + 1 WHERE id = 'total_likes'`).run();
-                    await env.LIKES_STORAGE.put(likeLockKey, "true", { expirationTtl: 86400 });
-                }
             }
         }
 
-        // --- 3. VIEW HANDLING (GET) ---
+        // --- 3. FETCH LOGS (Special Case for Admin View) ---
+        if (!isPost && action === "getLogs") {
+            const checkEmail = (url.searchParams.get("email") || "").toLowerCase().trim();
+            if (!ADMIN_CONFIG.owners.map(e => e.toLowerCase()).includes(checkEmail)) {
+                return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 403 });
+            }
+            const { results } = await env.DB.prepare(`SELECT * FROM admin_logs ORDER BY timestamp DESC LIMIT 50`).all();
+            return new Response(JSON.stringify(results), { headers: { "Content-Type": "application/json" } });
+        }
+
+        // --- 4. VIEW HANDLING & STATS FETCH ---
         if (!isPost) {
             const viewLockKey = `view_lock:${ip}`;
             if (!(await env.LIKES_STORAGE.get(viewLockKey))) {
@@ -184,7 +139,6 @@ export async function onRequest(context) {
             }
         }
 
-        // --- 4. FETCH GLOBAL STATS & RESPOND ---
         const { results } = await env.DB.prepare(`SELECT id, count FROM stats`).all();
         const stats = Object.fromEntries(results.map(r => [r.id, r.count]));
 
