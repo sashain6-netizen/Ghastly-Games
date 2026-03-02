@@ -7,69 +7,68 @@ let currentTargetEmail = "";
 // 1. Protection & Rank Setup
 document.addEventListener("DOMContentLoaded", () => {
     const email = localStorage.getItem('user_email');
-    const role = getRole(email);
+    const myRole = getRole(email);
 
-    if (!role) {
-        // Kick out anyone not in the ADMIN_CONFIG
+    if (!myRole) {
         window.location.href = "/";
         return;
     }
 
+    // Display your info
     document.getElementById('admin-email-display').innerText = email;
-    document.getElementById('admin-role-badge').innerText = role.toUpperCase();
-
-    // Hide Owner-Only features from Mods and Co-Owners
-    if (role !== 'owner') {
-        document.querySelectorAll('.owner-only').forEach(el => el.style.display = 'none');
-    }
-
-    // Disable all saving if Moderator
-    if (role === 'moderator') {
-        document.querySelectorAll('input, .save-btn, .small-save').forEach(el => el.disabled = true);
-        const msg = document.getElementById('admin-msg');
-        if (msg) msg.innerText = "Read-Only Mode: Moderators cannot save changes.";
-    }
+    document.getElementById('admin-role-badge').innerText = myRole.toUpperCase();
 });
 
-function getRole(email) {
-    if (!email) return null;
-    const e = email.toLowerCase().trim();
-    // These reference the global ADMIN_CONFIG from the main script.js
-    if (ADMIN_CONFIG.owners.includes(e)) return 'owner';
-    if (ADMIN_CONFIG.coOwners.includes(e)) return 'co-owner';
-    if (ADMIN_CONFIG.moderators.includes(e)) return 'moderator';
-    return null;
+// Helper to determine numerical rank for comparison
+function getRankLevel(role) {
+    if (role === 'owner') return 3;
+    if (role === 'co-owner') return 2;
+    if (role === 'moderator') return 1;
+    return 0; // Regular user
 }
 
-// 2. Fetch User Data
 async function searchUser() {
-    const searchEmail = document.getElementById('user-search-input').value.toLowerCase().trim();
-    if (!searchEmail) return;
+    const searchEmail = document.getElementById('search-input').value.toLowerCase().trim();
+    const myEmail = localStorage.getItem('user_email').toLowerCase().trim();
+    
+    // 1. Get Roles
+    const myRole = getRole(myEmail);
+    const targetRole = getRole(searchEmail);
 
-    try {
-        // We call your existing stats endpoint but as a GET to view data
-        const res = await fetch(`/stats?email=${encodeURIComponent(searchEmail)}`);
-        const data = await res.json();
+    // 2. Fetch User Data
+    const res = await fetch(`/admin/get-user?email=${encodeURIComponent(searchEmail)}`);
+    const data = await res.json();
 
-        if (data.error) {
-            alert("User not found or error fetching.");
-            return;
-        }
-
+    if (data.success) {
         currentTargetEmail = searchEmail;
-        document.getElementById('edit-section').style.display = 'block';
-        document.getElementById('target-user-header').innerText = `Editing: ${searchEmail}`;
-        
-        // Fill fields
-        document.getElementById('edit-gbucks').value = data.gbucks || 0;
-        document.getElementById('edit-xp').value = data.xp || 0;
-        
-        // Owner fields (if they exist in your DB response)
-        if(data.passwordHash) document.getElementById('edit-hash').value = data.passwordHash;
-        if(data.salt) document.getElementById('edit-salt').value = data.salt;
+        document.getElementById('edit-area').style.display = 'block';
+        document.getElementById('display-email').innerText = data.user.email;
+        document.getElementById('input-gbucks').value = data.user.g_bucks;
 
-    } catch (err) {
-        console.error("Fetch failed", err);
+        // --- PERMISSION CHECK ---
+        const myLevel = getRankLevel(myRole);
+        const targetLevel = getRankLevel(targetRole);
+
+        // Rule: You can only edit people with a LOWER rank than you.
+        // Exception: Owners can edit themselves/everyone.
+        const canEdit = (myLevel > targetLevel) || (myRole === 'owner');
+
+        const saveBtn = document.getElementById('save-btn');
+        const inputField = document.getElementById('input-gbucks');
+
+        if (canEdit) {
+            inputField.disabled = false;
+            saveBtn.disabled = false;
+            saveBtn.innerText = "Save Changes";
+            document.getElementById('admin-msg').innerText = "";
+        } else {
+            inputField.disabled = true;
+            saveBtn.disabled = true;
+            saveBtn.innerText = "Insufficient Rank";
+            document.getElementById('admin-msg').innerText = "You cannot edit users of equal or higher rank.";
+        }
+    } else {
+        alert("User not found");
     }
 }
 
