@@ -42,40 +42,53 @@ async function searchUser() {
         const data = await res.json();
 
         if (data && data.gbucks !== null) {
-            currentTargetEmail = searchEmail;
-            
-            document.getElementById('edit-section').style.display = 'block';
-            document.getElementById('target-user-header').innerText = `Editing: ${searchEmail}`;
-            
-            document.getElementById('edit-gbucks').value = data.gbucks || 0;
-            document.getElementById('edit-xp').value = data.xp || 0;
+        currentTargetEmail = searchEmail;
+        
+        document.getElementById('edit-section').style.display = 'block';
+        document.getElementById('target-user-header').innerText = `Editing: ${searchEmail}`;
+        
+        // Fill basic fields
+        document.getElementById('edit-gbucks').value = data.gbucks || 0;
+        document.getElementById('edit-xp').value = data.xp || 0;
 
-            const myLevel = getRankLevel(myRole);
-            const targetLevel = getRankLevel(targetRole);
-
-            const canEdit = (myLevel > targetLevel) || (myRole === 'owner');
-            const saveBtn = document.getElementById('save-user-btn');
-
-            if (canEdit) {
-                saveBtn.disabled = false;
-                saveBtn.innerText = "Update Account";
-                document.getElementById('admin-msg').innerText = "";
-            } else {
-                saveBtn.disabled = true;
-                saveBtn.innerText = "Insufficient Rank";
-                document.getElementById('admin-msg').innerText = "You cannot edit equal or higher ranks.";
-            }
+        // --- THE FIX FOR HASH/SALT VISIBILITY ---
+        const ownerFields = document.querySelectorAll('.owner-only');
+        if (myRole === 'owner') {
+            // Show fields and populate data for Owners
+            ownerFields.forEach(el => el.style.display = 'block');
+            document.getElementById('edit-hash').value = data.password_hash || "";
+            document.getElementById('edit-salt').value = data.salt || "";
         } else {
-            alert("User not found in the database.");
+            // Keep hidden for Co-Owners and Moderators
+            ownerFields.forEach(el => el.style.display = 'none');
         }
+        // ------------------------------------------
+
+        const myLevel = getRankLevel(myRole);
+        const targetLevel = getRankLevel(targetRole);
+        const canEdit = (myLevel > targetLevel) || (myRole === 'owner');
+        const saveBtn = document.getElementById('save-user-btn');
+
+        if (canEdit) {
+            saveBtn.disabled = false;
+            saveBtn.innerText = "Update Account";
+            document.getElementById('admin-msg').innerText = "";
+        } else {
+            saveBtn.disabled = true;
+            saveBtn.innerText = "Insufficient Rank";
+            document.getElementById('admin-msg').innerText = "You cannot edit equal or higher ranks.";
+        }
+    } else {
+        alert("User not found.");
+    }
     } catch (err) {
-        console.error("Search error:", err);
-        alert("Failed to connect to the server.");
+        alert("Error searching for user.");
     }
 }
 
 async function saveUserData() {
     const email = localStorage.getItem('user_email');
+    const myRole = getRole(email); // Get your role again to check permissions
     const msg = document.getElementById('admin-msg');
 
     const updatedData = {
@@ -84,6 +97,14 @@ async function saveUserData() {
         xp: parseInt(document.getElementById('edit-xp').value) || 0,
         adminEmail: email
     };
+
+    // --- THE FIX FOR SAVING HASH/SALT ---
+    // Only send these if you are the owner
+    if (myRole === 'owner') {
+        updatedData.password_hash = document.getElementById('edit-hash').value;
+        updatedData.salt = document.getElementById('edit-salt').value;
+    }
+    // ------------------------------------
 
     try {
         const res = await fetch('/stats?action=adminUpdate', {

@@ -98,3 +98,6 @@ button:disabled {
     font-size: 0.9rem;
     margin-right: 15px;
 }
+.owner-only {
+    display: none; 
+}
