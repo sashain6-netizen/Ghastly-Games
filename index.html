@@ -7,18 +7,16 @@
     <meta name="google-site-verification" content="z6AszEj6j9YyE7bUQxn2QVIWoaWUE05QXU7mBFaZbks" />
     <title>Ghastly Hub</title>
     <link rel="stylesheet" href="styles.css">
-    <!-- This tells Google what to show in search results -->
     <meta name="description" content="Insane unblocked game block sites at Ghastly Games, choose from an assortment! Play custom made games on game zone.">
     
-    <!-- This is a hidden boost for Google's 'Search Snippets' -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-        "@type": "WebSite",
-          "name": "Ghastly Games",
-            "description": "Insane unblocked game block sites, choose from an assortment! Play custom made games on GameZone!"
-            }
-            </script>
+      "@type": "WebSite",
+      "name": "Ghastly Games",
+      "description": "Insane unblocked game block sites, choose from an assortment! Play custom made games on GameZone!"
+    }
+    </script>
 </head>
 <body>
     <button id="gbucks-container" class="currency-container">
@@ -26,11 +24,10 @@
     </button>
 
     <div id="ghastly-header-right">
-    
-    <div id="logged-out-box" class="auth-box-container">
-        <button class="auth-btn signup" onclick="openAuth('signup')">SIGN UP</button>
-        <button class="auth-btn login" onclick="openAuth('login')">LOGIN</button>
-    </div>
+        <div id="logged-out-box" class="auth-box-container">
+            <button class="auth-btn signup" onclick="openAuth('signup')">SIGN UP</button>
+            <button class="auth-btn login" onclick="openAuth('login')">LOGIN</button>
+        </div>
         <div id="logged-in-box" class="auth-box-container" style="display: none;">
             <a id="admin-link" href="/admin" class="auth-btn" style="display: none; background-color: #ff4757; margin-right: 10px; text-decoration: none; padding: 5px 10px; font-size: 0.8rem;">ADMIN PANEL</a>
             <span id="user-display" style="color: #bc6ff1; font-weight: bold; margin-right: 10px;"></span>
@@ -43,20 +40,23 @@
             <button id="close-btn" onclick="closeAuth()">x</button>
             
             <div id="signup-form-container" class="auth-form" style="display: none;">
+                <h2 onclick="toggleSignupInfo()" style="cursor: pointer;">Ghastly Signup</h2>
 
-                <div id="signup-info-box" style="display: none; background: #2a2a2a; padding: 10px; border-radius: 5px; margin-bottom: 15px; font-size: 0.85rem; border-left: 3px solid #bc6ff1;">
-                    <p><strong>How it works:</strong> Creating an account lets you save XP and 💎 G-Bucks across sessions. We only use your email for login verification.</p>
+                <div id="signup-info-box" style="display: none; background: #2a2a2a; padding: 10px; border-radius: 5px; margin-bottom: 15px; font-size: 0.85rem; border-left: 3px solid #bc6ff1; text-align: left;">
+                    <p><strong>How it works:</strong> Creating an account lets you save XP and 💎 G-Bucks. We only use your email for login verification.</p>
                 </div>
 
                 <input type="email" id="reg-email" placeholder="Email">
                 <input type="password" id="reg-password" placeholder="Password">
-                <div class="show-pw-container">
+                
+                <div class="show-pw-container" style="display: flex; align-items: center; justify-content: flex-start; width: 100%; gap: 10px;">
                     <label class="switch">
                         <input type="checkbox" onclick="togglePassword('reg-password')"> 
                         <span class="slider"></span>
                     </label>
                     <span class="switch-label">Show Password</span>
                 </div>
+                
                 <button onclick="handleSignup()">Create Account</button>
                 <p id="signup-msg"></p>
             </div>
@@ -65,13 +65,15 @@
                 <h2>Ghastly Login</h2>
                 <input type="email" id="login-email" placeholder="Email">
                 <input type="password" id="login-password" placeholder="Password">
-                <div class="show-pw-container">
+                
+                <div class="show-pw-container" style="display: flex; align-items: center; justify-content: flex-start; width: 100%; gap: 10px;">
                     <label class="switch">
                         <input type="checkbox" onclick="togglePassword('login-password')"> 
                         <span class="slider"></span>
                     </label>
                     <span class="switch-label">Show Password</span>
                 </div>
+                
                 <button onclick="handleLogin()">Login</button>
                 <p id="login-msg"></p>
             </div>
@@ -123,7 +125,7 @@
             <div class="stats-row">
                 <button id="like-btn" class="thumb-btn">👍 Like | <span id="likes">...</span></button>
                 <button class="view-count">Visits: <span id="views">...</span></button>
-                <button id="golden-thumb-btn" class="golden-btn">👍✨ Golden Thumb: <span id="golden-state">Ready</span>
+                <button id="golden-thumb-btn" class="golden-btn">👍✨ Golden Thumb: <span id="golden-state">Ready</span></button>
             </div>
         </div>
     </div>
