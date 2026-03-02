@@ -149,7 +149,7 @@ async function updateGlobal(fieldId) {
         });
 
         const data = await res.json();
-
+        
         if (res.ok) {
             alert("Global stat updated successfully!");
         } else {

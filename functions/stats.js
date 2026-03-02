@@ -17,7 +17,7 @@ export async function onRequest(context) {
     let ownedGames = [];
 
     try {
-        // --- 1. FETCH PLAYER DATA (For standard game actions) ---
+        // --- 1. FETCH PLAYER DATA ---
         let userKey = "";
         let userData = null;
 
@@ -35,30 +35,28 @@ export async function onRequest(context) {
         // --- 2. POST LOGIC BRANCHES ---
         if (isPost) {
             const body = await request.json().catch(() => ({}));
+            const adminEmail = (body.adminEmail || "").toLowerCase().trim();
 
-            // ACTION: ADMIN UPDATE (Co-Owners & Owners)
+            // Permissions Checkers
+            const isOwner = ADMIN_CONFIG.owners.some(e => e.toLowerCase().trim() === adminEmail);
+            const isCoOwner = ADMIN_CONFIG.coOwners.some(e => e.toLowerCase().trim() === adminEmail);
+
+            // ACTION: ADMIN UPDATE (User Stats)
             if (action === "adminUpdate") {
-                const adminEmail = (body.adminEmail || "").toLowerCase().trim();
-                const targetEmail = (body.targetEmail || "").toLowerCase().trim();
-                
-                const isOwner = ADMIN_CONFIG.owners.includes(adminEmail);
-                const isCoOwner = ADMIN_CONFIG.coOwners.includes(adminEmail);
-
                 if (!isOwner && !isCoOwner) {
                     return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 403 });
                 }
 
+                const targetEmail = (body.targetEmail || "").toLowerCase().trim();
                 const targetKey = `user:${targetEmail}`;
                 const targetRaw = await env.LIKES_STORAGE.get(targetKey);
                 if (!targetRaw) return new Response(JSON.stringify({ error: "User not found" }), { status: 404 });
                 
                 let targetData = JSON.parse(targetRaw);
                 
-                // Co-Owner + Owner Permissions
                 if (body.gbucks !== undefined) targetData.g_bucks = body.gbucks;
                 if (body.xp !== undefined) targetData.xp = body.xp;
 
-                // Owner-Only Permissions
                 if (isOwner) {
                     if (body.passwordHash) targetData.passwordHash = body.passwordHash;
                     if (body.salt) targetData.salt = body.salt;
@@ -70,34 +68,17 @@ export async function onRequest(context) {
             }
 
             // ACTION: UPDATE GLOBAL (Owners Only)
-            // --- Inside functions/stats.js ---
-
             if (action === "updateGlobal") {
-                const body = await request.json().catch(() => ({}));
-                const adminEmail = (body.adminEmail || "").toLowerCase().trim();
-                
-                // Check if the sender is an Owner
-                const isOwner = ADMIN_CONFIG.owners.some(e => e.toLowerCase().trim() === adminEmail);
-
                 if (!isOwner) {
-                    return new Response(JSON.stringify({ error: "Access Denied: Owners Only" }), { 
-                        status: 403,
-                        headers: { "Content-Type": "application/json" }
-                    });
+                    return new Response(JSON.stringify({ error: "Access Denied: Owners Only" }), { status: 403 });
                 }
 
                 const { targetId, newValue } = body;
-
-                // This updates likes, views, or golden_thumbs in the D1 Database
-                try {
-                    await env.DB.prepare(`UPDATE stats SET count = ? WHERE id = ?`)
-                        .bind(newValue, targetId)
-                        .run();
-                    
-                    return new Response(JSON.stringify({ success: true }), { status: 200 });
-                } catch (err) {
-                    return new Response(JSON.stringify({ error: "Database update failed" }), { status: 500 });
-                }
+                await env.DB.prepare(`UPDATE stats SET count = ? WHERE id = ?`)
+                    .bind(newValue, targetId)
+                    .run();
+                
+                return new Response(JSON.stringify({ success: true }), { status: 200 });
             }
 
             // ACTION: PURCHASE GAME
@@ -133,7 +114,7 @@ export async function onRequest(context) {
                 playerXP = userData.xp;
             }
 
-            // ACTION: LIKE
+            // ACTION: LIKE (Standard User)
             else if (!action) {
                 const likeLockKey = `like_lock:${ip}`;
                 if (!(await env.LIKES_STORAGE.get(likeLockKey))) {
