@@ -1,6 +1,6 @@
 let currentTargetEmail = "";
 
-document.getElementById('email-display').innerText = email;
+// --- 1. UTILITIES ---
 
 function getRole(email) {
     if (!email || typeof ADMIN_CONFIG === 'undefined') return null;
@@ -18,19 +18,21 @@ function getRankLevel(role) {
     return 0;
 }
 
+// --- 2. USER MANAGEMENT ---
+
 async function searchUser() {
     const searchInput = document.getElementById('user-search-input');
     const searchEmail = searchInput.value.toLowerCase().trim();
-    const myEmail = localStorage.getItem('user_email').toLowerCase().trim();
+    const myEmail = (localStorage.getItem('user_email') || "").toLowerCase().trim();
     
+    if (!searchEmail) return alert("Please enter an email.");
+
     const myRole = getRole(myEmail);
     const targetRole = getRole(searchEmail);
 
     try {
-        // CHANGE: Hit /stats because we know that URL returns JSON
         const res = await fetch(`/stats?email=${encodeURIComponent(searchEmail)}`);
         
-        // Safety check: if Cloudflare sends HTML, this stops the SyntaxError crash
         const contentType = res.headers.get("content-type");
         if (!contentType || !contentType.includes("application/json")) {
             alert("Error: Server sent back a webpage instead of data. Check your URL path.");
@@ -39,14 +41,12 @@ async function searchUser() {
 
         const data = await res.json();
 
-        // data.gbucks will be null if the user doesn't exist in KV
         if (data && data.gbucks !== null) {
             currentTargetEmail = searchEmail;
             
             document.getElementById('edit-section').style.display = 'block';
             document.getElementById('target-user-header').innerText = `Editing: ${searchEmail}`;
             
-            // Mapping to your server's JSON keys: data.gbucks and data.xp
             document.getElementById('edit-gbucks').value = data.gbucks || 0;
             document.getElementById('edit-xp').value = data.xp || 0;
 
@@ -76,7 +76,7 @@ async function searchUser() {
 
 async function saveUserData() {
     const email = localStorage.getItem('user_email');
-    const role = getRole(email);
+    const msg = document.getElementById('admin-msg');
 
     const updatedData = {
         targetEmail: currentTargetEmail,
@@ -93,45 +93,35 @@ async function saveUserData() {
         });
 
         if (res.ok) {
-            const msg = document.getElementById('admin-msg');
             msg.innerText = "Success: Account Updated!";
             msg.style.color = "lightgreen";
+        } else {
+            const errData = await res.json();
+            msg.innerText = "Error: " + (errData.error || "Update failed");
+            msg.style.color = "red";
         }
     } catch (err) {
         alert("Error updating user.");
     }
 }
 
-// Global variable update - LOCKED TO OWNER ONLY
+// --- 3. GLOBAL STATS (OWNER ONLY) ---
+
 async function updateGlobal(fieldId) {
     const email = localStorage.getItem('user_email');
     
-    // UI Safety Check (Owner only)
     if (getRole(email) !== 'owner') {
         alert("Access Denied: Only the Owner can edit Global Stats.");
         return;
     }
 
-    // Dynamic Input Selector: 
-    // This looks for 'input-total_likes', 'input-total_views', etc.
     const valueInput = document.getElementById(`input-${fieldId}`);
-    
-    if (!valueInput) {
-        alert(`Error: Input field 'input-${fieldId}' not found in HTML.`);
-        return;
-    }
+    if (!valueInput) return alert(`Input field 'input-${fieldId}' not found.`);
 
     const newValue = parseInt(valueInput.value);
+    if (isNaN(newValue)) return alert("Please enter a valid number.");
 
-    if (isNaN(newValue)) {
-        alert("Please enter a valid number.");
-        return;
-    }
-
-    // Confirmation for accidental clicks
-    if (!confirm(`Are you sure you want to set ${fieldId} to ${newValue}?`)) {
-        return;
-    }
+    if (!confirm(`Are you sure you want to set ${fieldId} to ${newValue}?`)) return;
 
     try {
         const res = await fetch('/stats?action=updateGlobal', {
@@ -139,7 +129,7 @@ async function updateGlobal(fieldId) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 adminEmail: email,
-                targetId: fieldId, // Passes 'total_likes', 'total_views', or 'global_golden_thumbs'
+                targetId: fieldId,
                 newValue: newValue
             })
         });
@@ -148,7 +138,6 @@ async function updateGlobal(fieldId) {
 
         if (res.ok && data.success) {
             alert(`${fieldId} updated successfully!`);
-            // Update the display text immediately so you don't have to refresh
             const displayEl = document.getElementById(`display-${fieldId}`);
             if (displayEl) displayEl.innerText = newValue;
         } else {
@@ -156,27 +145,50 @@ async function updateGlobal(fieldId) {
         }
     } catch (err) {
         console.error("Global update error:", err);
-        alert("Server error. Check your connection.");
+        alert("Server error.");
     }
 }
 
+// --- 4. LOGS ---
 
 async function fetchLogs() {
+    const container = document.getElementById('log-container');
+    if (!container) return;
+    const email = localStorage.getItem('user_email');
+
     try {
-        const res = await fetch('/stats?action=getLogs');
+        const res = await fetch(`/stats?action=getLogs&email=${email}`);
         const data = await res.json();
         
-        // Safety check: ensure data is an array
         if (!Array.isArray(data)) {
-            console.error("Logs are not an array:", data);
+            container.innerHTML = `<div style="color:red">Error: ${data.error || "Cannot load logs"}</div>`;
             return;
         }
 
-        const container = document.getElementById('log-container');
         container.innerHTML = data.map(log => 
-            `<div>[${log.timestamp}] <b>${log.admin_email}</b>: ${log.action_type} on ${log.target}</div>`
+            `<div class="log-entry">[${new Date(log.timestamp).toLocaleString()}] <b>${log.admin_email}</b>: ${log.action_type} on ${log.target}</div>`
         ).join('');
     } catch (err) {
-        console.error("Failed to fetch logs", err);
+        container.innerHTML = "Failed to fetch logs";
     }
 }
+
+// --- 5. INITIALIZATION (The fix for line 13/3) ---
+
+document.addEventListener("DOMContentLoaded", () => {
+    const email = localStorage.getItem('user_email') || "";
+    
+    // Update Header Display (Matches your HTML ID)
+    const display = document.getElementById('admin-email-display');
+    if (display) display.innerText = email || "Not Logged In";
+
+    // Update Role Badge
+    const badge = document.getElementById('admin-role-badge');
+    const role = getRole(email);
+    if (badge) badge.innerText = role ? role.toUpperCase() : "GUEST";
+
+    // Auto-load logs if owner
+    if (role === 'owner') {
+        fetchLogs();
+    }
+});
