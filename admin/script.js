@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
-    document.getElementById('admin-email-display').innerText = email;
+    document.getElementById('email-display').innerText = email;
     document.getElementById('admin-role-badge').innerText = myRole.toUpperCase();
 
     // Hide owner-only sections if the user is a Co-Owner or Moderator
@@ -123,13 +123,13 @@ async function saveUserData() {
 async function updateGlobal(fieldId) {
     const email = localStorage.getItem('user_email');
     
-    // UI Safety Check
+    // UI Rank Check: Prevent Co-Owners/Mods from triggering this
     if (getRole(email) !== 'owner') {
-        alert("Access Denied: Only Owners can edit Global Variables.");
+        alert("Action Blocked: Only the Owner can modify global stats.");
         return;
     }
 
-    const valueInput = document.getElementById('global-thumbs');
+    const valueInput = document.getElementById(`input-${fieldId}`);
     const newValue = parseInt(valueInput.value);
 
     if (isNaN(newValue)) {
@@ -143,21 +143,19 @@ async function updateGlobal(fieldId) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 adminEmail: email,
-                targetId: fieldId, // This passes 'global_golden_thumbs' to the DB query
+                targetId: fieldId,
                 newValue: newValue
             })
         });
 
         const data = await res.json();
 
-        if (res.ok && data.success) {
-            alert("Global variables updated successfully!");
-            // Optional: Refresh the page or update the UI to show the new value
+        if (res.ok) {
+            alert("Global stat updated successfully!");
         } else {
-            alert("Update failed: " + (data.error || "Unknown error"));
+            alert("Error: " + data.error);
         }
     } catch (err) {
-        console.error("Global update error:", err);
-        alert("Server error. Check your connection.");
+        alert("Server error. Check connection.");
     }
 }

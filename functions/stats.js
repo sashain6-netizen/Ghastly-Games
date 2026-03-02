@@ -70,18 +70,34 @@ export async function onRequest(context) {
             }
 
             // ACTION: UPDATE GLOBAL (Owners Only)
+            // --- Inside functions/stats.js ---
+
             if (action === "updateGlobal") {
+                const body = await request.json().catch(() => ({}));
                 const adminEmail = (body.adminEmail || "").toLowerCase().trim();
-                if (!ADMIN_CONFIG.owners.includes(adminEmail)) {
-                    return new Response(JSON.stringify({ error: "Owner required" }), { status: 403 });
+                
+                // Check if the sender is an Owner
+                const isOwner = ADMIN_CONFIG.owners.some(e => e.toLowerCase().trim() === adminEmail);
+
+                if (!isOwner) {
+                    return new Response(JSON.stringify({ error: "Access Denied: Owners Only" }), { 
+                        status: 403,
+                        headers: { "Content-Type": "application/json" }
+                    });
                 }
 
                 const { targetId, newValue } = body;
-                await env.DB.prepare(`UPDATE stats SET count = ? WHERE id = ?`)
-                    .bind(newValue, targetId)
-                    .run();
-                
-                return new Response(JSON.stringify({ success: true }), { status: 200 });
+
+                // This updates likes, views, or golden_thumbs in the D1 Database
+                try {
+                    await env.DB.prepare(`UPDATE stats SET count = ? WHERE id = ?`)
+                        .bind(newValue, targetId)
+                        .run();
+                    
+                    return new Response(JSON.stringify({ success: true }), { status: 200 });
+                } catch (err) {
+                    return new Response(JSON.stringify({ error: "Database update failed" }), { status: 500 });
+                }
             }
 
             // ACTION: PURCHASE GAME
