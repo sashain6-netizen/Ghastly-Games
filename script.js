@@ -11,15 +11,10 @@ const sites = [
     { name: "Ultimate Games", url: "https://media1.tenor.com/m/XbvDHnhj_YQAAAAd/bro-just-typing-shit-atm.gif" },
     { name: "Cool Math Games", url: "https://www.coolmathgames.com/" },
     { name: "Youtube Video Unblocker", url: "https://clipwise.com/" },
-    { name: "HypeStudy", url: "https://login.vincenzodimaro.it/" },
     { name: "Unlinked (Click for Details)", url: "https://docs.google.com/forms/d/e/1FAIpQLSfa1r9xeF5WwPNJ6zd7eY7VkT8zWOLstNIr5DlseG4jpnIfzQ/viewform?usp=publish-editor" },
     { name: "Unlinked (Click for Details)", url: "https://docs.google.com/forms/d/e/1FAIpQLSfa1r9xeF5WwPNJ6zd7eY7VkT8zWOLstNIr5DlseG4jpnIfzQ/viewform?usp=publish-editor" },
     { name: "Unlinked (Click for Details)", url: "https://docs.google.com/forms/d/e/1FAIpQLSfa1r9xeF5WwPNJ6zd7eY7VkT8zWOLstNIr5DlseG4jpnIfzQ/viewform?usp=publish-editor" },
-    { name: "Unlinked (Click for Details)", url: "https://docs.google.com/forms/d/e/1FAIpQLSfa1r9xeF5WwPNJ6zd7eY7VkT8zWOLstNIr5DlseG4jpnIfzQ/viewform?usp=publish-editor" },
-    { name: "Unlinked (Click for Details)", url: "https://docs.google.com/forms/d/e/1FAIpQLSfa1r9xeF5WwPNJ6zd7eY7VkT8zWOLstNIr5DlseG4jpnIfzQ/viewform?usp=publish-editor" },
-    { name: "Unlinked (Click for Details)", url: "https://docs.google.com/forms/d/e/1FAIpQLSfa1r9xeF5WwPNJ6zd7eY7VkT8zWOLstNIr5DlseG4jpnIfzQ/viewform?usp=publish-editor" },
-    { name: "Unlinked (Click for Details)", url: "https://docs.google.com/forms/d/e/1FAIpQLSfa1r9xeF5WwPNJ6zd7eY7VkT8zWOLstNIr5DlseG4jpnIfzQ/viewform?usp=publish-editor" },
-    { name: "Unlinked (Click for Details)", url: "https://docs.google.com/forms/d/e/1FAIpQLSfa1r9xeF5WwPNJ6zd7eY7VkT8zWOLstNIr5DlseG4jpnIfzQ/viewform?usp=publish-editor" },
+    { name: "Ghastly Premium", url: "https://login.vincenzodimaro.it/", isPremium: true },
 ];
 
 const ADMIN_CONFIG = {
@@ -30,13 +25,13 @@ const ADMIN_CONFIG = {
 
 const grid = document.getElementById('link-grid');
 
-// Add this IF check around the loop
 if (grid) {
     sites.forEach(site => {
         const card = document.createElement('a');
         card.href = site.url;
         card.target = "_blank";
-        card.className = 'link-card';
+        // If isPremium is true, add both 'link-card' and 'premium-card' classes
+        card.className = site.isPremium ? 'link-card premium-card' : 'link-card';
         card.innerHTML = `<span>${site.name}</span>`;
         grid.appendChild(card);
     });
