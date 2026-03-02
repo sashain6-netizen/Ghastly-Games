@@ -59,10 +59,6 @@ async function searchUser() {
                 el.style.display = 'flex'; // Ensures it shows up
                 el.classList.add('show-field'); // Ensures it gets your flex-column styling
             });
-            
-            // Map the data from the server
-            document.getElementById('edit-hash').value = data.password_hash || "";
-            document.getElementById('edit-salt').value = data.salt || "";
         } else {
             ownerFields.forEach(el => {
                 el.style.display = 'none';
