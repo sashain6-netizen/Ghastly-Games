@@ -188,27 +188,22 @@ async function fetchLogs() {
     }
 }
 
-// --- 5. INITIALIZATION (The fix for line 13/3) ---
 
 document.addEventListener("DOMContentLoaded", () => {
     const email = (localStorage.getItem('user_email') || "").toLowerCase().trim();
     const role = getRole(email);
     
-    // --- 1. KICK LOGIC ---
-    // If the role is null (meaning they aren't owner, co-owner, or mod)
     if (!role) {
-        window.location.href = "./index.html"; // Change to your actual main site URL
-        return; // Prevents the rest of the script from executing
+        window.location.href = "./index.html"; 
+        return;
     }
 
-    // --- 2. Update Header Displays ---
     const display = document.getElementById('admin-email-display');
     if (display) display.innerText = email;
 
     const badge = document.getElementById('admin-role-badge');
     if (badge) badge.innerText = role.toUpperCase();
 
-    // --- 3. PREPARE THE UI FOR OWNERS ---
     if (role === 'owner') {
         const ownerFields = document.querySelectorAll('.owner-only');
         ownerFields.forEach(el => {
