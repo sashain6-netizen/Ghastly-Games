@@ -204,18 +204,24 @@ async function fetchLogs() {
 
 document.addEventListener("DOMContentLoaded", () => {
     const email = localStorage.getItem('user_email') || "";
+    const role = getRole(email);
     
-    // Update Header Display (Matches your HTML ID)
+    // 1. Update Header Displays
     const display = document.getElementById('admin-email-display');
     if (display) display.innerText = email || "Not Logged In";
 
-    // Update Role Badge
     const badge = document.getElementById('admin-role-badge');
-    const role = getRole(email);
     if (badge) badge.innerText = role ? role.toUpperCase() : "GUEST";
 
-    // Auto-load logs if owner
+    // 2. IMMEDIATE REVEAL FOR OWNER
     if (role === 'owner') {
+        const ownerFields = document.querySelectorAll('.owner-only');
+        ownerFields.forEach(el => {
+            // This forces them to be visible even before a search happens
+            el.style.setProperty('display', 'flex', 'important');
+        });
+        
+        // Auto-load logs if owner
         fetchLogs();
     }
 });
