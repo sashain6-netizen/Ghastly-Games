@@ -753,3 +753,46 @@ input:checked + .slider:before {
     font-family: inherit;
 }
 
+/* --- MAIN SITE AUTH FIXES --- */
+
+/* Fixes the "Box Sizing" so padding doesn't push the inputs out of the box */
+#ghastly-auth-system, 
+#ghastly-auth-system * {
+    box-sizing: border-box !important;
+}
+
+/* Ensures the signup container is a centered column */
+#ghastly-auth-system #signup-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+}
+
+/* Force the form to be full width inside the container */
+#ghastly-auth-system .auth-form {
+    width: 100%;
+}
+
+/* Resets the inputs to fit perfectly */
+#ghastly-auth-system input {
+    width: 100% !important;
+    margin: 10px 0 !important;
+}
+
+/* Aligns the new "Show Password" toggle to the left */
+.show-pw-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    gap: 10px;
+    margin: 5px 0 15px 0;
+}
+
+/* Fixes the close button position so it doesn't overlap the title */
+#close-btn {
+    top: 15px !important;
+    right: 15px !important;
+}
+
