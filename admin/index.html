@@ -58,15 +58,27 @@
         </section>
 
         <section class="admin-card owner-only">
-            <h3>Global Variables (D1)</h3>
-            <div class="edit-grid">
-                <div class="field-group">
-                    <label>Global Golden Thumbs</label>
-                    <input type="number" id="global-thumbs">
-                    <button class="small-save" onclick="updateGlobal('global_golden_thumbs')">Update</button>
-                </div>
+        <h3>Global Variables (D1)</h3>
+        <div class="edit-grid">
+            <div class="field-group">
+                <label>Global Golden Thumbs</label>
+                <input type="number" id="input-global_golden_thumbs">
+                <button class="small-save" onclick="updateGlobal('global_golden_thumbs')">Update</button>
             </div>
-        </section>
+
+            <div class="field-group">
+                <label>Total Likes</label>
+                <input type="number" id="input-total_likes">
+                <button class="small-save" onclick="updateGlobal('total_likes')">Update</button>
+            </div>
+
+            <div class="field-group">
+                <label>Total Views</label>
+                <input type="number" id="input-total_views">
+                <button class="small-save" onclick="updateGlobal('total_views')">Update</button>
+            </div>
+        </div>
+    </section>
     </main>
     <script src="/script.js"></script>
     <script src="script.js"></script>
