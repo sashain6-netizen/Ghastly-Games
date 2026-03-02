@@ -110,13 +110,44 @@ async function saveUserData() {
 }
 
 // Global variable update - LOCKED TO OWNER ONLY
-async function updateGlobal(field) {
+async function updateGlobal(fieldId) {
     const email = localStorage.getItem('user_email');
+    
+    // UI Safety Check
     if (getRole(email) !== 'owner') {
         alert("Access Denied: Only Owners can edit Global Variables.");
         return;
     }
 
-    const value = document.getElementById('global-thumbs').value;
-    // ... fetch call to update global stats here ...
+    const valueInput = document.getElementById('global-thumbs');
+    const newValue = parseInt(valueInput.value);
+
+    if (isNaN(newValue)) {
+        alert("Please enter a valid number.");
+        return;
+    }
+
+    try {
+        const res = await fetch('/stats?action=updateGlobal', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                adminEmail: email,
+                targetId: fieldId, // This passes 'global_golden_thumbs' to the DB query
+                newValue: newValue
+            })
+        });
+
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+            alert("Global variables updated successfully!");
+            // Optional: Refresh the page or update the UI to show the new value
+        } else {
+            alert("Update failed: " + (data.error || "Unknown error"));
+        }
+    } catch (err) {
+        console.error("Global update error:", err);
+        alert("Server error. Check your connection.");
+    }
 }
