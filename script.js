@@ -22,6 +22,12 @@ const sites = [
     { name: "Unlinked (Click for Details)", url: "https://docs.google.com/forms/d/e/1FAIpQLSfa1r9xeF5WwPNJ6zd7eY7VkT8zWOLstNIr5DlseG4jpnIfzQ/viewform?usp=publish-editor" },
 ];
 
+const ADMIN_CONFIG = {
+    owners: ['sashain6@gmail.com'],
+    coOwners: ['568712@my.cuhsd.org'],
+    moderators: ['568974@my.cuhsd.org']
+}
+
 const grid = document.getElementById('link-grid');
 
 sites.forEach(site => {
@@ -255,6 +261,7 @@ async function handleLogin() {
 }
 
 function updateUIState(email, balance) {
+    // 1. Basic UI Setup
     document.getElementById('logged-out-box').style.display = 'none';
     document.getElementById('logged-in-box').style.display = 'flex';
     document.getElementById('user-display').innerText = email;
@@ -262,20 +269,18 @@ function updateUIState(email, balance) {
     const personalDisplay = document.getElementById('personal-balance');
     if (personalDisplay) personalDisplay.innerText = balance;
 
-    // --- ADMIN SYSTEM ---
+    // 2. --- ADMIN SYSTEM ---
     const adminLink = document.getElementById('admin-link');
     
-    if (adminLink) {
-        // Check if the email exists in any of the 3 roles
-        const isStaff = ADMIN_CONFIG.owners.includes(email.toLowerCase()) || 
-                        ADMIN_CONFIG.coOwners.includes(email.toLowerCase()) || 
-                        ADMIN_CONFIG.moderators.includes(email.toLowerCase());
+    if (adminLink && email) {
+        const emailLower = email.toLowerCase().trim();
 
-        if (isStaff) {
-            adminLink.style.display = 'inline-block';
-        } else {
-            adminLink.style.display = 'none';
-        }
+        // This now uses the ADMIN_CONFIG from the top of your script!
+        const isStaff = ADMIN_CONFIG.owners.includes(emailLower) || 
+                        ADMIN_CONFIG.coOwners.includes(emailLower) || 
+                        ADMIN_CONFIG.moderators.includes(emailLower);
+
+        adminLink.style.display = isStaff ? 'inline-block' : 'none';
     }
 }
 
