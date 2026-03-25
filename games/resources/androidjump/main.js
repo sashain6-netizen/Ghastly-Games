@@ -4,7 +4,7 @@ import {InputHandler} from './input.js'
 import {Platform} from './platform.js'
 import {Enemy} from './enemy.js'
 
-const allowedDomains = ["ghastly-games.pages.dev", "localhost", "127.0.0.1"];
+const allowedDomains = ["ghastly-games.pages.dev", "localhost", "127.0.0.1", "ghastly-games-2point0.pages.dev"];
 const currentDomain = window.location.hostname;
 const officialDomain = allowedDomains[0]; 
 
